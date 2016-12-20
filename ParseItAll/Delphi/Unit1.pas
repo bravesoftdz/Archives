@@ -23,21 +23,15 @@ implementation
 
 {$R *.dfm}
 uses
-   System.JSON
-  ,API_Files
+   API_Files
   ,API;
 
 procedure TForm1.btn1Click(Sender: TObject);
 var
   ParserModel: TparserModel;
-  FileText: String;
-  jsnJobData: TJSONObject;
 begin
-  ParserModel:=TparserModel.Create;
+  ParserModel:=TparserModel.Create(1);
   try
-    FileText:=TFilesEngine.GetTextFromFile('json.js');
-    jsnJobData:=TJSONObject.ParseJSONValue(FileText) as TJSONObject;
-    ParserModel.SetJob(jsnJobData);
   finally
     ParserModel.Free;
   end;
