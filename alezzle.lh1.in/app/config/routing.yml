@@ -1,6 +1,0 @@
-play_list:
-    resource: "@PlayListBundle/Resources/config/routing.yml"
-    prefix:   /
-
-
-

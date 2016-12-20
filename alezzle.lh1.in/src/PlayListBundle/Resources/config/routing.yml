@@ -1,9 +1,0 @@
-PlayList_homepage:
-    path:     /
-    defaults: { _controller: "PlayListBundle:Default:index" }
-
-PlayList_ajax:
-    path:     /tracks
-    defaults: { _controller: "PlayListBundle:Default:ajax" }
-    requirements:
-         methods:  GET    
