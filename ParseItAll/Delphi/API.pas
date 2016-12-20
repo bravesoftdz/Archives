@@ -3,18 +3,17 @@ unit API;
 interface
 
 uses
-   System.JSON
-  ,Vcl.Dialogs;
+  Vcl.Dialogs;
 
 type
   TParserModel=class
   public
-    procedure SetJob(ajsnJobData: TJSONObject);
+    constructor Create(aJobID: integer);
   end;
 
 implementation
 
-procedure TParserModel.SetJob(ajsnJobData: TJSONObject);
+constructor TParserModel.Create(aJobID: integer);
 begin
   ShowMessage('q');
 end;
