@@ -24,15 +24,15 @@ implementation
 {$R *.dfm}
 uses
    API_Files
-  ,API;
+  ,API_Parse;
 
 procedure TForm1.btn1Click(Sender: TObject);
 var
   ParserModel: TParserModel;
 begin
-  ParserModel:=TParserModel.Create(1);
+  ParserModel:=TParserModel.Create;
   try
-    ParserModel.Execute;
+    ParserModel.Execute(1);
   finally
     ParserModel.Free;
   end;

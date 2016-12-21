@@ -3,8 +3,9 @@ program ParseItAll;
 uses
   Vcl.Forms,
   Unit1 in 'Unit1.pas' {Form1},
-  API in 'API.pas',
-  API_Files in '..\..\..\Libraries\Delphi\API_Files.pas';
+  API_Parse in '..\..\..\Libraries\Delphi\API_Parse.pas',
+  API_Files in '..\..\..\Libraries\Delphi\API_Files.pas',
+  API_DBases in '..\..\..\Libraries\Delphi\API_DBases.pas';
 
 {$R *.res}
 
