@@ -28,10 +28,11 @@ uses
 
 procedure TForm1.btn1Click(Sender: TObject);
 var
-  ParserModel: TparserModel;
+  ParserModel: TParserModel;
 begin
-  ParserModel:=TparserModel.Create(1);
+  ParserModel:=TParserModel.Create(1);
   try
+    ParserModel.Execute;
   finally
     ParserModel.Free;
   end;
