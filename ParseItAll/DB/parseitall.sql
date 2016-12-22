@@ -1,6 +1,6 @@
-﻿# Host: 127.0.0.1  (Version 5.5.23)
-# Date: 2016-12-21 14:27:10
-# Generator: MySQL-Front 5.4  (Build 1.21)
+﻿# Host: localhost  (Version: 5.5.29)
+# Date: 2016-12-22 07:41:27
+# Generator: MySQL-Front 5.3  (Build 4.271)
 
 /*!40101 SET NAMES utf8 */;
 
@@ -74,7 +74,7 @@ CREATE TABLE `links` (
   UNIQUE KEY `job_link_unq` (`job_id`,`link_hash`),
   KEY `job_id` (`job_id`),
   CONSTRAINT `links_ibfk_1` FOREIGN KEY (`job_id`) REFERENCES `jobs` (`Id`) ON DELETE CASCADE ON UPDATE CASCADE
-) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+) ENGINE=InnoDB AUTO_INCREMENT=3 DEFAULT CHARSET=utf8;
 
 #
 # Data for table "links"
