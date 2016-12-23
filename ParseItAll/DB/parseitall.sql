@@ -1,6 +1,6 @@
-﻿# Host: 127.0.0.1  (Version 5.5.23)
-# Date: 2016-12-22 18:08:10
-# Generator: MySQL-Front 5.4  (Build 4.71) - http://www.mysqlfront.de/
+﻿# Host: localhost  (Version 5.5.29)
+# Date: 2016-12-23 08:03:09
+# Generator: MySQL-Front 5.4  (Build 4.73) - http://www.mysqlfront.de/
 
 /*!40101 SET NAMES utf8 */;
 
@@ -31,6 +31,7 @@ REPLACE INTO `job_params` VALUES (1,1,0);
 CREATE TABLE `job_param_rules` (
   `Id` int(11) NOT NULL AUTO_INCREMENT,
   `job_param_id` int(11) NOT NULL DEFAULT '0',
+  `obj_type` tinyint(3) NOT NULL DEFAULT '0',
   `mode` tinyint(3) NOT NULL DEFAULT '1',
   `level` int(11) DEFAULT NULL,
   `xpath` text,
@@ -43,7 +44,7 @@ CREATE TABLE `job_param_rules` (
 # Data for table "job_param_rules"
 #
 
-REPLACE INTO `job_param_rules` VALUES (1,1,1,1,'/html/body/div[3]/div[3]/div[4]/div[2]/div[2]/div/div/div/ul/li/a'),(2,1,2,2,'/html/body/div[3]/div[3]/div[4]/div[2]/div[2]/div/div/div/ul/li/a');
+REPLACE INTO `job_param_rules` VALUES (1,1,1,1,1,'/html/body/div[3]/div[3]/div[4]/div[2]/div[2]/div/div/div/ul/li/a'),(2,1,1,2,2,'/html/body/div[3]/div[3]/div[4]/div[2]/div[2]/div/div/div/ul/li/a');
 
 #
 # Structure for table "jobs"
