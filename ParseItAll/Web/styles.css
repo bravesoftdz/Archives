@@ -25,4 +25,8 @@ body{
     width: 18%;
     padding: 5px;
 }
+.panel-command textarea{
+    width: 90%;
+    height: 200px;
+}
 

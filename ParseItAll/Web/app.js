@@ -22,15 +22,24 @@ $(document).ready(function () {
     $('#frame').on('load', function (){ 
         var frame = $('#frame').contents();
         var selectedObj;
-                
+        var privBackground;
+
         // клик по объекту
         $(frame).find('body').click(function(e){
-            $('#field-value').text($(e.target).text());
+
+            e.preventDefault();
+
+            $(window.selectedObj).css('background', window.privBackground);
+
+            window.privBackground = $(e.target).css('background');
             $(e.target).css('background', 'buttonshadow');
-            
-            window.selectedObj = e.target;        
+
+            $('#elText').text($(e.target).text());
+            $('#elHTML').text($(e.target).html());
+
+            window.selectedObj = e.target;
         });
-            
+
         // выбор объекта
         $('#btn-apply').click(function(e){    
           var xpath = getXPath(window.selectedObj);
