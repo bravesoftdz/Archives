@@ -6,7 +6,8 @@ uses
   API_Parse in '..\..\..\Libraries\Delphi\API_Parse.pas',
   API_Files in '..\..\..\Libraries\Delphi\API_Files.pas',
   API_DBases in '..\..\..\Libraries\Delphi\API_DBases.pas',
-  Entities in 'Entities.pas';
+  Entities in 'Entities.pas',
+  Model in 'Model.pas';
 
 {$R *.res}
 

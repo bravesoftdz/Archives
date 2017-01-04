@@ -1,6 +1,6 @@
-﻿# Host: 127.0.0.1  (Version 5.5.23)
-# Date: 2017-01-04 17:56:55
-# Generator: MySQL-Front 5.4  (Build 4.100) - http://www.mysqlfront.de/
+﻿# Host: localhost  (Version 5.5.29)
+# Date: 2017-01-04 23:26:32
+# Generator: MySQL-Front 5.4  (Build 4.102) - http://www.mysqlfront.de/
 
 /*!40101 SET NAMES utf8 */;
 
@@ -19,12 +19,13 @@ CREATE TABLE `job_nodes` (
   PRIMARY KEY (`Id`),
   KEY `job_rule_id` (`job_rule_id`),
   CONSTRAINT `job_nodes_ibfk_1` FOREIGN KEY (`job_rule_id`) REFERENCES `job_rules` (`Id`) ON DELETE CASCADE ON UPDATE CASCADE
-) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+) ENGINE=InnoDB AUTO_INCREMENT=30 DEFAULT CHARSET=utf8;
 
 #
 # Data for table "job_nodes"
 #
 
+REPLACE INTO `job_nodes` VALUES (2,2,'HTML',1,NULL,NULL,NULL),(3,2,'BODY',1,NULL,'ltr domn_ru lang_ru long_prices globalNav2011_reset css_commerce_buttons flat_buttons sitewide xo_pin_user_review_to_top track_back',NULL),(4,2,'DIV',3,'PAGE',' non_hotels_like desktop scopedSearch',NULL),(5,2,'DIV',4,'MAINWRAP',' ',NULL),(6,2,'DIV',1,'MAIN','SiteIndex\r\n prodp13n_jfy_overflow_visible\r\n ',NULL),(7,2,'DIV',1,'BODYCON','col poolB adjust_padding new_meta_chevron_v2',NULL),(8,2,'DIV',2,NULL,'sectionCollection',NULL),(9,2,'DIV',1,NULL,'resizingMargins',NULL),(10,2,'DIV',1,'taplc_html_sitemap_payload_0','ppr_rup ppr_priv_html_sitemap_payload',NULL),(11,2,'DIV',1,NULL,'prw_rup prw_links_sitemap_container',NULL),(12,2,'DIV',1,NULL,'world_destinations container',NULL),(13,2,'UL',1,NULL,NULL,NULL),(14,2,'LI',1,NULL,NULL,NULL),(15,2,'A',1,NULL,NULL,NULL),(16,3,'HTML',1,NULL,NULL,NULL),(17,3,'BODY',1,NULL,'ltr domn_ru lang_ru long_prices globalNav2011_reset css_commerce_buttons flat_buttons sitewide xo_pin_user_review_to_top track_back',NULL),(18,3,'DIV',3,'PAGE',' non_hotels_like desktop scopedSearch',NULL),(19,3,'DIV',4,'MAINWRAP',' ',NULL),(20,3,'DIV',1,'MAIN','SiteIndex\r\n prodp13n_jfy_overflow_visible\r\n ',NULL),(21,3,'DIV',1,'BODYCON','col poolB adjust_padding new_meta_chevron_v2',NULL),(22,3,'DIV',2,NULL,'sectionCollection',NULL),(23,3,'DIV',1,NULL,'resizingMargins',NULL),(24,3,'DIV',1,'taplc_html_sitemap_payload_0','ppr_rup ppr_priv_html_sitemap_payload',NULL),(25,3,'DIV',1,NULL,'prw_rup prw_links_sitemap_container',NULL),(26,3,'DIV',1,NULL,'world_destinations container',NULL),(27,3,'UL',1,NULL,NULL,NULL),(28,3,'LI',1,NULL,NULL,NULL),(29,3,'A',1,NULL,NULL,NULL);
 
 #
 # Structure for table "jobs"
@@ -35,7 +36,7 @@ CREATE TABLE `jobs` (
   `caption` varchar(255) NOT NULL DEFAULT '',
   `zero_link` text NOT NULL,
   PRIMARY KEY (`Id`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+) ENGINE=InnoDB AUTO_INCREMENT=6 DEFAULT CHARSET=utf8;
 
 #
 # Data for table "jobs"
@@ -55,12 +56,13 @@ CREATE TABLE `job_levels` (
   UNIQUE KEY `job_level_unq` (`job_id`,`level`),
   KEY `job_id` (`job_id`),
   CONSTRAINT `job_levels_ibfk_1` FOREIGN KEY (`job_id`) REFERENCES `jobs` (`Id`) ON DELETE CASCADE ON UPDATE CASCADE
-) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+) ENGINE=InnoDB AUTO_INCREMENT=4 DEFAULT CHARSET=utf8;
 
 #
 # Data for table "job_levels"
 #
 
+REPLACE INTO `job_levels` VALUES (1,4,1);
 
 #
 # Structure for table "job_rules"
@@ -73,12 +75,13 @@ CREATE TABLE `job_rules` (
   PRIMARY KEY (`Id`),
   KEY `job_level_id` (`job_level_id`),
   CONSTRAINT `job_rules_ibfk_1` FOREIGN KEY (`job_level_id`) REFERENCES `job_levels` (`Id`) ON DELETE CASCADE ON UPDATE CASCADE
-) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+) ENGINE=InnoDB AUTO_INCREMENT=4 DEFAULT CHARSET=utf8;
 
 #
 # Data for table "job_rules"
 #
 
+REPLACE INTO `job_rules` VALUES (2,1,2),(3,1,2);
 
 #
 # Structure for table "job_rule_links"
@@ -91,12 +94,13 @@ CREATE TABLE `job_rule_links` (
   PRIMARY KEY (`Id`),
   KEY `job_rule_id` (`job_rule_id`),
   CONSTRAINT `job_rule_links_ibfk_1` FOREIGN KEY (`job_rule_id`) REFERENCES `job_rules` (`Id`) ON DELETE CASCADE ON UPDATE CASCADE
-) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+) ENGINE=InnoDB AUTO_INCREMENT=3 DEFAULT CHARSET=utf8;
 
 #
 # Data for table "job_rule_links"
 #
 
+REPLACE INTO `job_rule_links` VALUES (2,2,2);
 
 #
 # Structure for table "job_rule_records"
@@ -109,12 +113,13 @@ CREATE TABLE `job_rule_records` (
   PRIMARY KEY (`Id`),
   KEY `job_rule_id` (`job_rule_id`),
   CONSTRAINT `job_rule_records_ibfk_1` FOREIGN KEY (`job_rule_id`) REFERENCES `job_rules` (`Id`) ON DELETE CASCADE ON UPDATE CASCADE
-) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+) ENGINE=InnoDB AUTO_INCREMENT=2 DEFAULT CHARSET=utf8;
 
 #
 # Data for table "job_rule_records"
 #
 
+REPLACE INTO `job_rule_records` VALUES (1,3,'country');
 
 #
 # Structure for table "job_regexp"

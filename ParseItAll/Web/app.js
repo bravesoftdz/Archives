@@ -48,6 +48,8 @@ $(document).ready(function () {
             
             var xpath = getXPathJSON(window.selectedObj);
             $('#xpath').text(xpath);
+            
+            return false;
         });
         
         $('#up').click(function(e){
