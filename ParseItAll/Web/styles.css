@@ -30,4 +30,12 @@ body{
     height: 100px;
     margin-top: 5px;
 }
+#jsonrule {
+    display: none;
+    position: fixed;
+    top: 50px;
+    left: 50px;
+    z-index: 100;
+    background: buttonshadow;
+}
 
