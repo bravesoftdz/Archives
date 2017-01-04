@@ -10,6 +10,10 @@ function getXPath( element )
     return xpath;
 }
 
+function getXPathJSON(element){
+
+}
+
 $(document).ready(function () {
 
     // загрузка iframe
@@ -38,12 +42,21 @@ $(document).ready(function () {
             $('#elHTML').text($(e.target).html());
 
             window.selectedObj = e.target;
+            
+            //var xpath = getXPath(window.selectedObj);
+            var xpath = getXPathJSON(window.selectedObj);
+            $('#xpath').text(xpath);
         });
-
-        // выбор объекта
-        $('#btn-apply').click(function(e){    
-          var xpath = getXPath(window.selectedObj);
-          console.log(xpath);
+        
+        $('#up').click(function(e){
+            $(window.selectedObj.parentNode).click();
+        });
+        
+        $('#down').click(function(e){
+            $(window.selectedObj).children().each(function(index, elem){
+                $(elem).click();
+                return false;
+            }); 
         });
         
     });      

@@ -27,6 +27,7 @@ body{
 }
 .panel-command textarea{
     width: 90%;
-    height: 200px;
+    height: 100px;
+    margin-top: 5px;
 }
 
