@@ -4,14 +4,30 @@ interface
 
 uses
   Winapi.Windows, Winapi.Messages, System.SysUtils, System.Variants, System.Classes, Vcl.Graphics,
-  Vcl.Controls, Vcl.Forms, Vcl.Dialogs, Vcl.StdCtrls, Vcl.OleCtrls, SHDocVw;
+  Vcl.Controls, Vcl.Forms, Vcl.Dialogs, Vcl.StdCtrls, Vcl.OleCtrls, SHDocVw
+  ,API_DBases, Vcl.Grids, Vcl.DBGrids, FireDAC.Stan.Intf, FireDAC.Stan.Option,
+  FireDAC.Stan.Param, FireDAC.Stan.Error, FireDAC.DatS, FireDAC.Phys.Intf,
+  FireDAC.DApt.Intf, FireDAC.Stan.Async, FireDAC.DApt, Data.DB,
+  FireDAC.Comp.DataSet, FireDAC.Comp.Client, Vcl.DBCtrls;
 
 type
   TForm1 = class(TForm)
-    btn1: TButton;
-    procedure btn1Click(Sender: TObject);
+    btnStartJob: TButton;
+    dbgrdJobs: TDBGrid;
+    dbgrdLevels: TDBGrid;
+    dbgrdLinks: TDBGrid;
+    dbgrdRecords: TDBGrid;
+    dbgrdNodes: TDBGrid;
+    fdtblJobs: TFDTable;
+    dsJobs: TDataSource;
+    lblJobs: TLabel;
+    lblZeroLink: TLabel;
+    dbmmoZeroLink: TDBMemo;
+    procedure btnStartJobClick(Sender: TObject);
+    procedure FormCreate(Sender: TObject);
   private
     { Private declarations }
+    FMySQLEngine: TMySQLEngine;
   public
     { Public declarations }
   end;
@@ -26,7 +42,7 @@ uses
    API_Files
   ,API_Parse;
 
-procedure TForm1.btn1Click(Sender: TObject);
+procedure TForm1.btnStartJobClick(Sender: TObject);
 var
   ParserModel: TParserModel;
 begin
@@ -36,6 +52,15 @@ begin
   finally
     //ParserModel.Free;
   end;
+end;
+
+procedure TForm1.FormCreate(Sender: TObject);
+begin
+  FMySQLEngine:=TMySQLEngine.Create;
+  FMySQLEngine.OpenConnection('MySQL.ini');
+
+  fdtblJobs.Connection:=FMySQLEngine.Connection;
+  fdtblJobs.Open('jobs');
 end;
 
 end.

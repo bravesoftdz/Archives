@@ -1,5 +1,5 @@
 ﻿# Host: 127.0.0.1  (Version 5.5.23)
-# Date: 2017-01-03 09:35:22
+# Date: 2017-01-04 17:56:55
 # Generator: MySQL-Front 5.4  (Build 4.100) - http://www.mysqlfront.de/
 
 /*!40101 SET NAMES utf8 */;
@@ -41,6 +41,7 @@ CREATE TABLE `jobs` (
 # Data for table "jobs"
 #
 
+REPLACE INTO `jobs` VALUES (4,'TripAdvisor','https://www.tripadvisor.ru/SiteIndex');
 
 #
 # Structure for table "job_levels"

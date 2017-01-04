@@ -93,6 +93,7 @@
         <DCCReference Include="..\..\..\Libraries\Delphi\API_Parse.pas"/>
         <DCCReference Include="..\..\..\Libraries\Delphi\API_Files.pas"/>
         <DCCReference Include="..\..\..\Libraries\Delphi\API_DBases.pas"/>
+        <DCCReference Include="Entities.pas"/>
         <BuildConfiguration Include="Release">
             <Key>Cfg_2</Key>
             <CfgParent>Base</CfgParent>

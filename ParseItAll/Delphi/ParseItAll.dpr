@@ -5,7 +5,8 @@ uses
   Unit1 in 'Unit1.pas' {Form1},
   API_Parse in '..\..\..\Libraries\Delphi\API_Parse.pas',
   API_Files in '..\..\..\Libraries\Delphi\API_Files.pas',
-  API_DBases in '..\..\..\Libraries\Delphi\API_DBases.pas';
+  API_DBases in '..\..\..\Libraries\Delphi\API_DBases.pas',
+  Entities in 'Entities.pas';
 
 {$R *.res}
 
