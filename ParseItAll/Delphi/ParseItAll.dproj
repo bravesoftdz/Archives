@@ -90,11 +90,11 @@
             <Form>Form1</Form>
             <FormType>dfm</FormType>
         </DCCReference>
-        <DCCReference Include="..\..\..\Libraries\Delphi\API_Parse.pas"/>
         <DCCReference Include="..\..\..\Libraries\Delphi\API_Files.pas"/>
         <DCCReference Include="..\..\..\Libraries\Delphi\API_DBases.pas"/>
         <DCCReference Include="Entities.pas"/>
         <DCCReference Include="Model.pas"/>
+        <DCCReference Include="DBService.pas"/>
         <BuildConfiguration Include="Release">
             <Key>Cfg_2</Key>
             <CfgParent>Base</CfgParent>

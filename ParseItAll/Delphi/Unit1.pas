@@ -59,8 +59,7 @@ implementation
 
 {$R *.dfm}
 uses
-   API_Files
-  ,Model
+   Model
   ,System.JSON;
 
 procedure TForm1.btnParseNodesClick(Sender: TObject);
@@ -104,14 +103,10 @@ end;
 
 procedure TForm1.btnStartJobClick(Sender: TObject);
 var
-  ParserModel: TParserModel;
+  Model: TPIAModel;
 begin
-  ParserModel:=TParserModel.Create;
-  try
-    ParserModel.StartJob(1);
-  finally
-    //ParserModel.Free;
-  end;
+  Model:=TPIAModel.Create(fdtblJobs.FieldByName('Id').AsInteger);
+  Model.StartJob;
 end;
 
 procedure TForm1.FormCreate(Sender: TObject);

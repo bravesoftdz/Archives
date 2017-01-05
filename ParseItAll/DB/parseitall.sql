@@ -1,6 +1,6 @@
-﻿# Host: localhost  (Version 5.5.29)
-# Date: 2017-01-04 23:26:32
-# Generator: MySQL-Front 5.4  (Build 4.102) - http://www.mysqlfront.de/
+﻿# Host: 127.0.0.1  (Version 5.5.23)
+# Date: 2017-01-05 18:31:52
+# Generator: MySQL-Front 5.4  (Build 4.100) - http://www.mysqlfront.de/
 
 /*!40101 SET NAMES utf8 */;
 
@@ -153,12 +153,13 @@ CREATE TABLE `links` (
   UNIQUE KEY `link_unq` (`job_id`,`link_hash`),
   KEY `job_id` (`job_id`,`handled`),
   CONSTRAINT `links_ibfk_1` FOREIGN KEY (`job_id`) REFERENCES `jobs` (`Id`) ON DELETE CASCADE ON UPDATE CASCADE
-) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+) ENGINE=InnoDB AUTO_INCREMENT=2 DEFAULT CHARSET=utf8;
 
 #
 # Data for table "links"
 #
 
+REPLACE INTO `links` VALUES (1,4,1,'https://www.tripadvisor.ru/SiteIndex','259e648a0b263a265c02b31b0d9afa4b',1);
 
 #
 # Structure for table "records"
