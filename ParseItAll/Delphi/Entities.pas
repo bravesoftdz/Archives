@@ -3,7 +3,8 @@ unit Entities;
 interface
 
 uses
-  API_DBases;
+   System.Generics.Collections
+  ,API_DBases;
 
 type
   TJobNode = record
@@ -24,18 +25,39 @@ type
     Key: string;
   end;
 
-  TJobRule = record
-    RuleLink: TJobRuleLink;
-    RuleRecord: TJobRuleRecord;
-    Nodes: TJobNodes;
-    ContainerOffset: Integer;
+  TJobRule = class abstract (TObject)
+  private
+    FNodes: TJobNodes;
+    FContainerOffset: Integer;
+  public
+    constructor Create(aRuleID: integer; aMySQLEngine: TMySQLEngine); virtual;
+    property Nodes: TJobNodes read FNodes write FNodes;
+    property ContainerOffset: Integer read FContainerOffset write FContainerOffset;
   end;
 
-  TJobRules = TArray<TJobRule>;
+  TJobLinksRule = class(TJobRule)
+  private
+    FRuleLink: TJobRuleLink;
+  public
+    constructor Create(aRuleID: integer; aMySQLEngine: TMySQLEngine); override;
+    property RuleLink: TJobRuleLink read FRuleLink write FRuleLink;
+  end;
+
+  TJobLinksRules = TObjectList<TJobLinksRule>;
+
+  TJobRecordsRule = class(TJobRule)
+  private
+    FRuleRecord: TJobRuleRecord;
+  public
+    property RuleRecord: TJobRuleRecord read FRuleRecord write FRuleRecord;
+  end;
+
+  TJobRecordsRules = TObjectList<TJobRecordsRule>;
 
   TJobLevel = record
     Level: Integer;
-    JobRules: TJobRules;
+    JobLinksRules: TJobLinksRules;
+    JobRecordsRules: TJobRecordsRules;
   end;
 
   TJobLevels = TArray<TJobLevel>;
@@ -46,7 +68,7 @@ type
     FLevels: TJobLevels;
   public
     constructor Create(aJobID: integer; aMySQLEngine: TMySQLEngine);
-    function GetRulesByLevel(aLevel: integer): TJobRules;
+    function GetLinksRulesByLevel(aLevel: integer): TJobLinksRules;
     property Id: Integer read FId;
     property ZeroLink: string read FZeroLink;
     property Levels: TJobLevels read FLevels;
@@ -63,33 +85,70 @@ implementation
 uses
   FireDAC.Comp.Client;
 
-function TJob.GetRulesByLevel(aLevel: integer): TJobRules;
+constructor TJobLinksRule.Create(aRuleID: integer; aMySQLEngine: TMySQLEngine);
+begin
+
+end;
+
+constructor TJobRule.Create(aRuleID: integer; aMySQLEngine: TMySQLEngine);
+var
+  dsRule, dsNodes: TFDQuery;
+  Node: TJobNode;
+begin
+  dsRule:=TFDQuery.Create(nil);
+  dsNodes:=TFDQuery.Create(nil);
+  try
+    dsRule.SQL.Text:='select * from job_rules where id=:ID';
+    dsRule.ParamByName('ID').AsInteger:=aRuleID;
+    aMySQLEngine.OpenQuery(dsRule);
+
+    FContainerOffset:=dsRule.FieldByName('container_offset').AsInteger;
+    FNodes:=[];
+
+    dsNodes.SQL.Text:='select * from job_nodes where job_rule_id=:JobRuleID order by id';
+    dsNodes.ParamByName('JobRuleID').AsInteger:=aRuleID;
+    aMySQLEngine.OpenQuery(dsNodes);
+    while not dsNodes.EOF do
+      begin
+        Node.Tag:=dsNodes.FieldByName('tag').AsString;
+        Node.Index:=dsNodes.FieldByName('index').AsInteger;
+        Node.TagID:=dsNodes.FieldByName('tag_id').AsString;
+        Node.ClassName:=dsNodes.FieldByName('class').AsString;
+        Node.Name:=dsNodes.FieldByName('name').AsString;
+
+        FNodes := FNodes + [Node];
+        dsNodes.Next;
+      end;
+  finally
+    dsRule.Free;
+    dsNodes.Free;
+  end;
+end;
+
+function TJob.GetLinksRulesByLevel(aLevel: integer): TJobLinksRules;
 var
   JobLevel: TJobLevel;
 begin
   for JobLevel in FLevels do
     if JobLevel.Level=aLevel then
       begin
-        Result:=JobLevel.JobRules;
+        Result:=JobLevel.JobLinksRules;
         Break;
       end;
 end;
 
 constructor TJob.Create(aJobID: Integer; aMySQLEngine: TMySQLEngine);
 var
-  dsJob, dsLevels, dsRules, dsLink, dsRecord, dsNodes: TFDQuery;
+  dsJob, dsLevels, dsRules: TFDQuery;
   JobLevel: TJobLevel;
-  JobRule: TJobRule;
-  Node: TJobNode;
+  JobLinksRule: TJobLinksRule;
+  JobRecordsRule: TJobRecordsRule;
 begin
   FId:=aJobID;
 
   dsJob:=TFDQuery.Create(nil);
   dsLevels:=TFDQuery.Create(nil);
   dsRules:=TFDQuery.Create(nil);
-  dsLink:=TFDQuery.Create(nil);
-  dsRecord:=TFDQuery.Create(nil);
-  dsNodes:=TFDQuery.Create(nil);
   try
     dsJob.SQL.Text:='select * from jobs where id=:JobID';
     dsJob.ParamByName('JobID').AsInteger:=aJobID;
@@ -105,14 +164,23 @@ begin
       begin
         JobLevel.Level:=dsLevels.FieldByName('level').AsInteger;
 
+        JobLevel.JobLinksRules:=TJobLinksRules.Create;
+        JobLevel.JobRecordsRules:=TJobRecordsRules.Create;
         dsRules.Close;
         dsRules.SQL.Text:='select * from job_rules where job_level_id=:JobLevel order by id';
         dsRules.ParamByName('JobLevel').AsInteger:=dsLevels.FieldByName('Id').AsInteger;
         aMySQLEngine.OpenQuery(dsRules);
-        JobLevel.JobRules:=[];
         while not dsRules.EOF do
           begin
-            JobRule.ContainerOffset:=dsRules.FieldByName('container_offset').AsInteger;
+
+            JobLinksRule:=TJobLinksRule.Create(dsRules.FieldByName('Id').AsInteger, aMySQLEngine);
+            if JobLinksRule<>nil then JobLevel.JobLinksRules.Add(JobLinksRule);
+
+            JobRecordsRule:=TJobRecordsRule.Create(dsRules.FieldByName('Id').AsInteger, aMySQLEngine);
+            if JobRecordsRule<>nil then JobLevel.JobRecordsRules.Add(JobRecordsRule);
+
+
+            {
 
             dsLink.Close;
             dsLink.SQL.Text:='select * from job_rule_links where job_rule_id=:JobRuleID';
@@ -143,7 +211,7 @@ begin
                 dsNodes.Next;
               end;
 
-            JobLevel.JobRules := JobLevel.JobRules + [JobRule];
+            JobLevel.JobRules := JobLevel.JobRules + [JobRule]; }
             dsRules.Next;
           end;
 
@@ -154,9 +222,6 @@ begin
     dsJob.Free;
     dsLevels.Free;
     dsRules.Free;
-    dsLink.Free;
-    dsRecord.Free;
-    dsNodes.Free;
   end;
 
 end;
