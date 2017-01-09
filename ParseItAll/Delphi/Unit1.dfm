@@ -2,7 +2,7 @@ object Form1: TForm1
   Left = 0
   Top = 0
   Caption = 'Parse It All!'
-  ClientHeight = 458
+  ClientHeight = 488
   ClientWidth = 721
   Color = clBtnFace
   Font.Charset = DEFAULT_CHARSET
@@ -53,16 +53,16 @@ object Form1: TForm1
   object lblLinks: TLabel
     Left = 152
     Top = 110
-    Width = 23
+    Width = 18
     Height = 13
-    Caption = 'Links'
+    Caption = 'Link'
   end
   object lblRecords: TLabel
     Left = 286
     Top = 110
-    Width = 39
+    Width = 34
     Height = 13
-    Caption = 'Records'
+    Caption = 'Record'
   end
   object lblNodes: TLabel
     Left = 8
@@ -71,9 +71,16 @@ object Form1: TForm1
     Height = 13
     Caption = 'Nodes'
   end
+  object lblRegExps: TLabel
+    Left = 450
+    Top = 110
+    Width = 42
+    Height = 13
+    Caption = 'RegExps'
+  end
   object btnStartJob: TButton
-    Left = 638
-    Top = 425
+    Left = 8
+    Top = 456
     Width = 75
     Height = 25
     Caption = 'btnStartJob'
@@ -127,7 +134,7 @@ object Form1: TForm1
     Top = 127
     Width = 127
     Height = 120
-    DataSource = dslinks
+    DataSource = dslink
     TabOrder = 3
     TitleFont.Charset = DEFAULT_CHARSET
     TitleFont.Color = clWindowText
@@ -148,7 +155,7 @@ object Form1: TForm1
     Top = 127
     Width = 154
     Height = 120
-    DataSource = dsRecords
+    DataSource = dsRecord
     TabOrder = 4
     TitleFont.Charset = DEFAULT_CHARSET
     TitleFont.Color = clWindowText
@@ -244,20 +251,41 @@ object Form1: TForm1
       end>
   end
   object mmo1: TMemo
-    Left = 453
-    Top = 127
+    Left = 450
+    Top = 265
     Width = 260
-    Height = 210
+    Height = 185
     TabOrder = 8
   end
   object btnParseNodes: TButton
-    Left = 536
-    Top = 343
+    Left = 537
+    Top = 456
     Width = 94
     Height = 25
     Caption = 'btnParseNodes'
     TabOrder = 9
     OnClick = btnParseNodesClick
+  end
+  object dbgrdRegExps: TDBGrid
+    Left = 450
+    Top = 127
+    Width = 263
+    Height = 120
+    DataSource = dsRegExps
+    TabOrder = 10
+    TitleFont.Charset = DEFAULT_CHARSET
+    TitleFont.Color = clWindowText
+    TitleFont.Height = -11
+    TitleFont.Name = 'Tahoma'
+    TitleFont.Style = []
+    Columns = <
+      item
+        Expanded = False
+        FieldName = 'regexp'
+        Title.Alignment = taCenter
+        Width = 220
+        Visible = True
+      end>
   end
   object fdtblJobs: TFDTable
     UpdateOptions.UpdateTableName = 'jobs'
@@ -294,27 +322,27 @@ object Form1: TForm1
     Left = 16
     Top = 176
   end
-  object fdtblLinks: TFDTable
+  object fdtblLink: TFDTable
     IndexName = 'job_rule_id'
     MasterSource = dsRules
     MasterFields = 'id'
     Left = 224
     Top = 176
   end
-  object dslinks: TDataSource
-    DataSet = fdtblLinks
+  object dslink: TDataSource
+    DataSet = fdtblLink
     Left = 176
     Top = 176
   end
-  object fdtblRecords: TFDTable
+  object fdtblRecord: TFDTable
     IndexName = 'job_rule_id'
     MasterSource = dsRules
     MasterFields = 'id'
     Left = 368
     Top = 176
   end
-  object dsRecords: TDataSource
-    DataSet = fdtblRecords
+  object dsRecord: TDataSource
+    DataSet = fdtblRecord
     Left = 304
     Top = 176
   end
@@ -329,5 +357,17 @@ object Form1: TForm1
     MasterFields = 'id'
     Left = 96
     Top = 352
+  end
+  object dsRegExps: TDataSource
+    DataSet = fdtblRegExps
+    Left = 528
+    Top = 176
+  end
+  object fdtblRegExps: TFDTable
+    IndexName = 'job_rule_id'
+    MasterSource = dsRules
+    MasterFields = 'id'
+    Left = 608
+    Top = 176
   end
 end

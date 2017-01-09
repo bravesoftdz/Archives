@@ -32,16 +32,20 @@ type
     fdtblRules: TFDTable;
     dsRules: TDataSource;
     lblLinks: TLabel;
-    fdtblLinks: TFDTable;
-    dslinks: TDataSource;
+    fdtblLink: TFDTable;
+    dslink: TDataSource;
     lblRecords: TLabel;
-    fdtblRecords: TFDTable;
-    dsRecords: TDataSource;
+    fdtblRecord: TFDTable;
+    dsRecord: TDataSource;
     lblNodes: TLabel;
     dsNodes: TDataSource;
     fdtblNodes: TFDTable;
     mmo1: TMemo;
     btnParseNodes: TButton;
+    dbgrdRegExps: TDBGrid;
+    dsRegExps: TDataSource;
+    fdtblRegExps: TFDTable;
+    lblRegExps: TLabel;
     procedure btnStartJobClick(Sender: TObject);
     procedure FormCreate(Sender: TObject);
     procedure btnParseNodesClick(Sender: TObject);
@@ -117,16 +121,18 @@ begin
   fdtblJobs.Connection:=FMySQLEngine.Connection;
   fdtblLevels.Connection:=FMySQLEngine.Connection;
   fdtblRules.Connection:=FMySQLEngine.Connection;
-  fdtblLinks.Connection:=FMySQLEngine.Connection;
-  fdtblRecords.Connection:=FMySQLEngine.Connection;
+  fdtblLink.Connection:=FMySQLEngine.Connection;
+  fdtblRecord.Connection:=FMySQLEngine.Connection;
   fdtblNodes.Connection:=FMySQLEngine.Connection;
+  fdtblRegExps.Connection:=FMySQLEngine.Connection;
 
   fdtblJobs.Open('jobs');
   fdtblLevels.Open('job_levels');
   fdtblRules.Open('job_rules');
-  fdtblLinks.Open('job_rule_links');
-  fdtblRecords.Open('job_rule_records');
+  fdtblLink.Open('job_rule_links');
+  fdtblRecord.Open('job_rule_records');
   fdtblNodes.Open('job_nodes');
+  fdtblRegExps.Open('job_regexp');
 end;
 
 end.

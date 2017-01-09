@@ -7,7 +7,8 @@ uses
   API_DBases in '..\..\..\Libraries\Delphi\API_DBases.pas',
   Entities in 'Entities.pas',
   Model in 'Model.pas',
-  DBService in 'DBService.pas';
+  DBService in 'DBService.pas',
+  API_Parse in '..\..\..\Libraries\Delphi\API_Parse.pas';
 
 {$R *.res}
 

@@ -16,6 +16,7 @@ type
     function GetCurrLink: TCurrLink;
     function AddLink(aLink: string; aLevel: Integer): Integer;
     procedure SetLinkHandle(aLinkID: Integer; aValue: Integer);
+    procedure AddRecord(aLinkId, aRecordNum: integer; aKey, aValue: string);
     constructor Create(aJobID: Integer; aMySQLEngine: TMySQLEngine);
   end;
 
@@ -23,6 +24,31 @@ implementation
 
 uses
   FireDAC.Comp.Client;
+
+procedure TPIADBService.AddRecord(aLinkId, aRecordNum: Integer; aKey: string; aValue: string);
+var
+  sql: string;
+  dsQuery: TFDQuery;
+begin
+  dsQuery:=TFDQuery.Create(nil);
+  try
+    sql:='insert into records set';
+    sql:=sql+' `link_id`=:link_id';
+    sql:=sql+',`num`=:num';
+    sql:=sql+',`key`=:key';
+    sql:=sql+',`value`=:value';
+    sql:=sql+',`value_hash`=md5(:value)';
+    dsQuery.SQL.Text:=sql;
+    dsQuery.ParamByName('link_id').AsInteger:=aLinkId;
+    dsQuery.ParamByName('num').AsInteger:=aRecordNum;
+    dsQuery.ParamByName('key').AsString:=aKey;
+    dsQuery.ParamByName('value').AsWideString:=aValue;
+
+    FMySQLEngine.ExecQuery(dsQuery);
+  finally
+    dsQuery.Free;
+  end;
+end;
 
 procedure TPIADBService.SetLinkHandle(aLinkID: Integer; aValue: Integer);
 var

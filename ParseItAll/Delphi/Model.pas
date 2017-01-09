@@ -39,6 +39,7 @@ type
     function GetElementOfCollectionByName(aNode: TJobNode; iCollection: IHTMLElementCollection; out aMatches: TMatches): IHTMLElement;
     function CheckNodeMatches(aNode: TJobNode; aElement: IHTMLElement): TMatches;
     function GetHTMLElementByRuleNode(aNode: TJobNode; iCollection: IHTMLElementCollection): IHTMLElement;
+    function CheckRegExps(aValue: string; aRegExps: TJobRegExps): Boolean;
   public
     constructor Create(aJobID: integer);
     procedure StartJob;
@@ -50,7 +51,23 @@ uses
    Variants
   ,Vcl.Controls
   ,Vcl.Dialogs
-  ,API_Files;
+  ,API_Files
+  ,API_Parse;
+
+function TPIAModel.CheckRegExps(aValue: string; aRegExps: TJobRegExps): Boolean;
+var
+  RegExp: TJobRegExp;
+begin
+  Result:=True;
+  for RegExp in aRegExps do
+    begin
+      if TParseTools.ParseStrByRegEx(aValue, RegExp.RegExp)='' then
+        begin
+          Result:=False;
+          Break;
+        end;
+    end;
+end;
 
 function TPIAModel.GetHTMLElementByRuleNode(aNode: TJobNode; iCollection: IHTMLElementCollection): IHTMLElement;
 var
@@ -187,14 +204,46 @@ end;
 procedure TPIAModel.ProcessDOM(aDocument: IHTMLDocument2);
 var
   JobLinksRules: TJobLinksRules;
-  JobRule: TJobRule;
+  JobLinkRule: TJobLinksRule;
+  JobRecordsRules: TJobRecordsRules;
+  JobRecordRule: TJobRecordsRule;
   HTMLElements: THTMLElements;
+  iElement: IHTMLElement;
+  Link: string;
+  i: Integer;
 begin
+  // links
   JobLinksRules:=FJob.GetLinksRulesByLevel(FCurrLink.Level);
-  for JobRule in JobLinksRules do
-    begin
-      HTMLElements:=GetHTMLElementsByRuleNodes(aDocument, JobRule.Nodes, JobRule.ContainerOffset);
-    end;
+  if Assigned(JobLinksRules) then
+    for JobLinkRule in JobLinksRules do
+      begin
+        HTMLElements:=GetHTMLElementsByRuleNodes(aDocument, JobLinkRule.Nodes, JobLinkRule.ContainerOffset);
+
+        for iElement in HTMLElements do
+          if iElement.getAttribute('href', 0)<>null then
+            begin
+              Link:=iElement.getAttribute('href', 0);
+              if CheckRegExps(Link, JobLinkRule.RegExps) then
+                FDBService.AddLink(Link, JobLinkRule.Level);
+            end;
+      end;
+
+  // records
+  JobRecordsRules:=FJob.GetRecordsRulesByLevel(FCurrLink.Level);
+  if Assigned(JobRecordsRules) then
+    for JobRecordRule in JobRecordsRules do
+      begin
+        HTMLElements:=GetHTMLElementsByRuleNodes(aDocument, JobRecordRule.Nodes, JobRecordRule.ContainerOffset);
+
+        i:=0;
+        for iElement in HTMLElements do
+          begin
+            inc(i);
+            FDBService.AddRecord(FCurrLink.Id, i, JobRecordRule.Key, iElement.outerText);
+          end;
+      end;
+
+  ProcessNextLink;
 end;
 
 procedure TPIAModel.WebBrowserDocumentComplete(ASender: TObject; const pDisp: IDispatch; const URL: OleVariant);
