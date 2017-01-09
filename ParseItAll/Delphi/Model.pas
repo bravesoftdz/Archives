@@ -48,7 +48,8 @@ type
 implementation
 
 uses
-   Variants
+   System.SysUtils
+  ,Variants
   ,Vcl.Controls
   ,Vcl.Dialogs
   ,API_Files
@@ -83,7 +84,7 @@ begin
     Result:=GetElementOfCollectionByID(aNode, iCollection, Matches);
 
   // приоритет атрибута "class"
-  if  Result=nil then
+  if  (Result=nil) or (not Matches.isClassMatch and (aNode.TagID='')) then
     Result:=GetElementOfCollectionByClass(aNode, iCollection, Matches);
 
   // приоритет атрибута "name"
@@ -121,8 +122,30 @@ begin
 end;
 
 function TPIAModel.GetElementOfCollectionByClass(aNode: TJobNode; iCollection: IHTMLElementCollection; out aMatches: TMatches): IHTMLElement;
+var
+  i: Integer;
+  iElement: IHTMLElement;
+  className: string;
 begin
+  Result:=nil;
 
+  if aNode.ClassName<>'' then
+    for i := 0 to iCollection.Length - 1 do
+      begin
+        iElement := iCollection.item(i, 0) as IHTMLElement;
+        if iElement.getAttribute('className', 0)<>null then
+          begin
+            className:=iElement.getAttribute('className', 0);
+            className:=StringReplace(className, '  ', ' ', [rfReplaceAll, rfIgnoreCase]);
+            if className = aNode.ClassName then
+              begin
+                Result := iElement;
+                Break;
+              end;
+          end;
+      end;
+
+  aMatches:=CheckNodeMatches(aNode, Result);
 end;
 
 function TPIAModel.GetElementOfCollectionByID(aNode: TJobNode; iCollection: IHTMLElementCollection; out aMatches: TMatches): IHTMLElement;
@@ -154,10 +177,11 @@ end;
 
 function TPIAModel.GetHTMLElementsByRuleNodes(aDocument: IHTMLDocument2; aNodes: TJobNodes; aContainerOffset: Integer): THTMLElements;
 var
-  i, j: Integer;
+  i, j, z: Integer;
   Node: TJobNode;
   iCollection, ContainerCollection: IHTMLElementCollection;
   iElement: IHTMLElement;
+  Elements, SubElements: THTMLElements;
 begin
   i:=0;
   Result:=[];
@@ -180,23 +204,26 @@ begin
   if aContainerOffset = 0 then Result := Result + [iElement]
   else
     begin
-      ContainerCollection := iCollection;
       // перебираем коллекцию - контейнер
-      for i := 0 to ContainerCollection.Length - 1 do
+      Elements:=[iElement];
+      for i := Length(aNodes) - aContainerOffset to Length(aNodes) - 1 do
         begin
-          iCollection := ContainerCollection;
-
-          for j := Length(aNodes) - aContainerOffset to Length(aNodes) - 1 do
+          Node:=aNodes[i];
+          SubElements:=[];
+          for j := 0 to Length(Elements)-1 do
             begin
-              Node:=aNodes[j];
-              if j = Length(aNodes) - aContainerOffset then Node.Index := i + 1;
-
-              iElement:=GetHTMLElementByRuleNode(Node, iCollection);
-
-              iCollection:=iElement.Children as IHTMLElementCollection;
-
-              if j = Length(aNodes) - 1 then Result := Result + [iElement];
+              iCollection:=Elements[j].Children as IHTMLElementCollection;
+              iCollection:=iCollection.Tags(Node.Tag) as IHTMLElementCollection;
+              for z := 0 to iCollection.length-1 do
+                begin
+                  Node.Index := z + 1;
+                  iElement:=GetHTMLElementByRuleNode(Node, iCollection);                      TFilesEngine.SaveTextToFile('1.txt', iElement.outerHTML);
+                  if iElement<>nil then
+                    if i<Length(aNodes) - 1 then SubElements:=SubElements+[iElement]
+                    else Result := Result + [iElement];
+                end;
             end;
+          Elements:=SubElements;
         end;
     end;
 end;
