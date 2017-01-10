@@ -32,13 +32,13 @@ type
     procedure GetDocumentByCurrLink;
     procedure WebBrowserDocumentComplete(ASender: TObject; const pDisp: IDispatch; const URL: OleVariant);
     procedure ProcessDOM(aDocument: IHTMLDocument2);
-    function GetHTMLElementsByRuleNodes(aDocument: IHTMLDocument2; aNodes: TJobNodes; aContainerOffset: Integer): THTMLElements;
+    function GetHTMLElementsByRuleNodes(aDocument: IHTMLDocument2; aNodes: TJobNodes; aContainerOffset: Integer; IsDebug: Boolean = False): THTMLElements;
     function GetElementOfCollectionByIndex(aNode: TJobNode; iCollection: IHTMLElementCollection; out aMatches: TMatches): IHTMLElement;
     function GetElementOfCollectionByID(aNode: TJobNode; iCollection: IHTMLElementCollection; out aMatches: TMatches): IHTMLElement;
     function GetElementOfCollectionByClass(aNode: TJobNode; iCollection: IHTMLElementCollection; out aMatches: TMatches): IHTMLElement;
     function GetElementOfCollectionByName(aNode: TJobNode; iCollection: IHTMLElementCollection; out aMatches: TMatches): IHTMLElement;
     function CheckNodeMatches(aNode: TJobNode; aElement: IHTMLElement): TMatches;
-    function GetHTMLElementByRuleNode(aNode: TJobNode; iCollection: IHTMLElementCollection): IHTMLElement;
+    function GetHTMLElementByRuleNode(aNode: TJobNode; iCollection: IHTMLElementCollection; aIsKeepSearch: Boolean = True): IHTMLElement;
     function CheckRegExps(aValue: string; aRegExps: TJobRegExps): Boolean;
   public
     constructor Create(aJobID: integer);
@@ -70,26 +70,31 @@ begin
     end;
 end;
 
-function TPIAModel.GetHTMLElementByRuleNode(aNode: TJobNode; iCollection: IHTMLElementCollection): IHTMLElement;
+function TPIAModel.GetHTMLElementByRuleNode(aNode: TJobNode; iCollection: IHTMLElementCollection; aIsKeepSearch: Boolean = True): IHTMLElement;
 var
   Matches: TMatches;
+  MatchElement: IHTMLElement;
 begin
-  Result:=nil;
-
-  // элемент по индексу
+  // элемент по индексу (по умолчанию)
   Result:=GetElementOfCollectionByIndex(aNode, iCollection, Matches);
 
-  // приоритет атрибута "ID"
-  if (Result=nil) or (not Matches.isIDMatch) then
-    Result:=GetElementOfCollectionByID(aNode, iCollection, Matches);
+  if aIsKeepSearch then
+    begin
+      // приоритет атрибута "ID"
+      if (Result=nil) or (not Matches.isIDMatch) then
+        MatchElement:=GetElementOfCollectionByID(aNode, iCollection, Matches);
+      if MatchElement<>nil then Result:=MatchElement;
 
-  // приоритет атрибута "class"
-  if  (Result=nil) or (not Matches.isClassMatch and (aNode.TagID='')) then
-    Result:=GetElementOfCollectionByClass(aNode, iCollection, Matches);
+      // приоритет атрибута "class"
+      if  (Result=nil) or (not Matches.isClassMatch and (aNode.TagID='')) then
+        MatchElement:=GetElementOfCollectionByClass(aNode, iCollection, Matches);
+      if MatchElement<>nil then Result:=MatchElement;
 
-  // приоритет атрибута "name"
-  if Result=nil then
-    Result:=GetElementOfCollectionByName(aNode, iCollection, Matches);
+      // приоритет атрибута "name"
+      if Result=nil then
+        MatchElement:=GetElementOfCollectionByName(aNode, iCollection, Matches);
+      if MatchElement<>nil then Result:=MatchElement;
+    end;
 end;
 
 function TPIAModel.CheckNodeMatches(aNode: TJobNode; aElement: IHTMLElement): TMatches;
@@ -106,7 +111,7 @@ begin
   if aElement.Id=aNode.TagID then Result.isIDMatch:=True;
 
   // совпадение class
-  if aElement.getAttribute('className', 0)<>null then ClassAttr:=aElement.getAttribute('className', 0)
+  if aElement.getAttribute('className', 0)<>null then ClassAttr:=TParseTools.GetNormalizeString(aElement.getAttribute('className', 0))
   else ClassAttr:='';
   if ClassAttr=aNode.ClassName then Result.isClassMatch:=True;
 
@@ -135,8 +140,7 @@ begin
         iElement := iCollection.item(i, 0) as IHTMLElement;
         if iElement.getAttribute('className', 0)<>null then
           begin
-            className:=iElement.getAttribute('className', 0);
-            className:=StringReplace(className, '  ', ' ', [rfReplaceAll, rfIgnoreCase]);
+            className:=TParseTools.GetNormalizeString(iElement.getAttribute('className', 0));
             if className = aNode.ClassName then
               begin
                 Result := iElement;
@@ -175,17 +179,25 @@ begin
   aMatches:=CheckNodeMatches(aNode, Result);
 end;
 
-function TPIAModel.GetHTMLElementsByRuleNodes(aDocument: IHTMLDocument2; aNodes: TJobNodes; aContainerOffset: Integer): THTMLElements;
+function TPIAModel.GetHTMLElementsByRuleNodes(aDocument: IHTMLDocument2; aNodes: TJobNodes; aContainerOffset: Integer; IsDebug: Boolean = False): THTMLElements;
 var
   i, j, z: Integer;
   Node: TJobNode;
   iCollection, ContainerCollection: IHTMLElementCollection;
   iElement: IHTMLElement;
   Elements, SubElements: THTMLElements;
+
+  function VTS(aV: Variant): string;
+  begin
+    if aV<>Null then Result:=aV
+    else Result:='';
+  end;
 begin
   i:=0;
   Result:=[];
   iCollection:=aDocument.All as IHTMLElementCollection;
+  IsDebug:=True;
+  if IsDebug then TFilesEngine.SaveTextToFile('GetNodes.log', '');
 
   // получаем коллекцию - конейнер спускаясь по дереву DOM
   for Node in aNodes do
@@ -210,6 +222,11 @@ begin
         begin
           Node:=aNodes[i];
           SubElements:=[];
+          if IsDebug then
+            begin
+              TFilesEngine.AppendToFile('GetNodes.log', '');
+              TFilesEngine.AppendToFile('GetNodes.log', 'RULE: ' + Node.Tag + ' ' + Node.TagID + ' ' + Node.ClassName);
+            end;
           for j := 0 to Length(Elements)-1 do
             begin
               iCollection:=Elements[j].Children as IHTMLElementCollection;
@@ -217,9 +234,13 @@ begin
               for z := 0 to iCollection.length-1 do
                 begin
                   Node.Index := z + 1;
-                  iElement:=GetHTMLElementByRuleNode(Node, iCollection);                      TFilesEngine.SaveTextToFile('1.txt', iElement.outerHTML);
+                  iElement:=GetHTMLElementByRuleNode(Node, iCollection, False);
                   if iElement<>nil then
-                    if i<Length(aNodes) - 1 then SubElements:=SubElements+[iElement]
+                    if i<Length(aNodes) - 1 then
+                      begin
+                        SubElements:=SubElements+[iElement];
+                        if IsDebug then TFilesEngine.AppendToFile('GetNodes.log', iElement.tagName +' ' + iElement.id+ ' ' +VTS(iElement.getAttribute('className', 0)));
+                      end
                     else Result := Result + [iElement];
                 end;
             end;

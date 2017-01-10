@@ -85,7 +85,8 @@ type
 implementation
 
 uses
-  FireDAC.Comp.Client;
+   FireDAC.Comp.Client
+  ,API_Parse;
 
 constructor TJobRecordsRule.Create(aRuleID: integer; aMySQLEngine: TMySQLEngine);
 var
@@ -145,7 +146,7 @@ begin
         Node.Tag:=dsNodes.FieldByName('tag').AsString;
         Node.Index:=dsNodes.FieldByName('index').AsInteger;
         Node.TagID:=dsNodes.FieldByName('tag_id').AsString;
-        Node.ClassName:=dsNodes.FieldByName('class').AsString;
+        Node.ClassName:=TParseTools.GetNormalizeString(dsNodes.FieldByName('class').AsString);
         Node.Name:=dsNodes.FieldByName('name').AsString;
 
         FNodes := FNodes + [Node];
