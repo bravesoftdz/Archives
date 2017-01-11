@@ -3,7 +3,8 @@ unit Model;
 interface
 
 uses
-   Vcl.Forms
+   System.SysUtils
+  ,Vcl.Forms
   ,SHDocVw
   ,MSHTML
   ,API_DBases
@@ -19,6 +20,14 @@ type
     isNameMatch: Boolean;
   end;
 
+  ENoElementFind = class(Exception)
+  private
+    FJobNodeID: Integer;
+  public
+    constructor Create(aJobNodeID: integer);
+    property JobNodeID: Integer read FJobNodeID;
+  end;
+
   TPIAModel = class
   private
     FMySQLEngine: TMySQLEngine;
@@ -32,7 +41,8 @@ type
     procedure GetDocumentByCurrLink;
     procedure WebBrowserDocumentComplete(ASender: TObject; const pDisp: IDispatch; const URL: OleVariant);
     procedure ProcessDOM(aDocument: IHTMLDocument2);
-    function GetHTMLElementsByRuleNodes(aDocument: IHTMLDocument2; aNodes: TJobNodes; aContainerOffset: Integer; IsDebug: Boolean = False): THTMLElements;
+    procedure OnNoElementFind(E: ENoElementFind; aCriticalType: Integer);
+    function GetHTMLElementsByRuleNodes(aDocument: IHTMLDocument2; aNodes: TJobNodes; aContainerOffset: Integer): THTMLElements;
     function GetElementOfCollectionByIndex(aNode: TJobNode; iCollection: IHTMLElementCollection; out aMatches: TMatches): IHTMLElement;
     function GetElementOfCollectionByID(aNode: TJobNode; iCollection: IHTMLElementCollection; out aMatches: TMatches): IHTMLElement;
     function GetElementOfCollectionByClass(aNode: TJobNode; iCollection: IHTMLElementCollection; out aMatches: TMatches): IHTMLElement;
@@ -48,12 +58,26 @@ type
 implementation
 
 uses
-   System.SysUtils
-  ,Variants
+   Variants
   ,Vcl.Controls
-  ,Vcl.Dialogs
-  ,API_Files
   ,API_Parse;
+
+procedure TPIAModel.OnNoElementFind(E: ENoElementFind; aCriticalType: Integer);
+begin
+  case aCriticalType of
+    1: begin
+         FDBService.AddJobMessage(FCurrLink.ID, E.JobNodeID);
+         raise Exception.Create(E.Message+' Critical Error. Thread Stopped.');
+       end;
+    2:  FDBService.AddJobMessage(FCurrLink.ID, E.JobNodeID);
+  end;
+end;
+
+constructor ENoElementFind.Create(aJobNodeID: integer);
+begin
+  inherited Create('No HTML Elements Find!');
+  FJobNodeID:=aJobNodeID;
+end;
 
 function TPIAModel.CheckRegExps(aValue: string; aRegExps: TJobRegExps): Boolean;
 var
@@ -179,38 +203,19 @@ var
 begin
   Result:=iCollection.Item(aNode.Index-1, 0) as IHTMLElement;
   aMatches:=CheckNodeMatches(aNode, Result);
-
-  if Result=nil then
-    begin
-      TFilesEngine.SaveTextToFile('1.txt', '');
-      for i :=0 to iCollection.length-1 do
-      TFilesEngine.AppendToFile('1.txt', (iCollection.item(i, 0) as IHTMLElement).outerHTML);
-    end;
 end;
 
-function TPIAModel.GetHTMLElementsByRuleNodes(aDocument: IHTMLDocument2; aNodes: TJobNodes; aContainerOffset: Integer; IsDebug: Boolean = False): THTMLElements;
+function TPIAModel.GetHTMLElementsByRuleNodes(aDocument: IHTMLDocument2; aNodes: TJobNodes; aContainerOffset: Integer): THTMLElements;
 var
   i, j, z: Integer;
   Node: TJobNode;
   iCollection, ContainerCollection: IHTMLElementCollection;
   iElement: IHTMLElement;
   Elements, SubElements: THTMLElements;
-
-  function VTS(aV: Variant): string;
-  begin
-    if aV<>Null then Result:=aV
-    else Result:='';
-  end;
 begin
   i:=0;
   Result:=[];
   iCollection:=aDocument.All as IHTMLElementCollection;
-  IsDebug:=True;
-  if IsDebug then
-    begin
-      TFilesEngine.SaveTextToFile('GetNodes.log', '');
-      TFilesEngine.SaveTextToFile('All.log', FWebBrowser.LocationURL);
-    end;
 
   // получаем коллекцию - конейнер спускаясь по дереву DOM
   for Node in aNodes do
@@ -222,6 +227,9 @@ begin
       iCollection:=iCollection.Tags(Node.Tag) as IHTMLElementCollection;
 
       iElement:=GetHTMLElementByRuleNode(Node, iCollection);
+
+      // не найден элемент - генерируем исключение
+      if iElement=nil then raise ENoElementFind.Create(Node.ID);
 
       iCollection:=iElement.Children as IHTMLElementCollection;
     end;
@@ -235,11 +243,6 @@ begin
         begin
           Node:=aNodes[i];
           SubElements:=[];
-          if IsDebug then
-            begin
-              TFilesEngine.AppendToFile('GetNodes.log', '');
-              TFilesEngine.AppendToFile('GetNodes.log', 'RULE: ' + Node.Tag + ' ' + Node.TagID + ' ' + Node.ClassName);
-            end;
           for j := 0 to Length(Elements)-1 do
             begin
               iCollection:=Elements[j].Children as IHTMLElementCollection;
@@ -250,10 +253,7 @@ begin
                   iElement:=GetHTMLElementByRuleNode(Node, iCollection, False);
                   if iElement<>nil then
                     if i<Length(aNodes) - 1 then
-                      begin
-                        SubElements:=SubElements+[iElement];
-                        if IsDebug then TFilesEngine.AppendToFile('GetNodes.log', iElement.tagName +' ' + iElement.id+ ' ' +VTS(iElement.getAttribute('className', 0)));
-                      end
+                      SubElements:=SubElements+[iElement]
                     else Result := Result + [iElement];
                 end;
             end;
@@ -273,12 +273,16 @@ var
   Link: string;
   i: Integer;
 begin
-try  // links
+  // links
   JobLinksRules:=FJob.GetLinksRulesByLevel(FCurrLink.Level);
   if Assigned(JobLinksRules) then
     for JobLinkRule in JobLinksRules do
       begin
-        HTMLElements:=GetHTMLElementsByRuleNodes(aDocument, JobLinkRule.Nodes, JobLinkRule.ContainerOffset);
+        try
+          HTMLElements:=GetHTMLElementsByRuleNodes(aDocument, JobLinkRule.Nodes, JobLinkRule.ContainerOffset);
+        except
+          On E : ENoElementFind do OnNoElementFind(E, JobLinkRule.CriticalType);
+        end;
 
         for iElement in HTMLElements do
           if iElement.getAttribute('href', 0)<>null then
@@ -294,7 +298,11 @@ try  // links
   if Assigned(JobRecordsRules) then
     for JobRecordRule in JobRecordsRules do
       begin
-        HTMLElements:=GetHTMLElementsByRuleNodes(aDocument, JobRecordRule.Nodes, JobRecordRule.ContainerOffset);
+        try
+          HTMLElements:=GetHTMLElementsByRuleNodes(aDocument, JobRecordRule.Nodes, JobRecordRule.ContainerOffset);
+        except
+          On E : ENoElementFind do OnNoElementFind(E, JobRecordRule.CriticalType);
+        end;
 
         i:=0;
         for iElement in HTMLElements do
@@ -305,9 +313,6 @@ try  // links
       end;
 
   ProcessNextLink;
-except
-  Abort;
-end;
 end;
 
 procedure TPIAModel.WebBrowserDocumentComplete(ASender: TObject; const pDisp: IDispatch; const URL: OleVariant);

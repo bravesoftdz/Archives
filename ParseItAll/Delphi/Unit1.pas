@@ -8,15 +8,14 @@ uses
   ,API_DBases, Vcl.Grids, Vcl.DBGrids, FireDAC.Stan.Intf, FireDAC.Stan.Option,
   FireDAC.Stan.Param, FireDAC.Stan.Error, FireDAC.DatS, FireDAC.Phys.Intf,
   FireDAC.DApt.Intf, FireDAC.Stan.Async, FireDAC.DApt, Data.DB,
-  FireDAC.Comp.DataSet, FireDAC.Comp.Client, Vcl.DBCtrls, Vcl.ExtCtrls;
+  FireDAC.Comp.DataSet, FireDAC.Comp.Client, Vcl.DBCtrls, Vcl.ExtCtrls,
+  Vcl.ComCtrls;
 
 type
   TForm1 = class(TForm)
     btnStartJob: TButton;
     dbgrdJobs: TDBGrid;
     dbgrdLevels: TDBGrid;
-    dbgrdLinks: TDBGrid;
-    dbgrdRecords: TDBGrid;
     dbgrdNodes: TDBGrid;
     fdtblJobs: TFDTable;
     dsJobs: TDataSource;
@@ -31,10 +30,8 @@ type
     bvl1: TBevel;
     fdtblRules: TFDTable;
     dsRules: TDataSource;
-    lblLinks: TLabel;
     fdtblLink: TFDTable;
     dslink: TDataSource;
-    lblRecords: TLabel;
     fdtblRecord: TFDTable;
     dsRecord: TDataSource;
     lblNodes: TLabel;
@@ -42,10 +39,15 @@ type
     fdtblNodes: TFDTable;
     mmo1: TMemo;
     btnParseNodes: TButton;
-    dbgrdRegExps: TDBGrid;
     dsRegExps: TDataSource;
     fdtblRegExps: TFDTable;
-    lblRegExps: TLabel;
+    pgcRulesSlaves: TPageControl;
+    tsLink: TTabSheet;
+    dbgrdLinks: TDBGrid;
+    tsRecord: TTabSheet;
+    dbgrdRecords: TDBGrid;
+    tsRegExp: TTabSheet;
+    dbgrdRegExps: TDBGrid;
     procedure btnStartJobClick(Sender: TObject);
     procedure FormCreate(Sender: TObject);
     procedure btnParseNodesClick(Sender: TObject);

@@ -8,6 +8,7 @@ uses
 
 type
   TJobNode = record
+    ID: integer;
     Tag: string;
     Index: integer;
     TagID: string;
@@ -25,13 +26,19 @@ type
 
   TJobRule = class abstract (TObject)
   private
+    FID: Integer;
+    FDescription: string;
     FNodes: TJobNodes;
     FRegExps: TJobRegExps;
+    FCriticalType: Integer;
     FContainerOffset: Integer;
   public
     constructor Create(aRuleID: integer; aMySQLEngine: TMySQLEngine); virtual;
+    property ID: Integer read FID;
+    property Description: string read FDescription;
     property Nodes: TJobNodes read FNodes;
     property RegExps: TJobRegExps read FRegExps;
+    property CriticalType: Integer read FCriticalType;
     property ContainerOffset: Integer read FContainerOffset;
   end;
 
@@ -64,20 +71,20 @@ type
   TJobLevels = TArray<TJobLevel>;
 
   TJob = class
-    FId: Integer;
+    FID: Integer;
     FZeroLink: string;
     FLevels: TJobLevels;
   public
     constructor Create(aJobID: integer; aMySQLEngine: TMySQLEngine);
     function GetLinksRulesByLevel(aLevel: integer): TJobLinksRules;
     function GetRecordsRulesByLevel(aLevel: integer): TJobRecordsRules;
-    property Id: Integer read FId;
+    property ID: Integer read FID;
     property ZeroLink: string read FZeroLink;
     property Levels: TJobLevels read FLevels;
   end;
 
   TCurrLink = record
-    Id: Integer;
+    ID: Integer;
     Link: string;
     Level: Integer;
   end;
@@ -135,6 +142,9 @@ begin
     dsRule.SQL.Text:='select * from job_rules where id=:ID';
     dsRule.ParamByName('ID').AsInteger:=aRuleID;
     aMySQLEngine.OpenQuery(dsRule);
+    FID:=dsRule.FieldByName('Id').AsInteger;
+    FDescription:=dsRule.FieldByName('description').AsString;
+    FCriticalType:=dsRule.FieldByName('critical_type').AsInteger;
     FContainerOffset:=dsRule.FieldByName('container_offset').AsInteger;
 
     FNodes:=[];
@@ -143,6 +153,7 @@ begin
     aMySQLEngine.OpenQuery(dsNodes);
     while not dsNodes.EOF do
       begin
+        Node.ID:=dsNodes.FieldByName('Id').AsInteger;
         Node.Tag:=dsNodes.FieldByName('tag').AsString;
         Node.Index:=dsNodes.FieldByName('index').AsInteger;
         Node.TagID:=dsNodes.FieldByName('tag_id').AsString;

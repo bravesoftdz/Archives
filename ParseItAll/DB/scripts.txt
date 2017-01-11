@@ -1,0 +1,2 @@
+# удалить все ссылки задания TripAdvisor
+delete from links where job_id=4

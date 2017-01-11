@@ -17,6 +17,7 @@ type
     function AddLink(aLink: string; aLevel: Integer): Integer;
     procedure SetLinkHandle(aLinkID: Integer; aValue: Integer);
     procedure AddRecord(aLinkId, aRecordNum: integer; aKey, aValue: string);
+    procedure AddJobMessage(aLinkId, aJobNodeId: integer);
     constructor Create(aJobID: Integer; aMySQLEngine: TMySQLEngine);
   end;
 
@@ -24,6 +25,25 @@ implementation
 
 uses
   FireDAC.Comp.Client;
+
+procedure TPIADBService.AddJobMessage(aLinkId, aJobNodeId: integer);
+var
+  dsQuery: TFDQuery;
+  sql: string;
+begin
+  dsQuery:=TFDQuery.Create(nil);
+  try
+    sql:='insert into job_messages set';
+    sql:=sql+' link_id=:link_id';
+    sql:=sql+',job_node_id=:job_node_id';
+    dsQuery.SQL.Text:=sql;
+    dsQuery.ParamByName('link_id').AsInteger:=aLinkId;
+    dsQuery.ParamByName('job_node_id').AsInteger:=aJobNodeId;
+    FMySQLEngine.ExecQuery(dsQuery);
+  finally
+    dsQuery.Free;
+  end;
+end;
 
 procedure TPIADBService.AddRecord(aLinkId, aRecordNum: Integer; aKey: string; aValue: string);
 var

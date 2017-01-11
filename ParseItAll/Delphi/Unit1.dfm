@@ -2,7 +2,7 @@ object Form1: TForm1
   Left = 0
   Top = 0
   Caption = 'Parse It All!'
-  ClientHeight = 488
+  ClientHeight = 500
   ClientWidth = 721
   Color = clBtnFace
   Font.Charset = DEFAULT_CHARSET
@@ -50,37 +50,16 @@ object Form1: TForm1
     Height = 1
     Style = bsRaised
   end
-  object lblLinks: TLabel
-    Left = 152
-    Top = 110
-    Width = 18
-    Height = 13
-    Caption = 'Link'
-  end
-  object lblRecords: TLabel
-    Left = 286
-    Top = 110
-    Width = 34
-    Height = 13
-    Caption = 'Record'
-  end
   object lblNodes: TLabel
     Left = 8
-    Top = 250
+    Top = 266
     Width = 30
     Height = 13
     Caption = 'Nodes'
   end
-  object lblRegExps: TLabel
-    Left = 450
-    Top = 110
-    Width = 42
-    Height = 13
-    Caption = 'RegExps'
-  end
   object btnStartJob: TButton
     Left = 8
-    Top = 456
+    Top = 472
     Width = 75
     Height = 25
     Caption = 'btnStartJob'
@@ -129,55 +108,13 @@ object Form1: TForm1
         Visible = True
       end>
   end
-  object dbgrdLinks: TDBGrid
-    Left = 152
-    Top = 127
-    Width = 127
-    Height = 120
-    DataSource = dslink
-    TabOrder = 3
-    TitleFont.Charset = DEFAULT_CHARSET
-    TitleFont.Color = clWindowText
-    TitleFont.Height = -11
-    TitleFont.Name = 'Tahoma'
-    TitleFont.Style = []
-    Columns = <
-      item
-        Expanded = False
-        FieldName = 'level'
-        Title.Alignment = taCenter
-        Width = 70
-        Visible = True
-      end>
-  end
-  object dbgrdRecords: TDBGrid
-    Left = 286
-    Top = 127
-    Width = 154
-    Height = 120
-    DataSource = dsRecord
-    TabOrder = 4
-    TitleFont.Charset = DEFAULT_CHARSET
-    TitleFont.Color = clWindowText
-    TitleFont.Height = -11
-    TitleFont.Name = 'Tahoma'
-    TitleFont.Style = []
-    Columns = <
-      item
-        Expanded = False
-        FieldName = 'key'
-        Title.Alignment = taCenter
-        Width = 110
-        Visible = True
-      end>
-  end
   object dbgrdNodes: TDBGrid
     Left = 8
-    Top = 265
+    Top = 281
     Width = 432
     Height = 185
     DataSource = dsNodes
-    TabOrder = 5
+    TabOrder = 3
     TitleFont.Charset = DEFAULT_CHARSET
     TitleFont.Color = clWindowText
     TitleFont.Height = -11
@@ -227,15 +164,15 @@ object Form1: TForm1
     Height = 81
     DataField = 'zero_link'
     DataSource = dsJobs
-    TabOrder = 6
+    TabOrder = 4
   end
   object dbgrdRules: TDBGrid
     Left = 8
     Top = 127
-    Width = 137
+    Width = 402
     Height = 120
     DataSource = dsRules
-    TabOrder = 7
+    TabOrder = 5
     TitleFont.Charset = DEFAULT_CHARSET
     TitleFont.Color = clWindowText
     TitleFont.Height = -11
@@ -244,7 +181,21 @@ object Form1: TForm1
     Columns = <
       item
         Expanded = False
+        FieldName = 'description'
+        Title.Alignment = taCenter
+        Width = 160
+        Visible = True
+      end
+      item
+        Expanded = False
         FieldName = 'container_offset'
+        Title.Alignment = taCenter
+        Width = 100
+        Visible = True
+      end
+      item
+        Expanded = False
+        FieldName = 'critical_type'
         Title.Alignment = taCenter
         Width = 100
         Visible = True
@@ -252,40 +203,105 @@ object Form1: TForm1
   end
   object mmo1: TMemo
     Left = 450
-    Top = 265
+    Top = 281
     Width = 260
     Height = 185
-    TabOrder = 8
+    TabOrder = 6
   end
   object btnParseNodes: TButton
     Left = 537
-    Top = 456
+    Top = 472
     Width = 94
     Height = 25
     Caption = 'btnParseNodes'
-    TabOrder = 9
+    TabOrder = 7
     OnClick = btnParseNodesClick
   end
-  object dbgrdRegExps: TDBGrid
-    Left = 450
-    Top = 127
-    Width = 263
-    Height = 120
-    DataSource = dsRegExps
-    TabOrder = 10
-    TitleFont.Charset = DEFAULT_CHARSET
-    TitleFont.Color = clWindowText
-    TitleFont.Height = -11
-    TitleFont.Name = 'Tahoma'
-    TitleFont.Style = []
-    Columns = <
-      item
-        Expanded = False
-        FieldName = 'regexp'
-        Title.Alignment = taCenter
-        Width = 220
-        Visible = True
-      end>
+  object pgcRulesSlaves: TPageControl
+    Left = 416
+    Top = 108
+    Width = 297
+    Height = 167
+    ActivePage = tsLink
+    TabOrder = 8
+    object tsLink: TTabSheet
+      Caption = 'tsLink'
+      ExplicitTop = -24
+      ExplicitHeight = 165
+      object dbgrdLinks: TDBGrid
+        Left = 32
+        Top = 8
+        Width = 127
+        Height = 120
+        DataSource = dslink
+        TabOrder = 0
+        TitleFont.Charset = DEFAULT_CHARSET
+        TitleFont.Color = clWindowText
+        TitleFont.Height = -11
+        TitleFont.Name = 'Tahoma'
+        TitleFont.Style = []
+        Columns = <
+          item
+            Expanded = False
+            FieldName = 'level'
+            Title.Alignment = taCenter
+            Width = 70
+            Visible = True
+          end>
+      end
+    end
+    object tsRecord: TTabSheet
+      Caption = 'tsRecord'
+      ImageIndex = 1
+      ExplicitHeight = 165
+      object dbgrdRecords: TDBGrid
+        Left = 30
+        Top = 8
+        Width = 154
+        Height = 120
+        DataSource = dsRecord
+        TabOrder = 0
+        TitleFont.Charset = DEFAULT_CHARSET
+        TitleFont.Color = clWindowText
+        TitleFont.Height = -11
+        TitleFont.Name = 'Tahoma'
+        TitleFont.Style = []
+        Columns = <
+          item
+            Expanded = False
+            FieldName = 'key'
+            Title.Alignment = taCenter
+            Width = 110
+            Visible = True
+          end>
+      end
+    end
+    object tsRegExp: TTabSheet
+      Caption = 'tsRegExp'
+      ImageIndex = 2
+      ExplicitHeight = 165
+      object dbgrdRegExps: TDBGrid
+        Left = 14
+        Top = 10
+        Width = 263
+        Height = 120
+        DataSource = dsRegExps
+        TabOrder = 0
+        TitleFont.Charset = DEFAULT_CHARSET
+        TitleFont.Color = clWindowText
+        TitleFont.Height = -11
+        TitleFont.Name = 'Tahoma'
+        TitleFont.Style = []
+        Columns = <
+          item
+            Expanded = False
+            FieldName = 'regexp'
+            Title.Alignment = taCenter
+            Width = 220
+            Visible = True
+          end>
+      end
+    end
   end
   object fdtblJobs: TFDTable
     UpdateOptions.UpdateTableName = 'jobs'
@@ -326,48 +342,48 @@ object Form1: TForm1
     IndexName = 'job_rule_id'
     MasterSource = dsRules
     MasterFields = 'id'
-    Left = 224
-    Top = 176
+    Left = 552
+    Top = 120
   end
   object dslink: TDataSource
     DataSet = fdtblLink
-    Left = 176
+    Left = 552
     Top = 176
   end
   object fdtblRecord: TFDTable
     IndexName = 'job_rule_id'
     MasterSource = dsRules
     MasterFields = 'id'
-    Left = 368
-    Top = 176
+    Left = 608
+    Top = 120
   end
   object dsRecord: TDataSource
     DataSet = fdtblRecord
-    Left = 304
+    Left = 608
     Top = 176
   end
   object dsNodes: TDataSource
     DataSet = fdtblNodes
     Left = 40
-    Top = 352
+    Top = 368
   end
   object fdtblNodes: TFDTable
     IndexName = 'job_rule_id'
     MasterSource = dsRules
     MasterFields = 'id'
     Left = 96
-    Top = 352
+    Top = 368
   end
   object dsRegExps: TDataSource
     DataSet = fdtblRegExps
-    Left = 528
+    Left = 672
     Top = 176
   end
   object fdtblRegExps: TFDTable
     IndexName = 'job_rule_id'
     MasterSource = dsRules
     MasterFields = 'id'
-    Left = 608
-    Top = 176
+    Left = 672
+    Top = 120
   end
 end
