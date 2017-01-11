@@ -174,9 +174,18 @@ begin
 end;
 
 function TPIAModel.GetElementOfCollectionByIndex(aNode: TJobNode; iCollection: IHTMLElementCollection; out aMatches: TMatches): IHTMLElement;
+var
+  i: integer;
 begin
   Result:=iCollection.Item(aNode.Index-1, 0) as IHTMLElement;
   aMatches:=CheckNodeMatches(aNode, Result);
+
+  if Result=nil then
+    begin
+      TFilesEngine.SaveTextToFile('1.txt', '');
+      for i :=0 to iCollection.length-1 do
+      TFilesEngine.AppendToFile('1.txt', (iCollection.item(i, 0) as IHTMLElement).outerHTML);
+    end;
 end;
 
 function TPIAModel.GetHTMLElementsByRuleNodes(aDocument: IHTMLDocument2; aNodes: TJobNodes; aContainerOffset: Integer; IsDebug: Boolean = False): THTMLElements;
@@ -197,7 +206,11 @@ begin
   Result:=[];
   iCollection:=aDocument.All as IHTMLElementCollection;
   IsDebug:=True;
-  if IsDebug then TFilesEngine.SaveTextToFile('GetNodes.log', '');
+  if IsDebug then
+    begin
+      TFilesEngine.SaveTextToFile('GetNodes.log', '');
+      TFilesEngine.SaveTextToFile('All.log', FWebBrowser.LocationURL);
+    end;
 
   // получаем коллекцию - конейнер спускаясь по дереву DOM
   for Node in aNodes do
@@ -260,7 +273,7 @@ var
   Link: string;
   i: Integer;
 begin
-  // links
+try  // links
   JobLinksRules:=FJob.GetLinksRulesByLevel(FCurrLink.Level);
   if Assigned(JobLinksRules) then
     for JobLinkRule in JobLinksRules do
@@ -292,11 +305,15 @@ begin
       end;
 
   ProcessNextLink;
+except
+  Abort;
+end;
 end;
 
 procedure TPIAModel.WebBrowserDocumentComplete(ASender: TObject; const pDisp: IDispatch; const URL: OleVariant);
 begin
-  ProcessDOM(FWebBrowser.Document as IHtmlDocument2);
+  if URL=FCurrLink.Link then
+    ProcessDOM(FWebBrowser.Document as IHtmlDocument2);
 end;
 
 procedure TPIAModel.WebBrowserInit;
