@@ -320,12 +320,15 @@ var
   iDocument: IHtmlDocument2;
 begin
   try
-    iDocument:=FWebBrowser.ControlInterface.Document as IHtmlDocument2;
     if URL=FCurrLink.Link then
-      ProcessDOM(iDocument);
+      begin
+        if Assigned(FWebBrowser.ControlInterface.Document) then
+          FWebBrowser.ControlInterface.Document.QueryInterface(IHtmlDocument2, iDocument);
+        ProcessDOM(iDocument);
+      end;
   finally
-    iDocument.Close;
-    iDocument._Release;
+    //iDocument.Close;
+    //iDocument._Release;
   end;
 end;
 
@@ -334,6 +337,7 @@ begin
   FForm:=TForm.Create(nil);
   FWebBrowser:=TWebBrowser.Create(FForm);
   TWinControl(FWebBrowser).Parent:=FForm;
+  FWebBrowser.Silent:=True;
   FWebBrowser.OnDocumentComplete:=WebBrowserDocumentComplete;
 
   FForm.Height:=600;
@@ -344,7 +348,7 @@ end;
 
 procedure TPIAModel.GetDocumentByCurrLink;
 begin
-  FWebBrowser.Navigate(FCurrLink.Link);
+  FWebBrowser.Navigate2(FCurrLink.Link);
 end;
 
 procedure TPIAModel.ProcessNextLink;
