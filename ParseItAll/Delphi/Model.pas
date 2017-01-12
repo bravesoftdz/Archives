@@ -316,9 +316,17 @@ begin
 end;
 
 procedure TPIAModel.WebBrowserDocumentComplete(ASender: TObject; const pDisp: IDispatch; const URL: OleVariant);
+var
+  iDocument: IHtmlDocument2;
 begin
-  if URL=FCurrLink.Link then
-    ProcessDOM(FWebBrowser.Document as IHtmlDocument2);
+  try
+    iDocument:=FWebBrowser.ControlInterface.Document as IHtmlDocument2;
+    if URL=FCurrLink.Link then
+      ProcessDOM(iDocument);
+  finally
+    iDocument.Close;
+    iDocument._Release;
+  end;
 end;
 
 procedure TPIAModel.WebBrowserInit;
