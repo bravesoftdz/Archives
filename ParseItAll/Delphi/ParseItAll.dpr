@@ -8,11 +8,15 @@ uses
   Entities in 'Entities.pas',
   Model in 'Model.pas',
   DBService in 'DBService.pas',
-  API_Parse in '..\..\..\Libraries\Delphi\API_Parse.pas';
+  API_Parse in '..\..\..\Libraries\Delphi\API_Parse.pas',
+  ceflib;
 
 {$R *.res}
 
 begin
+  CefSingleProcess := False;
+  if not CefLoadLibDefault then
+    Exit;
   Application.Initialize;
   Application.MainFormOnTaskbar := True;
   Application.CreateForm(TForm1, Form1);

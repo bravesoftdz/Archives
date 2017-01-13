@@ -7,6 +7,8 @@ uses
   ,Vcl.Forms
   ,SHDocVw
   ,MSHTML
+  ,cefvcl
+  ,CefLib
   ,API_DBases
   ,Entities
   ,DBService;
@@ -33,14 +35,18 @@ type
     FMySQLEngine: TMySQLEngine;
     FDBService: TPIADBService;
     FWebBrowser: TWebBrowser;
+    FChromium: TChromium;
     FForm: TForm;
     FJob: TJob;
     FCurrLink: TCurrLink;
     procedure WebBrowserInit;
+    procedure ChromiumInit;
     procedure ProcessNextLink;
     procedure GetDocumentByCurrLink;
     procedure WebBrowserDocumentComplete(ASender: TObject; const pDisp: IDispatch; const URL: OleVariant);
-    procedure ProcessDOM(aDocument: IHTMLDocument2);
+    procedure ChromiumLoadEnd(Sender: TObject; const browser: ICefBrowser; const frame: ICefFrame; httpStatusCode: Integer);
+    procedure ProcessDOM(aDocument: IHTMLDocument2); overload;
+    procedure ProcessDOM(aDocument: ICefDomDocument); overload;
     procedure OnNoElementFind(E: ENoElementFind; aCriticalType: Integer);
     function GetHTMLElementsByRuleNodes(aDocument: IHTMLDocument2; aNodes: TJobNodes; aContainerOffset: Integer): THTMLElements;
     function GetElementOfCollectionByIndex(aNode: TJobNode; iCollection: IHTMLElementCollection; out aMatches: TMatches): IHTMLElement;
@@ -61,6 +67,21 @@ uses
    Variants
   ,Vcl.Controls
   ,API_Parse;
+
+procedure TPIAModel.ProcessDOM(aDocument: ICefDomDocument);
+begin
+
+end;
+
+procedure TPIAModel.ChromiumLoadEnd(Sender: TObject; const browser: ICefBrowser; const frame: ICefFrame; httpStatusCode: Integer);
+begin
+  if Assigned(frame) and frame.IsMain then browser.MainFrame.VisitDomProc(
+    procedure(const document: ICefDomDocument)
+      begin
+        ProcessDOM(document);
+      end
+  );
+end;
 
 procedure TPIAModel.OnNoElementFind(E: ENoElementFind; aCriticalType: Integer);
 begin
@@ -332,6 +353,19 @@ begin
   end;
 end;
 
+procedure TPIAModel.ChromiumInit;
+begin
+  FForm:=TForm.Create(nil);
+  FChromium:=TChromium.Create(nil);
+  FChromium.Parent:=FForm;
+  FChromium.OnLoadEnd:=ChromiumLoadEnd;
+
+  FForm.Height:=600;
+  FForm.Width:=800;
+  FChromium.Align:=alClient;
+  FForm.Show;
+end;
+
 procedure TPIAModel.WebBrowserInit;
 begin
   FForm:=TForm.Create(nil);
@@ -348,7 +382,8 @@ end;
 
 procedure TPIAModel.GetDocumentByCurrLink;
 begin
-  FWebBrowser.Navigate2(FCurrLink.Link);
+  //FWebBrowser.Navigate2(FCurrLink.Link);
+  FChromium.Load(FCurrLink.Link);
 end;
 
 procedure TPIAModel.ProcessNextLink;
@@ -375,7 +410,8 @@ begin
   FDBService:=TPIADBService.Create(aJobID, FMySQLEngine);
 
   // инициализация веббраузера
-  WebBrowserInit;
+  //WebBrowserInit;
+  ChromiumInit;
 
   // инициализация первого запуска парсера
   if FDBService.CheckFirstRun then FDBService.AddLink(FJob.ZeroLink, 1);
