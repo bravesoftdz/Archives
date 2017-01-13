@@ -75,12 +75,9 @@ end;
 
 procedure TPIAModel.ChromiumLoadEnd(Sender: TObject; const browser: ICefBrowser; const frame: ICefFrame; httpStatusCode: Integer);
 begin
-  if Assigned(frame) and frame.IsMain then browser.MainFrame.VisitDomProc(
-    procedure(const document: ICefDomDocument)
-      begin
-        ProcessDOM(document);
-      end
-  );
+  if FChromium.Browser<>nil then
+    if frame.Url = FCurrLink.Link then
+      frame.ExecuteJavaScript('alert(1)', 'about:blank', 0);
 end;
 
 procedure TPIAModel.OnNoElementFind(E: ENoElementFind; aCriticalType: Integer);
