@@ -9,7 +9,7 @@ uses
   FireDAC.Stan.Param, FireDAC.Stan.Error, FireDAC.DatS, FireDAC.Phys.Intf,
   FireDAC.DApt.Intf, FireDAC.Stan.Async, FireDAC.DApt, Data.DB,
   FireDAC.Comp.DataSet, FireDAC.Comp.Client, Vcl.DBCtrls, Vcl.ExtCtrls,
-  Vcl.ComCtrls, cefvcl;
+  Vcl.ComCtrls, Model;
 
 type
   TForm1 = class(TForm)
@@ -48,6 +48,10 @@ type
     dbgrdRecords: TDBGrid;
     tsRegExp: TTabSheet;
     dbgrdRegExps: TDBGrid;
+    dbgrd1: TDBGrid;
+    lblGroups: TLabel;
+    fdtblGroups: TFDTable;
+    dsGroups: TDataSource;
     procedure btnStartJobClick(Sender: TObject);
     procedure FormCreate(Sender: TObject);
     procedure btnParseNodesClick(Sender: TObject);
@@ -65,8 +69,7 @@ implementation
 
 {$R *.dfm}
 uses
-   Model
-  ,System.JSON;
+  System.JSON;
 
 procedure TForm1.btnParseNodesClick(Sender: TObject);
 var
@@ -123,6 +126,7 @@ begin
   fdtblJobs.Connection:=FMySQLEngine.Connection;
   fdtblLevels.Connection:=FMySQLEngine.Connection;
   fdtblRules.Connection:=FMySQLEngine.Connection;
+  fdtblGroups.Connection:=FMySQLEngine.Connection;
   fdtblLink.Connection:=FMySQLEngine.Connection;
   fdtblRecord.Connection:=FMySQLEngine.Connection;
   fdtblNodes.Connection:=FMySQLEngine.Connection;
@@ -130,6 +134,7 @@ begin
 
   fdtblJobs.Open('jobs');
   fdtblLevels.Open('job_levels');
+  fdtblGroups.Open('job_groups');
   fdtblRules.Open('job_rules');
   fdtblLink.Open('job_rule_links');
   fdtblRecord.Open('job_rule_records');

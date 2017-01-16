@@ -9,16 +9,19 @@ uses
   Model in 'Model.pas',
   DBService in 'DBService.pas',
   API_Parse in '..\..\..\Libraries\Delphi\API_Parse.pas',
-  ceflib;
+  ceflib,
+  main in '..\..\..\Vendors\Chromium-dcef3\demos\guiclient\main.pas' {MainForm};
 
 {$R *.res}
 
 begin
+  CefCache := 'cache';
   CefSingleProcess := False;
   if not CefLoadLibDefault then
     Exit;
+
   Application.Initialize;
-  Application.MainFormOnTaskbar := True;
   Application.CreateForm(TForm1, Form1);
+  Application.CreateForm(TMainForm, MainForm);
   Application.Run;
 end.

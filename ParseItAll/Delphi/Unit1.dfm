@@ -37,8 +37,8 @@ object Form1: TForm1
     Caption = 'Levels'
   end
   object lblRules: TLabel
-    Left = 8
-    Top = 110
+    Left = 112
+    Top = 109
     Width = 26
     Height = 13
     Caption = 'Rules'
@@ -51,11 +51,18 @@ object Form1: TForm1
     Style = bsRaised
   end
   object lblNodes: TLabel
-    Left = 8
-    Top = 266
+    Left = 11
+    Top = 280
     Width = 30
     Height = 13
     Caption = 'Nodes'
+  end
+  object lblGroups: TLabel
+    Left = 11
+    Top = 109
+    Width = 34
+    Height = 13
+    Caption = 'Groups'
   end
   object btnStartJob: TButton
     Left = 8
@@ -110,9 +117,9 @@ object Form1: TForm1
   end
   object dbgrdNodes: TDBGrid
     Left = 8
-    Top = 281
+    Top = 295
     Width = 432
-    Height = 185
+    Height = 171
     DataSource = dsNodes
     TabOrder = 3
     TitleFont.Charset = DEFAULT_CHARSET
@@ -167,10 +174,10 @@ object Form1: TForm1
     TabOrder = 4
   end
   object dbgrdRules: TDBGrid
-    Left = 8
-    Top = 127
-    Width = 402
-    Height = 120
+    Left = 111
+    Top = 124
+    Width = 300
+    Height = 151
     DataSource = dsRules
     TabOrder = 5
     TitleFont.Charset = DEFAULT_CHARSET
@@ -203,9 +210,9 @@ object Form1: TForm1
   end
   object mmo1: TMemo
     Left = 450
-    Top = 281
+    Top = 295
     Width = 260
-    Height = 185
+    Height = 171
     TabOrder = 6
   end
   object btnParseNodes: TButton
@@ -299,6 +306,19 @@ object Form1: TForm1
       end
     end
   end
+  object dbgrd1: TDBGrid
+    Left = 8
+    Top = 124
+    Width = 97
+    Height = 151
+    DataSource = dsGroups
+    TabOrder = 9
+    TitleFont.Charset = DEFAULT_CHARSET
+    TitleFont.Color = clWindowText
+    TitleFont.Height = -11
+    TitleFont.Name = 'Tahoma'
+    TitleFont.Style = []
+  end
   object fdtblJobs: TFDTable
     UpdateOptions.UpdateTableName = 'jobs'
     TableName = 'jobs'
@@ -323,15 +343,15 @@ object Form1: TForm1
     Top = 48
   end
   object fdtblRules: TFDTable
-    IndexName = 'job_level_id'
-    MasterSource = dsLevels
+    IndexName = 'group_id'
+    MasterSource = dsGroups
     MasterFields = 'id'
-    Left = 64
+    Left = 240
     Top = 176
   end
   object dsRules: TDataSource
     DataSet = fdtblRules
-    Left = 16
+    Left = 184
     Top = 176
   end
   object fdtblLink: TFDTable
@@ -381,5 +401,17 @@ object Form1: TForm1
     MasterFields = 'id'
     Left = 672
     Top = 120
+  end
+  object fdtblGroups: TFDTable
+    IndexName = 'job_level_id'
+    MasterSource = dsLevels
+    MasterFields = 'id'
+    Left = 40
+    Top = 168
+  end
+  object dsGroups: TDataSource
+    DataSet = fdtblGroups
+    Left = 40
+    Top = 224
   end
 end
