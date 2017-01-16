@@ -4,7 +4,6 @@ interface
 
 uses
    System.Generics.Collections
-  ,System.JSON
   ,API_DBases;
 
 type
@@ -34,8 +33,8 @@ type
     FCriticalType: Integer;
     FContainerOffset: Integer;
   public
-    function EncodeRuleToJSON: TJSONObject;
     constructor Create(aRuleID: integer; aMySQLEngine: TMySQLEngine); virtual;
+    function GetContainerInsideNodes: TJobNodes;
     property ID: Integer read FID;
     property Description: string read FDescription;
     property Nodes: TJobNodes read FNodes;
@@ -67,6 +66,7 @@ type
   TJobRulesGroup = record
     JobLinksRules: TJobLinksRules;
     JobRecordsRules: TJobRecordsRules;
+    function GetContainerNodes: TJobNodes;
   end;
 
   TJobRulesGroups = TArray<TJobRulesGroup>;
@@ -84,8 +84,7 @@ type
     FLevels: TJobLevels;
   public
     constructor Create(aJobID: integer; aMySQLEngine: TMySQLEngine);
-    function GetLinksRulesByLevel(aLevel: integer): TJobLinksRules;
-    function GetRecordsRulesByLevel(aLevel: integer): TJobRecordsRules;
+    function GetRulesGroupsByLevel(aLevel: integer): TJobRulesGroups;
     property ID: Integer read FID;
     property ZeroLink: string read FZeroLink;
     property Levels: TJobLevels read FLevels;
@@ -103,28 +102,23 @@ uses
    FireDAC.Comp.Client
   ,API_Parse;
 
-function TJobRule.EncodeRuleToJSON: TJSONObject;
-var
-  jsnNodes: TJSONArray;
-  jsnNode: TJSONObject;
-  Node: TJobNode;
+function TJobRule.GetContainerInsideNodes: TJobNodes;
 begin
-  jsnNodes:=TJSONArray.Create;
-  for Node in FNodes do
-    begin
-      jsnNode:=TJSONObject.Create;
-      jsnNode.AddPair('ID', TJSONNumber.Create(Node.ID));
-      jsnNode.AddPair('tag', Node.Tag);
-      jsnNode.AddPair('index', TJSONNumber.Create(Node.Index));
-      jsnNode.AddPair('tagID', Node.TagID);
-      jsnNode.AddPair('className', Node.ClassName);
-      jsnNode.AddPair('name', Node.Name);
-      jsnNodes.AddElement(jsnNode);
-    end;
+  Result:=Copy(FNodes, Length(FNodes)-FContainerOffset, Length(FNodes));
+end;
 
-  Result:=TJSONObject.Create;
-  Result.AddPair('offset', TJSONNumber.Create(FContainerOffset));
-  Result.AddPair('nodes', jsnNodes);
+function TJobRulesGroup.GetContainerNodes: TJobNodes;
+var
+  i: integer;
+begin
+  Result:=[];
+  if JobLinksRules.Count>0 then
+    for i := 0 to Length(JobLinksRules[0].Nodes)-1-JobLinksRules[0].ContainerOffset do
+      Result:=Result+[JobLinksRules[0].Nodes[i]];
+
+  if (Length(Result)=0) and (JobRecordsRules.Count>0) then
+    for i := 0 to Length(JobRecordsRules[0].Nodes)-1-JobRecordsRules[0].ContainerOffset do
+      Result:=Result+[JobRecordsRules[0].Nodes[i]];
 end;
 
 constructor TJobRecordsRule.Create(aRuleID: integer; aMySQLEngine: TMySQLEngine);
@@ -214,30 +208,17 @@ begin
   end;
 end;
 
-function TJob.GetRecordsRulesByLevel(aLevel: integer): TJobRecordsRules;
+function TJob.GetRulesGroupsByLevel(aLevel: integer): TJobRulesGroups;
 var
   JobLevel: TJobLevel;
 begin
-  {Result:=nil;
+  Result:=[];
   for JobLevel in FLevels do
     if JobLevel.Level=aLevel then
       begin
-        Result:=JobLevel.JobRecordsRules;
+        Result:=JobLevel.JobRulesGroups;
         Break;
-      end;}
-end;
-
-function TJob.GetLinksRulesByLevel(aLevel: integer): TJobLinksRules;
-var
-  JobLevel: TJobLevel;
-begin
-  {Result:=nil;
-  for JobLevel in FLevels do
-    if JobLevel.Level=aLevel then
-      begin
-        Result:=JobLevel.JobLinksRules;
-        Break;
-      end; }
+      end;
 end;
 
 constructor TJob.Create(aJobID: Integer; aMySQLEngine: TMySQLEngine);
@@ -245,6 +226,7 @@ var
   dsJob, dsLevels, dsRules, dsGroups: TFDQuery;
   JobLevel: TJobLevel;
   JobRulesGroup: TJobRulesGroup;
+  JobRulesGroups: TJobRulesGroups;
   JobLinksRule: TJobLinksRule;
   JobRecordsRule: TJobRecordsRule;
   sql: string;
@@ -269,6 +251,7 @@ begin
     while not dsLevels.EOF do
       begin
         JobLevel.Level:=dsLevels.FieldByName('level').AsInteger;
+        JobLevel.JobRulesGroups:=[];
 
         sql:='select * from job_groups where job_level_id=:JobLevel order by id';
         dsGroups.Close;
@@ -277,40 +260,37 @@ begin
         aMySQLEngine.OpenQuery(dsGroups);
         while not dsGroups.EOF do
           begin
+            JobRulesGroup.JobLinksRules:=TJobLinksRules.Create;
+            JobRulesGroup.JobRecordsRules:=TJobRecordsRules.Create;
+
             sql:='select j.id, jl.id as jlid, jr.id as jrid from job_rules j';
             sql:=sql+' left join job_rule_links jl on jl.job_rule_id=j.id';
             sql:=sql+' left join job_rule_records jr on jr.job_rule_id=j.id';
-            sql:=sql+' where job_level_id=:JobLevel order by j.id';
+            sql:=sql+' where group_id=:GroupID order by j.id';
             dsRules.Close;
             dsRules.SQL.Text:=sql;
-            dsRules.ParamByName('JobLevel').AsInteger:=dsLevels.FieldByName('Id').AsInteger;
+            dsRules.ParamByName('GroupID').AsInteger:=dsGroups.FieldByName('Id').AsInteger;
             aMySQLEngine.OpenQuery(dsRules);
             while not dsRules.EOF do
               begin
                 if not dsRules.FieldByName('jlid').IsNull then
                   begin
                     JobLinksRule:=TJobLinksRule.Create(dsRules.FieldByName('Id').AsInteger, aMySQLEngine);
-                    JobLevel.JobLinksRules.Add(JobLinksRule);
+                    JobRulesGroup.JobLinksRules.Add(JobLinksRule);
                   end;
 
                 if not dsRules.FieldByName('jrid').IsNull then
                   begin
                     JobRecordsRule:=TJobRecordsRule.Create(dsRules.FieldByName('Id').AsInteger, aMySQLEngine);
-                    JobLevel.JobRecordsRules.Add(JobRecordsRule);
+                    JobRulesGroup.JobRecordsRules.Add(JobRecordsRule);
                   end;
 
                 dsRules.Next;
               end;
 
-
-
-
+            JobLevel.JobRulesGroups:=JobLevel.JobRulesGroups+[JobRulesGroup];
+            dsGroups.Next;
           end;
-
-
-        JobLevel.JobLinksRules:=TJobLinksRules.Create;
-        JobLevel.JobRecordsRules:=TJobRecordsRules.Create;
-
 
         Self.FLevels:=Self.FLevels + [JobLevel];
         dsLevels.Next;

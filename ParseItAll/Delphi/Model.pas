@@ -48,9 +48,8 @@ type
                 const message: ICefProcessMessage; out Result: Boolean);
     procedure InsertReceivedData(aData: string);
     procedure OnNoElementFind(E: ENoElementFind; aCriticalType: Integer);
-    function GetInjectJS(aEncodedRule: string): string;
-    function GetInjectJSForLink(aJobLinksRule: TJobLinksRule): string;
-    function GetInjectJSForRecord(aJobRecordsRule: TJobRecordsRule): string;
+    function GetInjectJSForRulesGroup(aJobRulesGroup: TJobRulesGroup): string;
+    function EncodeNodesToJSON(aNodes: TJobNodes): TJSONArray;
     function CheckRegExps(aValue: string; aRegExps: TJobRegExps): Boolean;
   public
     constructor Create(aJobID: integer);
@@ -63,6 +62,25 @@ uses
    Vcl.Controls
   ,API_Parse
   ,API_Files;
+
+function TPIAModel.EncodeNodesToJSON(aNodes: TJobNodes): TJSONArray;
+var
+  jsnNode: TJSONObject;
+  Node: TJobNode;
+begin
+  Result:=TJSONArray.Create;
+  for Node in aNodes do
+    begin
+      jsnNode:=TJSONObject.Create;
+      jsnNode.AddPair('ID', TJSONNumber.Create(Node.ID));
+      jsnNode.AddPair('tag', Node.Tag);
+      jsnNode.AddPair('index', TJSONNumber.Create(Node.Index));
+      jsnNode.AddPair('tagID', Node.TagID);
+      jsnNode.AddPair('className', Node.ClassName);
+      jsnNode.AddPair('name', Node.Name);
+      Result.AddElement(jsnNode);
+    end;
+end;
 
 procedure TPIAModel.InsertReceivedData(aData: string);
 var
@@ -109,57 +127,57 @@ begin
       InsertReceivedData(message.ArgumentList.GetString(0));
 end;
 
-function TPIAModel.GetInjectJS(aEncodedRule: string): string;
-begin
-  Result:='var rule =';
-  Result:=Result+aEncodedRule;
-  Result:=Result+';'#10#13;
-  Result:=Result+FjsScript;
-end;
-
-function TPIAModel.GetInjectJSForRecord(aJobRecordsRule: TJobRecordsRule): string;
+function TPIAModel.GetInjectJSForRulesGroup(aJobRulesGroup: TJobRulesGroup): string;
 var
+  JobLinksRule: TJobLinksRule;
+  JobRecordsRule: TJobRecordsRule;
+  jsnRuleGroup: TJSONObject;
+  jsnRules: TJSONArray;
   jsnRule: TJSONObject;
 begin
-  jsnRule:=aJobRecordsRule.EncodeRuleToJSON;
-  jsnRule.AddPair('ruletype', 'record');
-  jsnRule.AddPair('key', aJobRecordsRule.Key);
+  jsnRuleGroup:=TJSONObject.Create;
+  jsnRules:=TJSONArray.Create;
+  try
+    jsnRuleGroup.AddPair('nodes', EncodeNodesToJSON(aJobRulesGroup.GetContainerNodes));
 
-  Result:=GetInjectJS(jsnRule.ToJSON);
-end;
+    for JobLinksRule in aJobRulesGroup.JobLinksRules  do
+      begin
+        jsnRule:=TJSONObject.Create;
+        jsnRule.AddPair('level', TJSONNumber.Create(JobLinksRule.Level));
+        jsnRule.AddPair('nodes', EncodeNodesToJSON(JobLinksRule.GetContainerInsideNodes));
+        jsnRules.AddElement(jsnRule);
+      end;
 
-function TPIAModel.GetInjectJSForLink(aJobLinksRule: TJobLinksRule): string;
-var
-  jsnRule: TJSONObject;
-begin
-  jsnRule:=aJobLinksRule.EncodeRuleToJSON;
-  jsnRule.AddPair('ruletype', 'link');
-  jsnRule.AddPair('level', TJSONNumber.Create(aJobLinksRule.Level));
+    for JobRecordsRule in aJobRulesGroup.JobRecordsRules do
+      begin
+        jsnRule:=TJSONObject.Create;
+        jsnRule.AddPair('key', JobRecordsRule.Key);
+        jsnRule.AddPair('nodes', EncodeNodesToJSON(JobRecordsRule.GetContainerInsideNodes));
+        jsnRules.AddElement(jsnRule)
+      end;
 
-  Result:=GetInjectJS(jsnRule.ToJSON);
+    jsnRuleGroup.AddPair('rules', jsnRules);
+
+    Result:='var group =';
+    Result:=Result+jsnRuleGroup.ToJSON;
+    Result:=Result+';'#10#13;
+    Result:=Result+FjsScript;
+  finally
+    jsnRuleGroup.Free;
+  end;
 end;
 
 procedure TPIAModel.ProcessRules(aFrame: ICefFrame);
 var
-  JobLinksRules: TJobLinksRules;
-  JobLinkRule: TJobLinksRule;
-  JobRecordsRules: TJobRecordsRules;
-  JobRecordRule: TJobRecordsRule;
+  JobRulesGroups: TJobRulesGroups;
+  JobRulesGroup: TJobRulesGroup;
   InjectJS: string;
 begin
-  // links
-  JobLinksRules:=FJob.GetLinksRulesByLevel(FCurrLink.Level);
-  for JobLinkRule in JobLinksRules do
+  JobRulesGroups:=FJob.GetRulesGroupsByLevel(FCurrLink.Level);
+  for JobRulesGroup in JobRulesGroups do
     begin
-      InjectJS:=GetInjectJSForLink(JobLinkRule);
-      FChromium.Browser.MainFrame.ExecuteJavaScript(InjectJS, 'about:blank', 0);
-    end;
-
-  // records
-  JobRecordsRules:=FJob.GetRecordsRulesByLevel(FCurrLink.Level);
-  for JobRecordRule in JobRecordsRules do
-    begin
-      InjectJS:=GetInjectJSForRecord(JobRecordRule);
+      InjectJS:=GetInjectJSForRulesGroup(JobRulesGroup);
+      TFilesEngine.SaveTextToFile('InjectJS.txt', InjectJS);
       FChromium.Browser.MainFrame.ExecuteJavaScript(InjectJS, 'about:blank', 0);
     end;
 end;
