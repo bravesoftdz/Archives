@@ -20,6 +20,7 @@ type
 
   TJobRegExp = record
     RegExp: string;
+    TypeRefID: Integer;
   end;
 
   TJobRegExps = TArray<TJobRegExp>;
@@ -197,6 +198,7 @@ begin
     while not dsRegExps.EOF do
       begin
         RegExp.RegExp:=dsRegExps.FieldByName('regexp').AsString;
+        RegExp.TypeRefID:=dsRegExps.FieldByName('type_refid').AsInteger;
 
         FRegExps := FRegExps + [RegExp];
         dsRegExps.Next;

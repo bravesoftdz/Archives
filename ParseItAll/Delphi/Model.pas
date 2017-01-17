@@ -50,7 +50,7 @@ type
     procedure OnNoElementFind(E: ENoElementFind; aCriticalType: Integer);
     function GetInjectJSForRulesGroup(aJobRulesGroup: TJobRulesGroup): string;
     function EncodeNodesToJSON(aNodes: TJobNodes): TJSONArray;
-    function CheckRegExps(aValue: string; aRegExps: TJobRegExps): Boolean;
+    function EncodeRegExpsToJSON(aRegExps: TJobRegExps): TJSONArray;
   public
     constructor Create(aJobID: integer);
     procedure StartJob;
@@ -62,6 +62,22 @@ uses
    Vcl.Controls
   ,API_Parse
   ,API_Files;
+
+function TPIAModel.EncodeRegExpsToJSON(aRegExps: TJobRegExps): TJSONArray;
+var
+  RegExp: TJobRegExp;
+  jsnRegExp: TJSONObject;
+begin
+  Result:=TJSONArray.Create;
+  for RegExp in aRegExps do
+    begin
+      jsnRegExp:=TJSONObject.Create;
+      jsnRegExp.AddPair('regexp', RegExp.RegExp);
+      jsnRegExp.AddPair('type', TJSONNumber.Create(RegExp.TypeRefID));
+
+      Result.AddElement(jsnRegExp);
+    end;
+end;
 
 function TPIAModel.EncodeNodesToJSON(aNodes: TJobNodes): TJSONArray;
 var
@@ -84,37 +100,39 @@ end;
 
 procedure TPIAModel.InsertReceivedData(aData: string);
 var
-  jsnData, jsnObj: TJSONObject;
-  jsnArray: TJSONArray;
-  jsnValue: TJSONValue;
+  jsnData: TJSONArray;
+  jsnObjArray: TJSONArray;
+  jsnGroup, jsnValue: TJSONValue;
+  jsnObj: TJSONObject;
+
   Link, Key, Text: string;
   Level, i: Integer;
 begin
-  jsnData:=TJSONObject.ParseJSONValue(aData) as TJSONObject;
-
-  if jsnData.GetValue('links')<>nil then
+  jsnData:=TJSONObject.ParseJSONValue(aData) as TJSONArray;
+  i:=0;
+  for jsnGroup in jsnData do
     begin
-      Level:=(jsnData.GetValue('level') as TJSONNumber).AsInt;
-      jsnArray:=jsnData.GetValue('links') as TJSONArray;
-      for jsnValue in jsnArray do
+      Inc(i);
+      jsnObjArray:=jsnGroup as TJSONArray;
+      for jsnValue in jsnObjArray do
         begin
           jsnObj:=jsnValue as TJSONObject;
-          Link:=jsnObj.GetValue('href').Value;
-          FDBService.AddLink(Link, Level);
-        end;
-    end;
 
-  if jsnData.GetValue('records')<>nil then
-    begin
-      Key:=jsnData.GetValue('key').Value;
-      jsnArray:=jsnData.GetValue('records') as TJSONArray;
-      i:=0;
-      for jsnValue in jsnArray do
-        begin
-          Inc(i);
-          jsnObj:=jsnValue as TJSONObject;
-          Text:=jsnObj.GetValue('text').Value;
-          FDBService.AddRecord(FCurrLink.Id, i, Key, Text);
+          if jsnObj.GetValue('nomatchruleid')<>nil then Continue;
+
+          if jsnObj.GetValue('href')<>nil then
+            begin
+              Level:=(jsnObj.GetValue('level') as TJSONNumber).AsInt;
+              Link:=jsnObj.GetValue('href').Value;
+              FDBService.AddLink(Link, Level);
+            end;
+
+          if jsnObj.GetValue('key')<>nil then
+            begin
+              Key:=jsnObj.GetValue('key').Value;
+              Text:=jsnObj.GetValue('value').Value;
+              FDBService.AddRecord(FCurrLink.Id, i, Key, Text);
+            end;
         end;
     end;
 end;
@@ -143,16 +161,20 @@ begin
     for JobLinksRule in aJobRulesGroup.JobLinksRules  do
       begin
         jsnRule:=TJSONObject.Create;
+        jsnRule.AddPair('id', TJSONNumber.Create(JobLinksRule.ID));
         jsnRule.AddPair('level', TJSONNumber.Create(JobLinksRule.Level));
         jsnRule.AddPair('nodes', EncodeNodesToJSON(JobLinksRule.GetContainerInsideNodes));
+        jsnRule.AddPair('regexps', EncodeRegExpsToJSON(JobLinksRule.RegExps));
         jsnRules.AddElement(jsnRule);
       end;
 
     for JobRecordsRule in aJobRulesGroup.JobRecordsRules do
       begin
         jsnRule:=TJSONObject.Create;
+        jsnRule.AddPair('id', TJSONNumber.Create(JobRecordsRule.ID));
         jsnRule.AddPair('key', JobRecordsRule.Key);
         jsnRule.AddPair('nodes', EncodeNodesToJSON(JobRecordsRule.GetContainerInsideNodes));
+        jsnRule.AddPair('regexps', EncodeRegExpsToJSON(JobRecordsRule.RegExps));
         jsnRules.AddElement(jsnRule)
       end;
 
@@ -163,6 +185,7 @@ begin
     Result:=Result+';'#10#13;
     Result:=Result+FjsScript;
   finally
+    TFilesEngine.SaveTextToFile('1.txt', jsnRuleGroup.ToJSON);
     jsnRuleGroup.Free;
   end;
 end;
@@ -177,7 +200,6 @@ begin
   for JobRulesGroup in JobRulesGroups do
     begin
       InjectJS:=GetInjectJSForRulesGroup(JobRulesGroup);
-      TFilesEngine.SaveTextToFile('InjectJS.txt', InjectJS);
       FChromium.Browser.MainFrame.ExecuteJavaScript(InjectJS, 'about:blank', 0);
     end;
 end;
@@ -203,21 +225,6 @@ constructor ENoElementFind.Create(aJobNodeID: integer);
 begin
   inherited Create('No HTML Elements Find!');
   FJobNodeID:=aJobNodeID;
-end;
-
-function TPIAModel.CheckRegExps(aValue: string; aRegExps: TJobRegExps): Boolean;
-var
-  RegExp: TJobRegExp;
-begin
-  Result:=True;
-  for RegExp in aRegExps do
-    begin
-      if TParseTools.ParseStrByRegEx(aValue, RegExp.RegExp)='' then
-        begin
-          Result:=False;
-          Break;
-        end;
-    end;
 end;
 
 procedure TPIAModel.ChromiumInit;
