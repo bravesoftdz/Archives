@@ -14,7 +14,8 @@ type
   public
     function CheckFirstRun: Boolean;
     function GetCurrLink: TCurrLink;
-    function AddLink(aLink: string; aLevel: Integer): Integer;
+    function GetCustomHandleProcName(aJobRuleID: integer): string;
+    function AddLink(aLink: string; aMasterLinkID, aLevel: Integer; aNum: Integer = 1): Integer;
     procedure SetLinkHandle(aLinkID: Integer; aValue: Integer);
     procedure AddRecord(aLinkId, aRecordNum: integer; aKey, aValue: string);
     procedure AddJobMessage(aLinkId, aJobNodeId: integer);
@@ -24,7 +25,26 @@ type
 implementation
 
 uses
-  FireDAC.Comp.Client;
+   System.SysUtils
+  ,FireDAC.Comp.Client
+  ,API_Files;
+
+function TPIADBService.GetCustomHandleProcName(aJobRuleID: integer): string;
+var
+  dsQuery: TFDQuery;
+  sql: string;
+begin
+  dsQuery:=TFDQuery.Create(nil);
+  try
+    sql:='select * from job_custom_procs where job_rule_id=:JobRuleID';
+    dsQuery.SQL.Text:=sql;
+    dsQuery.ParamByName('JobRuleID').AsInteger:=aJobRuleID;
+    FMySQLEngine.OpenQuery(dsQuery);
+    Result:=dsQuery.FieldByName('custom_proc_name').AsString;
+  finally
+    dsQuery.Free;
+  end;
+end;
 
 procedure TPIADBService.AddJobMessage(aLinkId, aJobNodeId: integer);
 var
@@ -64,7 +84,11 @@ begin
     dsQuery.ParamByName('key').AsString:=aKey;
     dsQuery.ParamByName('value').AsWideString:=aValue;
 
+    try
     FMySQLEngine.ExecQuery(dsQuery);
+    except
+      on e: Exception do TFilesEngine.SaveTextToFile('err.txt', e.Message);
+    end;
   finally
     dsQuery.Free;
   end;
@@ -85,7 +109,7 @@ begin
   end;
 end;
 
-function TPIADBService.AddLink(aLink: string; aLevel: Integer): Integer;
+function TPIADBService.AddLink(aLink: string; aMasterLinkID, aLevel: Integer; aNum: Integer): Integer;
 var
   dsQuery: TFDQuery;
   sql: string;
@@ -93,6 +117,7 @@ begin
   sql:='insert into links set';
   sql:=sql+' job_id=:JobId';
   sql:=sql+',level=:Level';
+  sql:=sql+',num=:Num';
   sql:=sql+',link=:Link';
   sql:=sql+',link_hash=md5(:Link)';
   dsQuery:=TFDQuery.Create(nil);
@@ -100,10 +125,20 @@ begin
     dsQuery.SQL.Text:=sql;
     dsQuery.ParamByName('JobId').AsInteger:=FJobID;
     dsQuery.ParamByName('Level').AsInteger:=aLevel;
+    dsQuery.ParamByName('Num').AsInteger:=aNum;
     dsQuery.ParamByName('Link').AsString:=aLink;
 
     FMySQLEngine.ExecQuery(dsQuery);
     Result:=FMySQLEngine.GetLastInsertedID;
+
+    if aMasterLinkID>0 then
+      begin
+        sql:='insert into link2link set master_link_id=:mlid, slave_link_id=:slid';
+        dsQuery.SQL.Text:=sql;
+        dsQuery.ParamByName('mlid').AsInteger:=aMasterLinkID;
+        dsQuery.ParamByName('slid').AsInteger:=Result;
+        FMySQLEngine.ExecQuery(dsQuery);
+      end;
   finally
     dsQuery.Free;
   end;

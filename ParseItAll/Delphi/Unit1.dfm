@@ -229,10 +229,14 @@ object Form1: TForm1
     Top = 108
     Width = 297
     Height = 167
-    ActivePage = tsLink
+    ActivePage = tsRegExp
     TabOrder = 8
     object tsLink: TTabSheet
       Caption = 'tsLink'
+      ExplicitLeft = 0
+      ExplicitTop = 0
+      ExplicitWidth = 0
+      ExplicitHeight = 0
       object dbgrdLinks: TDBGrid
         Left = 32
         Top = 8
@@ -258,6 +262,10 @@ object Form1: TForm1
     object tsRecord: TTabSheet
       Caption = 'tsRecord'
       ImageIndex = 1
+      ExplicitLeft = 0
+      ExplicitTop = 0
+      ExplicitWidth = 0
+      ExplicitHeight = 0
       object dbgrdRecords: TDBGrid
         Left = 30
         Top = 8
@@ -300,7 +308,13 @@ object Form1: TForm1
             Expanded = False
             FieldName = 'regexp'
             Title.Alignment = taCenter
-            Width = 220
+            Width = 150
+            Visible = True
+          end
+          item
+            Expanded = False
+            FieldName = 'type_refid'
+            Title.Alignment = taCenter
             Visible = True
           end>
       end
@@ -318,6 +332,23 @@ object Form1: TForm1
     TitleFont.Height = -11
     TitleFont.Name = 'Tahoma'
     TitleFont.Style = []
+    Columns = <
+      item
+        Expanded = False
+        FieldName = 'notes'
+        Title.Alignment = taCenter
+        Width = 66
+        Visible = True
+      end>
+  end
+  object btnTest: TButton
+    Left = 112
+    Top = 472
+    Width = 75
+    Height = 25
+    Caption = 'btnTest'
+    TabOrder = 10
+    OnClick = btnTestClick
   end
   object fdtblJobs: TFDTable
     UpdateOptions.UpdateTableName = 'jobs'

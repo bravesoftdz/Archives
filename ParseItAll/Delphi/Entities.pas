@@ -57,9 +57,11 @@ type
   TJobRecordsRule = class(TJobRule)
   private
     FKey: string;
+    FTypeRefID: integer;
   public
     constructor Create(aRuleID: integer; aMySQLEngine: TMySQLEngine); override;
     property Key: string read FKey;
+    property TypeRefID: Integer read FTypeRefID;
   end;
 
   TJobRecordsRules = TObjectList<TJobRecordsRule>;
@@ -134,6 +136,7 @@ begin
     dsRecord.ParamByName('JobRuleID').AsInteger:=aRuleID;
     aMySQLEngine.OpenQuery(dsRecord);
     FKey:=dsRecord.FieldByName('key').AsString;
+    FTypeRefID:=dsRecord.FieldByName('type_refid').AsInteger;
   finally
     dsRecord.Free;
   end;

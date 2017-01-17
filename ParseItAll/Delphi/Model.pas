@@ -5,12 +5,15 @@ interface
 uses
    System.SysUtils
   ,System.JSON
+  ,System.Generics.Collections
   ,Vcl.Forms
   ,cefvcl
   ,CefLib
   ,API_DBases
   ,Entities
-  ,DBService;
+  ,DBService
+  ,CustomHandles
+  ,main;
 
 type
   ENoElementFind = class(Exception)
@@ -48,20 +51,46 @@ type
                 const message: ICefProcessMessage; out Result: Boolean);
     procedure InsertReceivedData(aData: string);
     procedure OnNoElementFind(E: ENoElementFind; aCriticalType: Integer);
-    function GetInjectJSForRulesGroup(aJobRulesGroup: TJobRulesGroup): string;
+    function GetCustomHandleProc(aJobRuleID: integer; aProcDictionary: TObjectDictionary<Integer, TCustomProc>): TCustomProc;
+    function GetInjectJSForRulesGroup(aJobRulesGroup: TJobRulesGroup; aIsLast: Boolean): string;
     function EncodeNodesToJSON(aNodes: TJobNodes): TJSONArray;
     function EncodeRegExpsToJSON(aRegExps: TJobRegExps): TJSONArray;
   public
     constructor Create(aJobID: integer);
     procedure StartJob;
+    procedure Test(aForm: TMainForm);
   end;
 
 implementation
 
 uses
    Vcl.Controls
+  ,Windows
   ,API_Parse
   ,API_Files;
+
+function TPIAModel.GetCustomHandleProc(aJobRuleID: integer; aProcDictionary: TObjectDictionary<Integer, TCustomProc>): TCustomProc;
+var
+  CustomHandleProcName: string;
+  h:HWND;
+begin
+  if aProcDictionary.ContainsKey(aJobRuleID) then
+    Result:=aProcDictionary.Items[aJobRuleID]
+  else
+    begin
+      CustomHandleProcName:=FDBService.GetCustomHandleProcName(aJobRuleID);
+      h:=GetModuleHandle(nil);
+      @Result:=GetProcAddress(h, PChar(CustomHandleProcName));
+      if @Result<>nil then
+          aProcDictionary.Add(aJobRuleID, Result);
+    end;
+end;
+
+procedure TPIAModel.Test(aForm: TMainForm);
+begin
+  aForm.Show;
+  aForm.crm.Load(FDBService.GetCurrLink.Link);
+end;
 
 function TPIAModel.EncodeRegExpsToJSON(aRegExps: TJobRegExps): TJSONArray;
 var
@@ -100,41 +129,62 @@ end;
 
 procedure TPIAModel.InsertReceivedData(aData: string);
 var
-  jsnData: TJSONArray;
+  jsnData: TJSONObject;
+  jsnDataArray: TJSONArray;
   jsnObjArray: TJSONArray;
   jsnGroup, jsnValue: TJSONValue;
   jsnObj: TJSONObject;
 
+  CustomHandleProc: TCustomProc;
+  CustomHandleProcDictionary: TObjectDictionary<Integer, TCustomProc>;
   Link, Key, Text: string;
   Level, i: Integer;
+  isLast: Boolean;
 begin
-  jsnData:=TJSONObject.ParseJSONValue(aData) as TJSONArray;
-  i:=0;
-  for jsnGroup in jsnData do
-    begin
-      Inc(i);
-      jsnObjArray:=jsnGroup as TJSONArray;
-      for jsnValue in jsnObjArray do
-        begin
-          jsnObj:=jsnValue as TJSONObject;
+  try
+    jsnData:=TJSONObject.ParseJSONValue(aData) as TJSONObject;
+    jsnDataArray:=jsnData.GetValue('result') as TJSONArray;
 
-          if jsnObj.GetValue('nomatchruleid')<>nil then Continue;
+    CustomHandleProcDictionary:=TObjectDictionary<Integer, TCustomProc>.Create;
 
-          if jsnObj.GetValue('href')<>nil then
-            begin
-              Level:=(jsnObj.GetValue('level') as TJSONNumber).AsInt;
-              Link:=jsnObj.GetValue('href').Value;
-              FDBService.AddLink(Link, Level);
-            end;
+    i:=0;
+    for jsnGroup in jsnDataArray do
+      begin
+        Inc(i);
+        jsnObjArray:=jsnGroup as TJSONArray;
+        for jsnValue in jsnObjArray do
+          begin
+            jsnObj:=jsnValue as TJSONObject;
+            CustomHandleProc:=GetCustomHandleProc((jsnObj.GetValue('id') as TJSONNumber).AsInt, CustomHandleProcDictionary);
 
-          if jsnObj.GetValue('key')<>nil then
-            begin
-              Key:=jsnObj.GetValue('key').Value;
-              Text:=jsnObj.GetValue('value').Value;
-              FDBService.AddRecord(FCurrLink.Id, i, Key, Text);
-            end;
-        end;
-    end;
+            if jsnObj.GetValue('nomatchruleid')<>nil then Continue;
+
+            if jsnObj.GetValue('href')<>nil then
+              begin
+                Level:=(jsnObj.GetValue('level') as TJSONNumber).AsInt;
+                Link:=jsnObj.GetValue('href').Value;
+                if Assigned(CustomHandleProc) then Link:=CustomHandleProc(Link);
+                FDBService.AddLink(Link, FCurrLink.ID, Level, i);
+              end;
+
+            if jsnObj.GetValue('key')<>nil then
+              begin
+                Key:=jsnObj.GetValue('key').Value;
+                Text:=jsnObj.GetValue('value').Value;
+                if Assigned(CustomHandleProc) then Text:=CustomHandleProc(Text);
+                FDBService.AddRecord(FCurrLink.Id, i, Key, Text);
+              end;
+          end;
+      end;
+
+    if jsnData.GetValue('islast')<>nil then isLast:=True
+    else isLast:=False;
+
+    if isLast then ProcessNextLink;
+  finally
+    jsnData.Free;
+    CustomHandleProcDictionary.Free;
+  end;
 end;
 
 procedure TPIAModel.crmProcessMessageReceived(Sender: TObject;
@@ -145,7 +195,7 @@ begin
       InsertReceivedData(message.ArgumentList.GetString(0));
 end;
 
-function TPIAModel.GetInjectJSForRulesGroup(aJobRulesGroup: TJobRulesGroup): string;
+function TPIAModel.GetInjectJSForRulesGroup(aJobRulesGroup: TJobRulesGroup; aIsLast: Boolean): string;
 var
   JobLinksRule: TJobLinksRule;
   JobRecordsRule: TJobRecordsRule;
@@ -173,12 +223,14 @@ begin
         jsnRule:=TJSONObject.Create;
         jsnRule.AddPair('id', TJSONNumber.Create(JobRecordsRule.ID));
         jsnRule.AddPair('key', JobRecordsRule.Key);
+        jsnRule.AddPair('typeid', TJSONNumber.Create(JobRecordsRule.TypeRefID));
         jsnRule.AddPair('nodes', EncodeNodesToJSON(JobRecordsRule.GetContainerInsideNodes));
         jsnRule.AddPair('regexps', EncodeRegExpsToJSON(JobRecordsRule.RegExps));
         jsnRules.AddElement(jsnRule)
       end;
 
     jsnRuleGroup.AddPair('rules', jsnRules);
+    if aIsLast then jsnRuleGroup.AddPair('islast', TJSONNumber.Create(1));
 
     Result:='var group =';
     Result:=Result+jsnRuleGroup.ToJSON;
@@ -195,12 +247,19 @@ var
   JobRulesGroups: TJobRulesGroups;
   JobRulesGroup: TJobRulesGroup;
   InjectJS: string;
+  i: Integer;
+  isLastGroup: Boolean;
 begin
+  isLastGroup:=False;
+  i:=0;
+
   JobRulesGroups:=FJob.GetRulesGroupsByLevel(FCurrLink.Level);
   for JobRulesGroup in JobRulesGroups do
     begin
-      InjectJS:=GetInjectJSForRulesGroup(JobRulesGroup);
+      if i=Length(JobRulesGroups)-1 then isLastGroup:=True;
+      InjectJS:=GetInjectJSForRulesGroup(JobRulesGroup, isLastGroup);
       FChromium.Browser.MainFrame.ExecuteJavaScript(InjectJS, 'about:blank', 0);
+      Inc(i);
     end;
 end;
 
@@ -269,7 +328,7 @@ begin
   ChromiumInit;
 
   // инициализация первого запуска парсера
-  if FDBService.CheckFirstRun then FDBService.AddLink(FJob.ZeroLink, 1);
+  if FDBService.CheckFirstRun then FDBService.AddLink(FJob.ZeroLink, 0, 1);
 
   // JS скрипт для парсинга DOM
   FjsScript:=TFilesEngine.GetTextFromFile('D:\Git\Projects-Dev\ParseItAll\Web\js\DOMParser.js');

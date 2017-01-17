@@ -8,6 +8,9 @@ function checkNodeMatches(matches, node, element) {
     matches.isIDMatch = false;
     matches.isClassMatch = false;
     matches.isNameMatch = false;
+    
+    if (element == null) return false;
+    
     // совпадение ID
     if (node.tagID === undefined)
         node.tagID = '';
@@ -165,17 +168,28 @@ function getResultObjByElem(rule, elem, firstGroupResult) {
 
     if (rule.level !== undefined)
         return {
+            id: rule.id,
             level: rule.level,
             href: elem.href
         };
     if (rule.key !== undefined) {
+        
+        if (rule.typeid === 1)
         return {
+            id: rule.id,
             key: rule.key,
             value: elem.outerText
         };
+        
+        if (rule.typeid === 2)
+        return {
+            id: rule.id,
+            key: rule.key,
+            value: elem.outerHTML
+        };
     }
 }
-
+     
 function getDataFromDOMbyGroup(group) {
     var element = document;
     var result = [];
@@ -200,7 +214,10 @@ function getDataFromDOMbyGroup(group) {
                 groupArr.push(resObj);
             });
     });
-    return JSON.stringify(result);
+    
+    var returnObj = {result: result};
+    if (group.islast === 1) returnObj.islast = 1;
+    return JSON.stringify(returnObj);
 }
 
 app.databack(getDataFromDOMbyGroup(group));

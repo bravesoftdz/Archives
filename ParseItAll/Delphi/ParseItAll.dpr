@@ -10,7 +10,8 @@ uses
   DBService in 'DBService.pas',
   API_Parse in '..\..\..\Libraries\Delphi\API_Parse.pas',
   ceflib,
-  main in '..\..\..\Vendors\Chromium-dcef3\demos\guiclient\main.pas' {MainForm};
+  main in '..\..\..\Vendors\Chromium-dcef3\demos\guiclient\main.pas' {MainForm},
+  CustomHandles in 'CustomHandles.pas';
 
 {$R *.res}
 

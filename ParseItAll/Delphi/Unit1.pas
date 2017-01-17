@@ -52,9 +52,11 @@ type
     lblGroups: TLabel;
     fdtblGroups: TFDTable;
     dsGroups: TDataSource;
+    btnTest: TButton;
     procedure btnStartJobClick(Sender: TObject);
     procedure FormCreate(Sender: TObject);
     procedure btnParseNodesClick(Sender: TObject);
+    procedure btnTestClick(Sender: TObject);
   private
     { Private declarations }
     FMySQLEngine: TMySQLEngine;
@@ -69,7 +71,8 @@ implementation
 
 {$R *.dfm}
 uses
-  System.JSON;
+   System.JSON
+  ,main;
 
 procedure TForm1.btnParseNodesClick(Sender: TObject);
 var
@@ -116,6 +119,16 @@ var
 begin
   Model:=TPIAModel.Create(fdtblJobs.FieldByName('Id').AsInteger);
   Model.StartJob;
+end;
+
+procedure TForm1.btnTestClick(Sender: TObject);
+var
+  Form: TMainForm;
+  Model: TPIAModel;
+begin
+  Form:=TMainForm.Create(nil);
+  Model:=TPIAModel.Create(fdtblJobs.FieldByName('Id').AsInteger);
+  Model.Test(Form);
 end;
 
 procedure TForm1.FormCreate(Sender: TObject);
