@@ -33,6 +33,11 @@ type
     procedure OnWebKitInitialized; override;
   end;
 
+  TCustomJS = record
+    JSFile: string;
+    JSFunc: string;
+  end;
+
   TPIAModel = class
   private
     FMySQLEngine: TMySQLEngine;
@@ -51,10 +56,12 @@ type
                 const message: ICefProcessMessage; out Result: Boolean);
     procedure InsertReceivedData(aData: string);
     procedure OnNoElementFind(E: ENoElementFind; aCriticalType: Integer);
+    procedure CheckCustomJS(aCustomJS: TCustomJS; aCustomProcName: string);
     function GetCustomHandleProc(aJobRuleID: integer; aProcDictionary: TObjectDictionary<Integer, TCustomProc>): TCustomProc;
     function GetInjectJSForRulesGroup(aJobRulesGroup: TJobRulesGroup; aIsLast: Boolean): string;
     function EncodeNodesToJSON(aNodes: TJobNodes): TJSONArray;
     function EncodeRegExpsToJSON(aRegExps: TJobRegExps): TJSONArray;
+    function GetCustomJSFileContent(aCustomJSFileName: string): string;
   public
     constructor Create(aJobID: integer);
     procedure StartJob;
@@ -68,6 +75,26 @@ uses
   ,Windows
   ,API_Parse
   ,API_Files;
+
+function TPIAModel.GetCustomJSFileContent(aCustomJSFileName: string): string;
+begin
+  if aCustomJSFileName='' then Exit('');
+  Result:=TFilesEngine.GetTextFromFile('D:\Git\Projects-Dev\ParseItAll\Web\js\custom\'+aCustomJSFileName+'.js');
+  Result:=Result+#10#13;
+end;
+
+procedure TPIAModel.CheckCustomJS(aCustomJS: TCustomJS; aCustomProcName: string);
+var
+  ResultArray: TArray<string>;
+begin
+  aCustomJS.JSFunc:='';
+  ResultArray:=TParseTools.Explode(aCustomProcName, '.');
+  if Length(ResultArray)=2 then
+    begin
+      aCustomJS.JSFile:=ResultArray[0];
+      aCustomJS.JSFunc:=ResultArray[1];
+    end;
+end;
 
 function TPIAModel.GetCustomHandleProc(aJobRuleID: integer; aProcDictionary: TObjectDictionary<Integer, TCustomProc>): TCustomProc;
 var
@@ -202,6 +229,7 @@ var
   jsnRuleGroup: TJSONObject;
   jsnRules: TJSONArray;
   jsnRule: TJSONObject;
+  CustomJS: TCustomJS;
 begin
   jsnRuleGroup:=TJSONObject.Create;
   jsnRules:=TJSONArray.Create;
@@ -210,34 +238,40 @@ begin
 
     for JobLinksRule in aJobRulesGroup.JobLinksRules  do
       begin
+        CheckCustomJS(CustomJS, JobLinksRule.CustomJSProcName);
+
         jsnRule:=TJSONObject.Create;
         jsnRule.AddPair('id', TJSONNumber.Create(JobLinksRule.ID));
         jsnRule.AddPair('level', TJSONNumber.Create(JobLinksRule.Level));
         jsnRule.AddPair('nodes', EncodeNodesToJSON(JobLinksRule.GetContainerInsideNodes));
         jsnRule.AddPair('regexps', EncodeRegExpsToJSON(JobLinksRule.RegExps));
+        jsnRule.AddPair('custom_func', CustomJS.JSFunc);
         jsnRules.AddElement(jsnRule);
       end;
 
     for JobRecordsRule in aJobRulesGroup.JobRecordsRules do
       begin
+        CheckCustomJS(CustomJS, JobRecordsRule.CustomJSProcName);
+
         jsnRule:=TJSONObject.Create;
         jsnRule.AddPair('id', TJSONNumber.Create(JobRecordsRule.ID));
         jsnRule.AddPair('key', JobRecordsRule.Key);
         jsnRule.AddPair('typeid', TJSONNumber.Create(JobRecordsRule.TypeRefID));
         jsnRule.AddPair('nodes', EncodeNodesToJSON(JobRecordsRule.GetContainerInsideNodes));
         jsnRule.AddPair('regexps', EncodeRegExpsToJSON(JobRecordsRule.RegExps));
+        jsnRule.AddPair('custom_func', CustomJS.JSFunc);
         jsnRules.AddElement(jsnRule)
       end;
 
     jsnRuleGroup.AddPair('rules', jsnRules);
     if aIsLast then jsnRuleGroup.AddPair('islast', TJSONNumber.Create(1));
 
-    Result:='var group =';
+    Result:=GetCustomJSFileContent(CustomJS.JSFile);
+    Result:=Result+'var group =';
     Result:=Result+jsnRuleGroup.ToJSON;
     Result:=Result+';'#10#13;
     Result:=Result+FjsScript;
   finally
-    TFilesEngine.SaveTextToFile('1.txt', jsnRuleGroup.ToJSON);
     jsnRuleGroup.Free;
   end;
 end;
@@ -258,6 +292,7 @@ begin
     begin
       if i=Length(JobRulesGroups)-1 then isLastGroup:=True;
       InjectJS:=GetInjectJSForRulesGroup(JobRulesGroup, isLastGroup);
+      TFilesEngine.SaveTextToFile('InjectJS.js', InjectJS); // DEBUG
       FChromium.Browser.MainFrame.ExecuteJavaScript(InjectJS, 'about:blank', 0);
       Inc(i);
     end;

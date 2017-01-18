@@ -8,9 +8,10 @@ function checkNodeMatches(matches, node, element) {
     matches.isIDMatch = false;
     matches.isClassMatch = false;
     matches.isNameMatch = false;
-    
-    if (element == null) return false;
-    
+
+    if (element === null)
+        return false;
+
     // совпадение ID
     if (node.tagID === undefined)
         node.tagID = '';
@@ -161,9 +162,10 @@ function getResultObjByElem(rule, elem, firstGroupResult) {
 
     // проверка на наличие ключевой (первой) записи в группе
     if (firstGroupResult !== undefined)
-        if (firstGroupResult.nomatchruleid !== undefined) elem = null;
-    
-    if (elem == null)
+        if (firstGroupResult.nomatchruleid !== undefined)
+            elem = null;
+
+    if (elem === null)
         return {nomatchruleid: rule.id};
 
     if (rule.level !== undefined)
@@ -173,23 +175,23 @@ function getResultObjByElem(rule, elem, firstGroupResult) {
             href: elem.href
         };
     if (rule.key !== undefined) {
-        
+
         if (rule.typeid === 1)
-        return {
-            id: rule.id,
-            key: rule.key,
-            value: elem.outerText
-        };
-        
+            return {
+                id: rule.id,
+                key: rule.key,
+                value: elem.outerText
+            };
+
         if (rule.typeid === 2)
-        return {
-            id: rule.id,
-            key: rule.key,
-            value: elem.outerHTML
-        };
+            return {
+                id: rule.id,
+                key: rule.key,
+                value: elem.outerHTML
+            };
     }
 }
-     
+
 function getDataFromDOMbyGroup(group) {
     var element = document;
     var result = [];
@@ -214,9 +216,10 @@ function getDataFromDOMbyGroup(group) {
                 groupArr.push(resObj);
             });
     });
-    
+
     var returnObj = {result: result};
-    if (group.islast === 1) returnObj.islast = 1;
+    if (group.islast === 1)
+        returnObj.islast = 1;
     return JSON.stringify(returnObj);
 }
 

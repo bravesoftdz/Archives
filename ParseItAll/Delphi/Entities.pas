@@ -33,6 +33,7 @@ type
     FRegExps: TJobRegExps;
     FCriticalType: Integer;
     FContainerOffset: Integer;
+    FCustomJSProcName: string;
   public
     constructor Create(aRuleID: integer; aMySQLEngine: TMySQLEngine); virtual;
     function GetContainerInsideNodes: TJobNodes;
@@ -42,6 +43,7 @@ type
     property RegExps: TJobRegExps read FRegExps;
     property CriticalType: Integer read FCriticalType;
     property ContainerOffset: Integer read FContainerOffset;
+    property CustomJSProcName: string read FCustomJSProcName;
   end;
 
   TJobLinksRule = class(TJobRule)
@@ -164,18 +166,24 @@ var
   dsRule, dsNodes, dsRegExps: TFDQuery;
   Node: TJobNode;
   RegExp: TJobRegExp;
+  sql: string;
 begin
   dsRule:=TFDQuery.Create(nil);
   dsNodes:=TFDQuery.Create(nil);
   dsRegExps:=TFDQuery.Create(nil);
   try
-    dsRule.SQL.Text:='select * from job_rules where id=:ID';
+    sql:='select *';
+    sql:=sql+' from job_rules jr';
+    sql:=sql+' left join job_custom_procs jcp on jcp.job_rule_id=jr.id and jcp.script_lang_refid=1';
+    sql:=sql+' where jr.id=:ID';
+    dsRule.SQL.Text:=sql;
     dsRule.ParamByName('ID').AsInteger:=aRuleID;
     aMySQLEngine.OpenQuery(dsRule);
     FID:=dsRule.FieldByName('Id').AsInteger;
     FDescription:=dsRule.FieldByName('description').AsString;
     FCriticalType:=dsRule.FieldByName('critical_type').AsInteger;
     FContainerOffset:=dsRule.FieldByName('container_offset').AsInteger;
+    FCustomJSProcName:=dsRule.FieldByName('custom_proc_name').AsString;
 
     FNodes:=[];
     dsNodes.SQL.Text:='select * from job_nodes where job_rule_id=:JobRuleID order by id';
