@@ -56,7 +56,7 @@ type
                 const message: ICefProcessMessage; out Result: Boolean);
     procedure InsertReceivedData(aData: string);
     procedure OnNoElementFind(E: ENoElementFind; aCriticalType: Integer);
-    procedure CheckCustomJS(aCustomJS: TCustomJS; aCustomProcName: string);
+    procedure CheckCustomJS(var aCustomJS: TCustomJS; aCustomProcName: string);
     function GetCustomHandleProc(aJobRuleID: integer; aProcDictionary: TObjectDictionary<Integer, TCustomProc>): TCustomProc;
     function GetInjectJSForRulesGroup(aJobRulesGroup: TJobRulesGroup; aIsLast: Boolean): string;
     function EncodeNodesToJSON(aNodes: TJobNodes): TJSONArray;
@@ -83,7 +83,7 @@ begin
   Result:=Result+#10#13;
 end;
 
-procedure TPIAModel.CheckCustomJS(aCustomJS: TCustomJS; aCustomProcName: string);
+procedure TPIAModel.CheckCustomJS(var aCustomJS: TCustomJS; aCustomProcName: string);
 var
   ResultArray: TArray<string>;
 begin

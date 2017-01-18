@@ -72,16 +72,23 @@ function getElementOfCollectionByName(node, collection, matches) {
 }
 
 function processRegExps(element, regexps) {
+
     var result = element;
     regexps.map(function (regexp) {
-        var HTML = element.outerHTML;
+        var HTML = element.innerHTML;
         var matches = HTML.match(regexp.regexp);
+        
         if (regexp.type === 1) {
             if (matches === null)
                 result = null;
         }
-        ;
+        if (regexp.type === 3) {
+            var re = new RegExp(regexp.regexp, "g");
+            HTML = HTML.replace(re, "");
+            result.innerHTML = HTML;
+        }
     });
+    
     return result;
 }
 
@@ -166,7 +173,14 @@ function getResultObjByElem(rule, elem, firstGroupResult) {
             elem = null;
 
     if (elem === null)
-        return {nomatchruleid: rule.id};
+        return {
+            id: rule.id,
+            nomatchruleid: rule.id
+        };
+
+    // пользовательская обработка
+    if (rule.custom_func !== undefined) 
+        elem = customFuncs[rule.custom_func](elem);
 
     if (rule.level !== undefined)
         return {
@@ -180,14 +194,14 @@ function getResultObjByElem(rule, elem, firstGroupResult) {
             return {
                 id: rule.id,
                 key: rule.key,
-                value: elem.outerText
+                value: elem.innerText
             };
 
         if (rule.typeid === 2)
             return {
                 id: rule.id,
                 key: rule.key,
-                value: elem.outerHTML
+                value: elem.innerHTML
             };
     }
 }
