@@ -26,21 +26,24 @@ var customFuncs = {
         for (var i=0; i<collection.length; i++) {
             collection[i].remove();
         } 
+        collection = element.querySelectorAll('table.ambox');
+        for (var i=0; i<collection.length; i++) {
+            collection[i].remove();
+        } 
         
         var killEl = false;
         child = element.firstElementChild;
         while (child != null) {
             
             if (   child.innerText === 'Примечания'
-                || child.innerText === 'Ссылки')
+                || child.innerText === 'Ссылки'
+                || child.innerText === 'Источники'
             ) killEl = true; 
             
-            if (killEl) {
-                delChild = child;
-                delChild.remove(); 
-            }
-            
+            delChild = child;
             child = child.nextElementSibling;
+            if (killEl)
+                delChild.remove(); 
         }
        
         return element; 
