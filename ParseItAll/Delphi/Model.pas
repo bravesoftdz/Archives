@@ -181,26 +181,30 @@ begin
         jsnObjArray:=jsnGroup as TJSONArray;
         for jsnValue in jsnObjArray do
           begin
-            jsnObj:=jsnValue as TJSONObject;
-            CustomHandleProc:=GetCustomHandleProc((jsnObj.GetValue('id') as TJSONNumber).AsInt, CustomHandleProcDictionary);
+            try
+              jsnObj:=jsnValue as TJSONObject;
+              CustomHandleProc:=GetCustomHandleProc((jsnObj.GetValue('id') as TJSONNumber).AsInt, CustomHandleProcDictionary);
 
-            if jsnObj.GetValue('nomatchruleid')<>nil then Continue;
+              if jsnObj.GetValue('nomatchruleid')<>nil then Continue;
 
-            if jsnObj.GetValue('href')<>nil then
-              begin
-                Level:=(jsnObj.GetValue('level') as TJSONNumber).AsInt;
-                Link:=jsnObj.GetValue('href').Value;
-                if Assigned(CustomHandleProc) then Link:=CustomHandleProc(Link);
-                FDBService.AddLink(Link, FCurrLink.ID, Level, i);
-              end;
+              if jsnObj.GetValue('href')<>nil then
+                begin
+                  Level:=(jsnObj.GetValue('level') as TJSONNumber).AsInt;
+                  Link:=jsnObj.GetValue('href').Value;
+                  if Assigned(CustomHandleProc) then Link:=CustomHandleProc(Link);
+                  FDBService.AddLink(Link, FCurrLink.ID, Level, i);
+                end;
 
-            if jsnObj.GetValue('key')<>nil then
-              begin
-                Key:=jsnObj.GetValue('key').Value;
-                Text:=jsnObj.GetValue('value').Value;
-                if Assigned(CustomHandleProc) then Text:=CustomHandleProc(Text);
-                FDBService.AddRecord(FCurrLink.Id, i, Key, Text);
-              end;
+              if jsnObj.GetValue('key')<>nil then
+                begin
+                  Key:=jsnObj.GetValue('key').Value;
+                  Text:=jsnObj.GetValue('value').Value;
+                  if Assigned(CustomHandleProc) then Text:=CustomHandleProc(Text);
+                  FDBService.AddRecord(FCurrLink.Id, i, Key, Text);
+                end;
+            except
+              // ловим ошибки каждой группы
+            end;
           end;
       end;
 

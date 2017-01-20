@@ -1,0 +1,5 @@
+parse_it_all:
+    resource: "@ParseItAllBundle/Resources/config/routing.yml"
+    prefix:   /
+
+
