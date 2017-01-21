@@ -182,6 +182,8 @@ begin
         for jsnValue in jsnObjArray do
           begin
             try
+              if jsnValue is TJSONNull then Continue;
+
               jsnObj:=jsnValue as TJSONObject;
               CustomHandleProc:=GetCustomHandleProc((jsnObj.GetValue('id') as TJSONNumber).AsInt, CustomHandleProcDictionary);
 

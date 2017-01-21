@@ -1,0 +1,8 @@
+pia_homepage:
+    path:     /
+    defaults: { _controller: PIABundle:Home:index }
+    
+pia_test_rules:
+    path:     /
+    defaults: { _controller: PIABundle:Home:index }
+    

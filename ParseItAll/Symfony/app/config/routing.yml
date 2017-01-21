@@ -1,5 +1,7 @@
-parse_it_all:
-    resource: "@ParseItAllBundle/Resources/config/routing.yml"
+pia:
+    resource: "@PIABundle/Resources/config/routing.yml"
     prefix:   /
+
+
 
 

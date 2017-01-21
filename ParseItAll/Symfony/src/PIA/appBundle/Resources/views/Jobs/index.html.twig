@@ -1,0 +1,13 @@
+{% extends 'base.html.twig' %}
+
+{% block body %}
+    <table>
+        {% for job in jobs %}
+            <tr>
+                <td>{{ job.caption }}</td>
+                <td><a href="{{ path('pia_test_rules', {'jobid': job.id}) }}">Test Rules</a></td>
+            </tr>
+        {% endfor %}
+    </table>
+{% endblock %}
+

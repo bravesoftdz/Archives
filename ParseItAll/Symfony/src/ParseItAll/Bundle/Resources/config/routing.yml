@@ -1,7 +1,0 @@
-parse_it_all_jobs:
-    resource: "@ParseItAllBundle/Controller/JobsController.php"
-    type:     annotation
-    
-parse_it_all_homepage:
-    path:     /
-    defaults: { _controller: ParseItAllBundle:Home:index }

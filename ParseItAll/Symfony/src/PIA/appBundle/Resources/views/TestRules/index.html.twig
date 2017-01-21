@@ -1,0 +1,13 @@
+{% extends 'base.html.twig' %}
+
+{% block body %}
+    Test Rules! {{ job.caption }}
+    <table>
+        {% for levels in job.levels %}
+            <tr>
+                <td>{{ level.level }}</td>
+            </tr>
+        {% endfor %}
+    </table>    
+{% endblock %}
+
