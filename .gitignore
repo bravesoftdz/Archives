@@ -43,3 +43,9 @@ Temporary Items
 .apdisk
 /ParseItAll/Web/nbproject/private/
 /ParseItAll/Symfony/nbproject/private/
+Win32
+__history
+*.php~
+*.local
+*.identcache
+*.tvsconfig
