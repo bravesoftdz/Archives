@@ -77,7 +77,7 @@ function processRegExps(element, regexps) {
     regexps.map(function (regexp) {
         var HTML = element.innerHTML;
         var matches = HTML.match(regexp.regexp);
-        
+
         if (regexp.type === 1) {
             if (matches === null)
                 result = null;
@@ -88,7 +88,7 @@ function processRegExps(element, regexps) {
             result.innerHTML = HTML;
         }
     });
-    
+
     return result;
 }
 
@@ -179,7 +179,7 @@ function getResultObjByElem(rule, elem, firstGroupResult) {
         };
 
     // пользовательская обработка
-    if (rule.custom_func !== undefined) 
+    if (rule.custom_func !== undefined)
         elem = customFuncs[rule.custom_func](elem);
 
     if (rule.level !== undefined)

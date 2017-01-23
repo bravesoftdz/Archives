@@ -8,4 +8,11 @@ pia_test_rules:
     requirements:
         methods:  GET
         jobid: \d+
+        
+pia_get_groups:
+    path:     /groups/{levelid}
+    defaults: { _controller: PIABundle:TestRules:groups }
+    requirements:
+        methods:  GET
+        jobid: \d+        
     

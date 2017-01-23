@@ -15,5 +15,16 @@ class TestRulesController extends Controller {
                     'job' => $job
         ));
     }
+    
+    public function groupsAction($levelid) {
+        
+        $group = $this->getDoctrine()->getRepository('PIABundle:JobLevels')
+                ->find($levelid);
+        
+        $response = new Response();
+        $response->setContent(json_encode($group));
+        $response->headers->set('Content-Type', 'application/json');
+        return $response; 
+    }
 
 }
