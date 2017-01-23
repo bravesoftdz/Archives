@@ -30,7 +30,7 @@ PIA\appBundle\Entity\JobLevels:
             targetEntity: Jobs
             cascade: {  }
             mappedBy: null
-            inversedBy: null
+            inversedBy: levels
             joinColumns:
                 job_id:
                     referencedColumnName: Id

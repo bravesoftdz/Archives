@@ -3,6 +3,9 @@ pia_homepage:
     defaults: { _controller: PIABundle:Home:index }
     
 pia_test_rules:
-    path:     /
-    defaults: { _controller: PIABundle:Home:index }
+    path:     /test/{jobid}
+    defaults: { _controller: PIABundle:TestRules:index }
+    requirements:
+        methods:  GET
+        jobid: \d+
     

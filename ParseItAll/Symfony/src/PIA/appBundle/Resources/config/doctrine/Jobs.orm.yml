@@ -23,4 +23,8 @@ PIA\appBundle\Entity\Jobs:
             length: 65535
             fixed: false
             column: zero_link
+    oneToMany:
+        levels:
+            targetEntity: JobLevels
+            mappedBy: job
     lifecycleCallbacks: {  }

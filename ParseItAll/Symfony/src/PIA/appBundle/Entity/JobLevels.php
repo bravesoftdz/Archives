@@ -7,8 +7,8 @@ use Doctrine\ORM\Mapping as ORM;
 /**
  * JobLevels
  */
-class JobLevels
-{
+class JobLevels {
+
     /**
      * @var integer
      */
@@ -20,18 +20,17 @@ class JobLevels
     private $level;
 
     /**
-     * @var \PIA\appBundle\Entity\Jobs
+     * @ORM\ManyToOne(targetEntity="Jobs", inversedBy="levels")
+     * @ORM\JoinColumn(name="job_id", referencedColumnName="id")
      */
     private $job;
-
 
     /**
      * Get id
      *
      * @return integer 
      */
-    public function getId()
-    {
+    public function getId() {
         return $this->id;
     }
 
@@ -41,8 +40,7 @@ class JobLevels
      * @param integer $level
      * @return JobLevels
      */
-    public function setLevel($level)
-    {
+    public function setLevel($level) {
         $this->level = $level;
 
         return $this;
@@ -53,8 +51,7 @@ class JobLevels
      *
      * @return integer 
      */
-    public function getLevel()
-    {
+    public function getLevel() {
         return $this->level;
     }
 
@@ -64,8 +61,7 @@ class JobLevels
      * @param \PIA\appBundle\Entity\Jobs $job
      * @return JobLevels
      */
-    public function setJob(\PIA\appBundle\Entity\Jobs $job = null)
-    {
+    public function setJob(\PIA\appBundle\Entity\Jobs $job = null) {
         $this->job = $job;
 
         return $this;
@@ -76,8 +72,8 @@ class JobLevels
      *
      * @return \PIA\appBundle\Entity\Jobs 
      */
-    public function getJob()
-    {
+    public function getJob() {
         return $this->job;
     }
+
 }

@@ -7,8 +7,8 @@ use Doctrine\ORM\Mapping as ORM;
 /**
  * Jobs
  */
-class Jobs
-{
+class Jobs {
+
     /**
      * @var integer
      */
@@ -24,6 +24,18 @@ class Jobs
      */
     private $zeroLink;
 
+    /**
+     * @var \Doctrine\Common\Collections\Collection
+     */
+    private $levels;
+
+    /**
+     * Constructor
+     */
+    public function __construct()
+    {
+        $this->levels = new \Doctrine\Common\Collections\ArrayCollection();
+    }
 
     /**
      * Get id
@@ -79,5 +91,38 @@ class Jobs
     public function getZeroLink()
     {
         return $this->zeroLink;
+    }
+
+    /**
+     * Add levels
+     *
+     * @param \PIA\appBundle\Entity\JobLevels $levels
+     * @return Jobs
+     */
+    public function addLevel(\PIA\appBundle\Entity\JobLevels $levels)
+    {
+        $this->levels[] = $levels;
+
+        return $this;
+    }
+
+    /**
+     * Remove levels
+     *
+     * @param \PIA\appBundle\Entity\JobLevels $levels
+     */
+    public function removeLevel(\PIA\appBundle\Entity\JobLevels $levels)
+    {
+        $this->levels->removeElement($levels);
+    }
+
+    /**
+     * Get levels
+     *
+     * @return \Doctrine\Common\Collections\Collection 
+     */
+    public function getLevels()
+    {
+        return $this->levels;
     }
 }
