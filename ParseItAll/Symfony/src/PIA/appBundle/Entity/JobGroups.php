@@ -80,4 +80,77 @@ class JobGroups
     {
         return $this->jobLevel;
     }
+    /**
+     * @var \PIA\appBundle\Entity\JobLevels
+     */
+    private $level;
+
+
+    /**
+     * Set level
+     *
+     * @param \PIA\appBundle\Entity\JobLevels $level
+     * @return JobGroups
+     */
+    public function setLevel(\PIA\appBundle\Entity\JobLevels $level = null)
+    {
+        $this->level = $level;
+
+        return $this;
+    }
+
+    /**
+     * Get level
+     *
+     * @return \PIA\appBundle\Entity\JobLevels 
+     */
+    public function getLevel()
+    {
+        return $this->level;
+    }
+    /**
+     * @var \Doctrine\Common\Collections\Collection
+     */
+    private $rules;
+
+    /**
+     * Constructor
+     */
+    public function __construct()
+    {
+        $this->rules = new \Doctrine\Common\Collections\ArrayCollection();
+    }
+
+    /**
+     * Add rules
+     *
+     * @param \PIA\appBundle\Entity\JobRules $rules
+     * @return JobGroups
+     */
+    public function addRule(\PIA\appBundle\Entity\JobRules $rules)
+    {
+        $this->rules[] = $rules;
+
+        return $this;
+    }
+
+    /**
+     * Remove rules
+     *
+     * @param \PIA\appBundle\Entity\JobRules $rules
+     */
+    public function removeRule(\PIA\appBundle\Entity\JobRules $rules)
+    {
+        $this->rules->removeElement($rules);
+    }
+
+    /**
+     * Get rules
+     *
+     * @return \Doctrine\Common\Collections\Collection 
+     */
+    public function getRules()
+    {
+        return $this->rules;
+    }
 }

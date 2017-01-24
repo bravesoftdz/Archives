@@ -9,7 +9,7 @@ function checkNodeMatches(matches, node, element) {
     matches.isClassMatch = false;
     matches.isNameMatch = false;
 
-    if (element === null)
+    if (element === undefined)
         return false;
 
     // совпадение ID
@@ -206,32 +206,50 @@ function getResultObjByElem(rule, elem, firstGroupResult) {
     }
 }
 
+function getResultNoElementFind(reason, nodeid){
+    return {
+        noresult: reason,
+        nodeid: nodeid,  
+    };
+} 
+
 function getDataFromDOMbyGroup(group) {
     var element = document;
     var result = [];
+    var returnObj = {};
+    
     // получаем коллекцию - контейнер спускаясь по дереву DOM
-    group.nodes.map(function (node) {
+    group.nodes.forEach(function (node) {
 
-        // коллекция узлов по тегу
-        var collection = getCollectionByTag(element, node.tag);
-        // выбор узла 
-        element = getElementByRuleNode(node, collection, true);
+        if (element != null) {
+            // коллекция узлов по тегу
+            var collection = getCollectionByTag(element, node.tag);
+            // выбор узла 
+            element = getElementByRuleNode(node, collection, true);
+            // не найден узел
+            if (element == null) 
+                result.push([getResultNoElementFind('NoMatchInGroupNodes', node.ID)]);
+        }
+        
     });
-    // перебираем правила группы
-    group.rules.map(function (rule, i) {
-        var elements = getElementsByNodes(element, rule.nodes);
-        if (i === 0)
-            elements.map(function (elem) {
-                result.push([getResultObjByElem(rule, elem)]);
-            });
-        else
-            result.map(function (groupArr, j) {
-                var resObj = getResultObjByElem(rule, elements[j], groupArr[0]);
-                groupArr.push(resObj);
-            });
-    });
-
-    var returnObj = {result: result};
+    
+    if (element != null) {
+        // перебираем правила группы
+        group.rules.map(function (rule, i) {
+            var elements = getElementsByNodes(element, rule.nodes);
+            if (i === 0)
+                elements.map(function (elem) {
+                    result.push([getResultObjByElem(rule, elem)]);
+                });
+            else
+                result.map(function (groupArr, j) {
+                    var resObj = getResultObjByElem(rule, elements[j], groupArr[0]);
+                    groupArr.push(resObj);
+                });
+        });
+    }
+    
+    returnObj.result = result;
     if (group.islast === 1)
         returnObj.islast = 1;
     return JSON.stringify(returnObj);

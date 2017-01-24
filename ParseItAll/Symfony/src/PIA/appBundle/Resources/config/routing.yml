@@ -14,5 +14,5 @@ pia_get_groups:
     defaults: { _controller: PIABundle:TestRules:groups }
     requirements:
         methods:  GET
-        jobid: \d+        
+        levelid: \d+        
     

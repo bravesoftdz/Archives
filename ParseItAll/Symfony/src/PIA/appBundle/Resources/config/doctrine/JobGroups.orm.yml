@@ -25,9 +25,13 @@ PIA\appBundle\Entity\JobGroups:
             targetEntity: JobLevels
             cascade: {  }
             mappedBy: null
-            inversedBy: null
+            inversedBy: groups
             joinColumns:
                 job_level_id:
                     referencedColumnName: Id
-            orphanRemoval: false
+            orphanRemoval: false        
+    oneToMany:
+        rules:
+            targetEntity: JobRules
+            mappedBy: group          
     lifecycleCallbacks: {  }

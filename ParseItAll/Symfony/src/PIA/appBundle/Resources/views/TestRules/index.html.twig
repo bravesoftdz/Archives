@@ -2,12 +2,18 @@
 
 {% block body %}
     Test Rules! {{ job.caption }}
-    <table>
+    <table id="levels">
         {% for level in job.levels %}
             <tr>
-                <td><a href="#">Level {{ level.level }}</a></td>
+                <td><a href="#" data-levelid="{{ level.id }}">Level {{ level.level }}</a></td>
             </tr>
         {% endfor %}
-    </table>    
+    </table>  
+    <p>
+        <table id="groups"></table>
+    </p>
+    <p>
+        <table id="rules"></table>
+    </p>
 {% endblock %}
 

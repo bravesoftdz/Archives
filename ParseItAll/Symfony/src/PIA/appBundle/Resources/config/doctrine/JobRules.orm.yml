@@ -34,9 +34,16 @@ PIA\appBundle\Entity\JobRules:
             targetEntity: JobGroups
             cascade: {  }
             mappedBy: null
-            inversedBy: null
+            inversedBy: rules
             joinColumns:
                 group_id:
                     referencedColumnName: Id
             orphanRemoval: false
+    oneToOne:
+        link:
+            targetEntity: JobRuleLinks
+            mappedBy: jobRule  
+        record:
+            targetEntity: JobRuleRecords
+            mappedBy: jobRule         
     lifecycleCallbacks: {  }

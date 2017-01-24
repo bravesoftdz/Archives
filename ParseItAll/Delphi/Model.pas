@@ -114,6 +114,8 @@ begin
 end;
 
 procedure TPIAModel.Test(aForm: TMainForm);
+var
+  JobRecords: TJobRecordsRule;
 begin
   aForm.Show;
   aForm.crm.Load(FDBService.GetCurrLink.Link);

@@ -3,6 +3,7 @@
 namespace PIA\appBundle\Controller;
 
 use Symfony\Bundle\FrameworkBundle\Controller\Controller;
+use Symfony\Component\HttpFoundation\JsonResponse;
 
 class TestRulesController extends Controller {
 
@@ -15,16 +16,24 @@ class TestRulesController extends Controller {
                     'job' => $job
         ));
     }
-    
+
     public function groupsAction($levelid) {
-        
-        $group = $this->getDoctrine()->getRepository('PIABundle:JobLevels')
-                ->find($levelid);
-        
-        $response = new Response();
-        $response->setContent(json_encode($group));
-        $response->headers->set('Content-Type', 'application/json');
-        return $response; 
+
+        $repository = $this->getDoctrine()->getRepository('PIABundle:JobGroups');
+
+        $query = $repository->createQueryBuilder('g')
+                ->addSelect('r')
+                ->addSelect('l')
+                ->addSelect('rc')
+                ->join('g.rules', 'r')
+                ->leftJoin('r.link', 'l')
+                ->leftJoin('r.record', 'rc')
+                ->where('g.jobLevel = :id')
+                ->setParameter('id', $levelid)
+                ->getQuery();
+        $groups = $query->getArrayResult();
+
+        return new JsonResponse(array('groups' => $groups));
     }
 
 }

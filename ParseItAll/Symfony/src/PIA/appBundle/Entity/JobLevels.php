@@ -76,4 +76,49 @@ class JobLevels {
         return $this->job;
     }
 
+    /**
+     * @var \Doctrine\Common\Collections\Collection
+     */
+    private $groups;
+
+    /**
+     * Constructor
+     */
+    public function __construct()
+    {
+        $this->groups = new \Doctrine\Common\Collections\ArrayCollection();
+    }
+
+    /**
+     * Add groups
+     *
+     * @param \PIA\appBundle\Entity\JobGroups $groups
+     * @return JobLevels
+     */
+    public function addGroup(\PIA\appBundle\Entity\JobGroups $groups)
+    {
+        $this->groups[] = $groups;
+
+        return $this;
+    }
+
+    /**
+     * Remove groups
+     *
+     * @param \PIA\appBundle\Entity\JobGroups $groups
+     */
+    public function removeGroup(\PIA\appBundle\Entity\JobGroups $groups)
+    {
+        $this->groups->removeElement($groups);
+    }
+
+    /**
+     * Get groups
+     *
+     * @return \Doctrine\Common\Collections\Collection 
+     */
+    public function getGroups()
+    {
+        return $this->groups;
+    }
 }

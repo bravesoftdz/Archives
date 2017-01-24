@@ -20,12 +20,12 @@ PIA\appBundle\Entity\JobRuleLinks:
             nullable: false
             unsigned: false
             default: '0'
-    manyToOne:
+    oneToOne:
         jobRule:
             targetEntity: JobRules
             cascade: {  }
             mappedBy: null
-            inversedBy: null
+            inversedBy: link
             joinColumns:
                 job_rule_id:
                     referencedColumnName: Id

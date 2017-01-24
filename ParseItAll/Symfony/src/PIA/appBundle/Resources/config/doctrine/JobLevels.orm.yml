@@ -35,4 +35,8 @@ PIA\appBundle\Entity\JobLevels:
                 job_id:
                     referencedColumnName: Id
             orphanRemoval: false
+    oneToMany:
+        groups:
+            targetEntity: JobGroups
+            mappedBy: jobLevel              
     lifecycleCallbacks: {  }

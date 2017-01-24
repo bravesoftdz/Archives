@@ -24,7 +24,8 @@
     },
     "require-dev": {
         "sensio/generator-bundle": "~3.0",
-        "symfony/phpunit-bridge": "~2.7"
+        "symfony/phpunit-bridge": "~2.7",
+        "jms-serializer/serializer-bundle": "dev-master"
     },
     "scripts": {
         "symfony-scripts": [

@@ -136,4 +136,60 @@ class JobRules
     {
         return $this->group;
     }
+    /**
+     * @var \PIA\appBundle\Entity\JobRuleLinks
+     */
+    private $link;
+
+
+    /**
+     * Set link
+     *
+     * @param \PIA\appBundle\Entity\JobRuleLinks $link
+     * @return JobRules
+     */
+    public function setLink(\PIA\appBundle\Entity\JobRuleLinks $link = null)
+    {
+        $this->link = $link;
+
+        return $this;
+    }
+
+    /**
+     * Get link
+     *
+     * @return \PIA\appBundle\Entity\JobRuleLinks 
+     */
+    public function getLink()
+    {
+        return $this->link;
+    }
+    /**
+     * @var \PIA\appBundle\Entity\JobRuleRecords
+     */
+    private $record;
+
+
+    /**
+     * Set record
+     *
+     * @param \PIA\appBundle\Entity\JobRuleRecords $record
+     * @return JobRules
+     */
+    public function setRecord(\PIA\appBundle\Entity\JobRuleRecords $record = null)
+    {
+        $this->record = $record;
+
+        return $this;
+    }
+
+    /**
+     * Get record
+     *
+     * @return \PIA\appBundle\Entity\JobRuleRecords 
+     */
+    public function getRecord()
+    {
+        return $this->record;
+    }
 }

@@ -26,12 +26,12 @@ PIA\appBundle\Entity\JobRuleRecords:
             nullable: false
             default: '0'
             column: type_refid
-    manyToOne:
+    oneToOne:
         jobRule:
             targetEntity: JobRules
             cascade: {  }
             mappedBy: null
-            inversedBy: null
+            inversedBy: record
             joinColumns:
                 job_rule_id:
                     referencedColumnName: Id
