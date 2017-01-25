@@ -233,10 +233,6 @@ object Form1: TForm1
     TabOrder = 8
     object tsLink: TTabSheet
       Caption = 'tsLink'
-      ExplicitLeft = 0
-      ExplicitTop = 0
-      ExplicitWidth = 0
-      ExplicitHeight = 0
       object dbgrdLinks: TDBGrid
         Left = 32
         Top = 8
@@ -262,10 +258,6 @@ object Form1: TForm1
     object tsRecord: TTabSheet
       Caption = 'tsRecord'
       ImageIndex = 1
-      ExplicitLeft = 0
-      ExplicitTop = 0
-      ExplicitWidth = 0
-      ExplicitHeight = 0
       object dbgrdRecords: TDBGrid
         Left = 30
         Top = 8

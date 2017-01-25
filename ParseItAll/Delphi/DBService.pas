@@ -20,6 +20,9 @@ type
     procedure AddRecord(aLinkId, aRecordNum: integer; aKey, aValue: string);
     procedure AddJobMessage(aLinkId, aJobNodeId: integer);
     constructor Create(aJobID: Integer; aMySQLEngine: TMySQLEngine);
+
+    //debug
+    function GetTestLink: string;
   end;
 
 implementation
@@ -28,6 +31,20 @@ uses
    System.SysUtils
   ,FireDAC.Comp.Client
   ,API_Files;
+
+function TPIADBService.GetTestLink: string;
+var
+  dsQuery: TFDQuery;
+begin
+  dsQuery:=TFDQuery.Create(nil);
+  try
+    dsQuery.SQL.Text:='select link from test_links where lev is null or lev=""';
+    FMySQLEngine.OpenQuery(dsQuery);
+    Result:=dsQuery.FieldByName('link').AsString;
+  finally
+    dsQuery.Free;
+  end;
+end;
 
 function TPIADBService.GetCustomHandleProcName(aJobRuleID: integer): string;
 var

@@ -128,7 +128,7 @@ var
 begin
   Form:=TMainForm.Create(nil);
   Model:=TPIAModel.Create(fdtblJobs.FieldByName('Id').AsInteger);
-  Model.Test(Form);
+  Model.Test(Form, fdtblLevels.FieldByName('level').AsInteger, fdtblGroups.FieldByName('id').AsInteger);
 end;
 
 procedure TForm1.FormCreate(Sender: TObject);

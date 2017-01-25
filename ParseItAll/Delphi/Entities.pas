@@ -69,6 +69,7 @@ type
   TJobRecordsRules = TObjectList<TJobRecordsRule>;
 
   TJobRulesGroup = record
+    ID: Integer;
     JobLinksRules: TJobLinksRules;
     JobRecordsRules: TJobRecordsRules;
     function GetContainerNodes: TJobNodes;
@@ -273,6 +274,7 @@ begin
         aMySQLEngine.OpenQuery(dsGroups);
         while not dsGroups.EOF do
           begin
+            JobRulesGroup.ID:=dsGroups.FieldByName('Id').AsInteger;
             JobRulesGroup.JobLinksRules:=TJobLinksRules.Create;
             JobRulesGroup.JobRecordsRules:=TJobRecordsRules.Create;
 

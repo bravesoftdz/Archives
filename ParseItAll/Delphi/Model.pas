@@ -65,7 +65,7 @@ type
   public
     constructor Create(aJobID: integer);
     procedure StartJob;
-    procedure Test(aForm: TMainForm);
+    procedure Test(aForm: TMainForm; aLevel, aGroupID: integer);
   end;
 
 implementation
@@ -113,12 +113,23 @@ begin
     end;
 end;
 
-procedure TPIAModel.Test(aForm: TMainForm);
+procedure TPIAModel.Test(aForm: TMainForm; aLevel, aGroupID: integer);
 var
-  JobRecords: TJobRecordsRule;
+  JobGroups: TJobRulesGroups;
+  JobRulesGroup: TJobRulesGroup;
+  InjectJS: string;
 begin
+  JobGroups:=FJob.GetRulesGroupsByLevel(aLevel);
+
+  for JobRulesGroup in JobGroups do
+    begin
+      InjectJS:=GetInjectJSForRulesGroup(JobRulesGroup, false);
+      TFilesEngine.SaveTextToFile('InjectJS.js', InjectJS); // DEBUG
+      if JobRulesGroup.ID = aGroupID then Break;
+    end;
+
   aForm.Show;
-  aForm.crm.Load(FDBService.GetCurrLink.Link);
+  aForm.crm.Load(FDBService.GetTestLink);
 end;
 
 function TPIAModel.EncodeRegExpsToJSON(aRegExps: TJobRegExps): TJSONArray;
