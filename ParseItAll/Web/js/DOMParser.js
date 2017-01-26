@@ -8,10 +8,8 @@ function checkNodeMatches(matches, node, element) {
     matches.isIDMatch = false;
     matches.isClassMatch = false;
     matches.isNameMatch = false;
-
     if (element === undefined)
         return false;
-
     // совпадение ID
     if (node.tagID === undefined)
         node.tagID = '';
@@ -71,25 +69,30 @@ function getElementOfCollectionByName(node, collection, matches) {
     return element;
 }
 
-function processRegExps(element, regexps) {
+function processRegExps(element, regexps, firstGroupResult) {
 
-    var result = element;
-    regexps.map(function (regexp) {
-        var HTML = element.innerHTML;
-        var matches = HTML.match(regexp.regexp);
+    var resText = element.innerText;
+    var HTML = element.innerHTML;
+    regexps.forEach(function (regexp) {
 
         if (regexp.type === 1) {
-            if (matches === null)
-                result = null;
+            var matches = HTML.match(regexp.regexp);
+            if (matches == null || firstGroupResult.noresult != null)
+                resText = '';
         }
-        if (regexp.type === 3) {
+        if (regexp.type === 4) {
+            matches = resText.match(regexp.regexp);
+            if (matches != null)
+                resText = matches[0];
+            else
+                resText = '';
+        }
+        if (regexp.type === 5) {
             var re = new RegExp(regexp.regexp, "g");
-            HTML = HTML.replace(re, "");
-            result.innerHTML = HTML;
+            resText = resText.replace(re, "");
         }
     });
-
-    return result;
+    return resText.trim(resText);
 }
 
 function getElementByRuleNode(node, collection, keepSearch) {
@@ -100,7 +103,6 @@ function getElementByRuleNode(node, collection, keepSearch) {
     };
     // элемент по индексу (по умолчанию)
     var element = getElementOfCollectionByIndex(node, collection, matches);
-
     if (keepSearch) {
         // приоритет атрибута "ID"
         if (element === undefined || !(matches.isIDMatch)) {
@@ -164,39 +166,41 @@ function getElementsByNodes(baseElement, nodes) {
 
 function getResultObjByElem(rule, elem, firstGroupResult) {
 
+    if (elem == null)
+        return getResultNoElementFind('NoMatchInRuleNodes');
+
     // обработка RegExps
-    elem = processRegExps(elem, rule.regexps);
-
-    // проверка на наличие ключевой (первой) записи в группе
-    if (firstGroupResult !== undefined)
-        if (firstGroupResult.nomatchruleid !== undefined)
-            elem = null;
-
-    if (elem === null)
-        return {
-            id: rule.id,
-            nomatchruleid: rule.id
-        };
+    if (rule.regexps.length > 0) {
+        var resText = processRegExps(elem, rule.regexps, firstGroupResult);
+        if (resText == '')
+            return getResultNoElementFind('NoMatchInRegExps');
+    }
 
     // пользовательская обработка
     if (rule.custom_func !== undefined)
         elem = customFuncs[rule.custom_func](elem);
 
+    // ссылки
     if (rule.level !== undefined)
         return {
             id: rule.id,
             level: rule.level,
             href: elem.href
         };
-    if (rule.key !== undefined) {
 
+    // записи
+    if (rule.key !== undefined) {
+        if (resText != '')
+            var value = resText;
+        else
+            value = elem.innerText;
         if (rule.typeid === 1)
             return {
                 id: rule.id,
                 key: rule.key,
-                value: elem.innerText
+                value: value
             };
-
+        
         if (rule.typeid === 2)
             return {
                 id: rule.id,
@@ -206,18 +210,17 @@ function getResultObjByElem(rule, elem, firstGroupResult) {
     }
 }
 
-function getResultNoElementFind(reason, nodeid){
+function getResultNoElementFind(reason, nodeid) {
     return {
         noresult: reason,
-        nodeid: nodeid,  
+        nodeid: nodeid,
     };
-} 
+}
 
 function getDataFromDOMbyGroup(group) {
     var element = document;
     var result = [];
     var returnObj = {};
-    
     // получаем коллекцию - контейнер спускаясь по дереву DOM
     group.nodes.forEach(function (node) {
 
@@ -227,12 +230,11 @@ function getDataFromDOMbyGroup(group) {
             // выбор узла 
             element = getElementByRuleNode(node, collection, true);
             // не найден узел
-            if (element == null) 
+            if (element == null)
                 result.push([getResultNoElementFind('NoMatchInGroupNodes', node.ID)]);
         }
-        
+
     });
-    
     if (element != null) {
         // перебираем правила группы
         group.rules.map(function (rule, i) {
@@ -248,7 +250,7 @@ function getDataFromDOMbyGroup(group) {
                 });
         });
     }
-    
+
     returnObj.result = result;
     if (group.islast === 1)
         returnObj.islast = 1;
