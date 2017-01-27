@@ -167,13 +167,13 @@ function getElementsByNodes(baseElement, nodes) {
 function getResultObjByElem(rule, elem, firstGroupResult) {
 
     if (elem == null)
-        return getResultNoElementFind('NoMatchInRuleNodes');
+        return getResultNoElementFind('NoMatchInRuleNodes', rule.id, rule.critical);
 
     // обработка RegExps
     if (rule.regexps.length > 0) {
         var resText = processRegExps(elem, rule.regexps, firstGroupResult);
         if (resText == '')
-            return getResultNoElementFind('NoMatchInRegExps');
+            return getResultNoElementFind('NoMatchInRegExps', rule.id, rule.critical);
     }
 
     // пользовательская обработка
@@ -210,10 +210,11 @@ function getResultObjByElem(rule, elem, firstGroupResult) {
     }
 }
 
-function getResultNoElementFind(reason, nodeid) {
+function getResultNoElementFind(message, ruleid, critical) {
     return {
-        noresult: reason,
-        nodeid: nodeid,
+        id: ruleid,
+        noresult: message,
+        critical: critical 
     };
 }
 
@@ -230,8 +231,10 @@ function getDataFromDOMbyGroup(group) {
             // выбор узла 
             element = getElementByRuleNode(node, collection, true);
             // не найден узел
-            if (element == null)
-                result.push([getResultNoElementFind('NoMatchInGroupNodes', node.ID)]);
+            if (element == null) {
+                var mainRule = group.rules[0]; 
+                result.push([getResultNoElementFind('NoMatchInGroupNodes', mainRule.id, mainRule.critical)]);
+            }    
         }
 
     });

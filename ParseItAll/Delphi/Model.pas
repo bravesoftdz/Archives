@@ -16,14 +16,6 @@ uses
   ,main;
 
 type
-  ENoElementFind = class(Exception)
-  private
-    FJobNodeID: Integer;
-  public
-    constructor Create(aJobNodeID: integer);
-    property JobNodeID: Integer read FJobNodeID;
-  end;
-
   TJSExtension = class
     class procedure databack(const data: string);
   end;
@@ -55,7 +47,7 @@ type
                 const browser: ICefBrowser; sourceProcess: TCefProcessId;
                 const message: ICefProcessMessage; out Result: Boolean);
     procedure InsertReceivedData(aData: string);
-    procedure OnNoElementFind(E: ENoElementFind; aCriticalType: Integer);
+    procedure OnNoResult(aMessage: string; aRuleID, aCriticalType: Integer);
     procedure CheckCustomJS(var aCustomJS: TCustomJS; aCustomProcName: string);
     function GetCustomHandleProc(aJobRuleID: integer; aProcDictionary: TObjectDictionary<Integer, TCustomProc>): TCustomProc;
     function GetInjectJSForRulesGroup(aJobRulesGroup: TJobRulesGroup; aIsLast: Boolean): string;
@@ -195,10 +187,14 @@ begin
         for jsnValue in jsnObjArray do
           begin
             try
-              if jsnValue is TJSONNull then Continue;
-              if jsnObj.GetValue('nomatchruleid')<>nil then Continue;
-
               jsnObj:=jsnValue as TJSONObject;
+
+              if jsnObj.GetValue('noresult')<>nil then
+                begin
+                  OnNoResult(jsnObj.GetValue('noresult').Value, (jsnObj.GetValue('id') as TJSONNumber).asint, (jsnObj.GetValue('critical') as TJSONNumber).asint);
+                  Continue;
+                end;
+
               CustomHandleProc:=GetCustomHandleProc((jsnObj.GetValue('id') as TJSONNumber).AsInt, CustomHandleProcDictionary);
 
               if jsnObj.GetValue('href')<>nil then
@@ -264,6 +260,7 @@ begin
         jsnRule.AddPair('nodes', EncodeNodesToJSON(JobLinksRule.GetContainerInsideNodes));
         jsnRule.AddPair('regexps', EncodeRegExpsToJSON(JobLinksRule.RegExps));
         jsnRule.AddPair('custom_func', CustomJS.JSFunc);
+        jsnRule.AddPair('critical', TJSONNumber.Create(JobLinksRule.CriticalType));
         jsnRules.AddElement(jsnRule);
       end;
 
@@ -278,6 +275,7 @@ begin
         jsnRule.AddPair('nodes', EncodeNodesToJSON(JobRecordsRule.GetContainerInsideNodes));
         jsnRule.AddPair('regexps', EncodeRegExpsToJSON(JobRecordsRule.RegExps));
         jsnRule.AddPair('custom_func', CustomJS.JSFunc);
+        jsnRule.AddPair('critical', TJSONNumber.Create(JobRecordsRule.CriticalType));
         jsnRules.AddElement(jsnRule)
       end;
 
@@ -322,21 +320,19 @@ begin
     if frame.Url = FCurrLink.Link then ProcessRules(frame);
 end;
 
-procedure TPIAModel.OnNoElementFind(E: ENoElementFind; aCriticalType: Integer);
+procedure TPIAModel.OnNoResult(aMessage: string; aRuleID, aCriticalType: Integer);
+var
+  msg: string;
 begin
+  if aCriticalType>0 then
+    FDBService.AddJobMessage(FCurrLink.ID, aMessage, aRuleID, aCriticalType);
+
   case aCriticalType of
     1: begin
-         FDBService.AddJobMessage(FCurrLink.ID, E.JobNodeID);
-         raise Exception.Create(E.Message+' Critical Error. Thread Stopped.');
+         msg:=Format('No Result on LinkID=%d, JobRuleID=%d. Critical Error. Thread Stopped.', [FCurrLink.ID, aRuleID]);
+         raise Exception.Create('No Result on LinkID=%d, JobRuleID=%d.'+' Critical Error. Thread Stopped.');
        end;
-    2:  FDBService.AddJobMessage(FCurrLink.ID, E.JobNodeID);
   end;
-end;
-
-constructor ENoElementFind.Create(aJobNodeID: integer);
-begin
-  inherited Create('No HTML Elements Find!');
-  FJobNodeID:=aJobNodeID;
 end;
 
 procedure TPIAModel.ChromiumInit;

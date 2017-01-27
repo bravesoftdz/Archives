@@ -18,7 +18,7 @@ type
     function AddLink(aLink: string; aMasterLinkID, aLevel: Integer; aNum: Integer = 1): Integer;
     procedure SetLinkHandle(aLinkID: Integer; aValue: Integer);
     procedure AddRecord(aLinkId, aRecordNum: integer; aKey, aValue: string);
-    procedure AddJobMessage(aLinkId, aJobNodeId: integer);
+    procedure AddJobMessage(aLinkId: Integer; aMessage: string; aRuleID, aCriticalType: integer);
     constructor Create(aJobID: Integer; aMySQLEngine: TMySQLEngine);
 
     //debug
@@ -63,7 +63,7 @@ begin
   end;
 end;
 
-procedure TPIADBService.AddJobMessage(aLinkId, aJobNodeId: integer);
+procedure TPIADBService.AddJobMessage(aLinkId: Integer; aMessage: string; aRuleID, aCriticalType: integer);
 var
   dsQuery: TFDQuery;
   sql: string;
@@ -72,10 +72,14 @@ begin
   try
     sql:='insert into job_messages set';
     sql:=sql+' link_id=:link_id';
-    sql:=sql+',job_node_id=:job_node_id';
+    sql:=sql+',mtime=:mtime';
+    sql:=sql+',job_rule_id=:ruleid';
+    sql:=sql+',message=:message';
     dsQuery.SQL.Text:=sql;
     dsQuery.ParamByName('link_id').AsInteger:=aLinkId;
-    dsQuery.ParamByName('job_node_id').AsInteger:=aJobNodeId;
+    dsQuery.ParamByName('mtime').AsDateTime:=Now;
+    dsQuery.ParamByName('ruleid').AsInteger:=aRuleID;
+    dsQuery.ParamByName('message').AsString:=aMessage;
     FMySQLEngine.ExecQuery(dsQuery);
   finally
     dsQuery.Free;
