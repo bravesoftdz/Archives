@@ -196,11 +196,10 @@ begin
           begin
             try
               if jsnValue is TJSONNull then Continue;
+              if jsnObj.GetValue('nomatchruleid')<>nil then Continue;
 
               jsnObj:=jsnValue as TJSONObject;
               CustomHandleProc:=GetCustomHandleProc((jsnObj.GetValue('id') as TJSONNumber).AsInt, CustomHandleProcDictionary);
-
-              if jsnObj.GetValue('nomatchruleid')<>nil then Continue;
 
               if jsnObj.GetValue('href')<>nil then
                 begin
