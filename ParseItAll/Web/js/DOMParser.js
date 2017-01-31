@@ -71,28 +71,27 @@ function getElementOfCollectionByName(node, collection, matches) {
 
 function processRegExps(element, regexps, firstGroupResult) {
 
-    var resText = element.innerText;
+    var matches = [];
+    var Text = element.innerText;
     var HTML = element.innerHTML;
+
     regexps.forEach(function (regexp) {
 
         if (regexp.type === 1) {
-            var matches = HTML.match(regexp.regexp);
+            matches = HTML.match(regexp.regexp);
             if (matches == null || firstGroupResult.noresult != null)
-                resText = '';
+                matches = null;
         }
         if (regexp.type === 4) {
-            matches = resText.match(regexp.regexp);
-            if (matches != null)
-                resText = matches[0];
-            else
-                resText = '';
+            matches = Text.match(regexp.regexp);
         }
         if (regexp.type === 5) {
             var re = new RegExp(regexp.regexp, "g");
-            resText = resText.replace(re, "");
+            matches[0] = Text.replace(re, "");
         }
     });
-    return resText.trim(resText);
+
+    return matches;
 }
 
 function getElementByRuleNode(node, collection, keepSearch) {
@@ -164,32 +163,53 @@ function getElementsByNodes(baseElement, nodes) {
     return elements;
 }
 
-function getResultObjByElem(rule, elem, firstGroupResult) {
+function getElementResults(rule, elem, firstGroupResult) {
 
     if (elem == null)
-        return getResultNoElementFind('NoMatchInRuleNodes', rule.id, rule.critical);
+        return [getResultNoElementFind('NoMatchInRuleNodes', rule.id, rule.critical)];
 
     // обработка RegExps
     if (rule.regexps.length > 0) {
-        var resText = processRegExps(elem, rule.regexps, firstGroupResult);
-        if (resText == '')
-            return getResultNoElementFind('NoMatchInRegExps', rule.id, rule.critical);
+        var matches = processRegExps(elem, rule.regexps, firstGroupResult);
+        if (matches == null)
+            return [getResultNoElementFind('NoMatchInRegExps', rule.id, rule.critical)];
     }
 
     // пользовательская обработка
     if (rule.custom_func !== undefined)
         elem = customFuncs[rule.custom_func](elem);
 
-    // ссылки
-    if (rule.level !== undefined)
-        return {
-            id: rule.id,
-            level: rule.level,
-            href: elem.href
-        };
+    if 
+    
+    
+    var elementResults = [];
+    if (matches == null) {
+        matches[0] = elem.href;
+        matches[0] = elem.innerText;
+        matches[0] = elem.innerHTML;
+    }
+
+    matches.forEach(function (value) {
+        var elemRes = {};
+        elemRes.id = rule.id;
+
+        // ссылки
+        if (rule.level != null) {
+            elemRes.level = rule.level;
+            elemRes.href = value;
+        }
+
+        // записи
+        if (rule.key != null) {
+            elemRes.key = rule.key;
+            elemRes.value = value;
+        }
+
+        elementResults.push(elemRes);
+    });
 
     // записи
-    if (rule.key !== undefined) {
+    if (rule.key != null) {
         if (resText != '')
             var value = resText;
         else
@@ -200,7 +220,7 @@ function getResultObjByElem(rule, elem, firstGroupResult) {
                 key: rule.key,
                 value: value
             };
-        
+
         if (rule.typeid === 2)
             return {
                 id: rule.id,
@@ -214,13 +234,13 @@ function getResultNoElementFind(message, ruleid, critical) {
     return {
         id: ruleid,
         noresult: message,
-        critical: critical 
+        critical: critical
     };
 }
 
 function getDataFromDOMbyGroup(group) {
     var element = document;
-    var result = [];
+    var resultsFromElements = [];
     var returnObj = {};
     // получаем коллекцию - контейнер спускаясь по дереву DOM
     group.nodes.forEach(function (node) {
@@ -232,9 +252,9 @@ function getDataFromDOMbyGroup(group) {
             element = getElementByRuleNode(node, collection, true);
             // не найден узел
             if (element == null) {
-                var mainRule = group.rules[0]; 
+                var mainRule = group.rules[0];
                 result.push([getResultNoElementFind('NoMatchInGroupNodes', mainRule.id, mainRule.critical)]);
-            }    
+            }
         }
 
     });
@@ -244,12 +264,11 @@ function getDataFromDOMbyGroup(group) {
             var elements = getElementsByNodes(element, rule.nodes);
             if (i === 0)
                 elements.map(function (elem) {
-                    result.push([getResultObjByElem(rule, elem)]);
+                    resultsFromElements.push(getElementResults(rule, elem));
                 });
             else
-                result.map(function (groupArr, j) {
-                    var resObj = getResultObjByElem(rule, elements[j], groupArr[0]);
-                    groupArr.push(resObj);
+                resultsFromElements.map(function (elementResults, j) {
+                    elementResults.concat(getElementResults(rule, elements[j], elementResults[0]));
                 });
         });
     }
