@@ -71,24 +71,29 @@ function getElementOfCollectionByName(node, collection, matches) {
 
 function processRegExps(element, regexps, firstGroupResult) {
 
-    var matches = [];
-    var Text = element.innerText;
-    var HTML = element.innerHTML;
-
+    var matches = [element.innerHTML];
     regexps.forEach(function (regexp) {
 
-        if (regexp.type === 1) {
-            matches = HTML.match(regexp.regexp);
-            if (matches == null || firstGroupResult.noresult != null)
-                matches = null;
-        }
-        if (regexp.type === 4) {
-            matches = Text.match(regexp.regexp);
-        }
-        if (regexp.type === 5) {
-            var re = new RegExp(regexp.regexp, "g");
-            matches[0] = Text.replace(re, "");
-        }
+        
+        
+        var currMatches = [];
+        matches.map(function(){
+            if (regexp.type === 1) {
+                currMatches = element.innerHTML.match(regexp.regexp);
+                if (currMatches == null || firstGroupResult.noresult != null)
+                    currMatches = null;
+            }
+            if (regexp.type === 4) {
+                currMatches = element.innerText.match(regexp.regexp);
+            }
+            if (regexp.type === 5) {
+                var re = new RegExp(regexp.regexp, "g");
+                var value = element.innerText.replace(re, "");
+                currMatches.push(value);
+            }
+        
+        });
+        matches = currMatches;
     });
 
     return matches;
@@ -167,40 +172,49 @@ function getElementResults(rule, elem, firstGroupResult) {
 
     if (elem == null)
         return [getResultNoElementFind('NoMatchInRuleNodes', rule.id, rule.critical)];
+        
+    // пользовательская обработка
+    if (rule.custom_func !== undefined)
+        elem = customFuncs[rule.custom_func](elem);
+    
+    // тип контента
+    if (rule.typeid === 1)
+        var content = elem.innerText;
+    if (rule.typeid === 2)
+        content = elem.innerHTML;    
 
     // обработка RegExps
     if (rule.regexps.length > 0) {
-        var matches = processRegExps(elem, rule.regexps, firstGroupResult);
+        var matches = processRegExps(content, rule.regexps, firstGroupResult);
         if (matches == null)
             return [getResultNoElementFind('NoMatchInRegExps', rule.id, rule.critical)];
     }
 
-    // пользовательская обработка
-    if (rule.custom_func !== undefined)
-        elem = customFuncs[rule.custom_func](elem);
+    // ссылки
+    if (rule.level != null)
+        var isrule = true;
+    // записи
+    if (rule.key != null)
+        var isrecord = true;
 
-    if 
-    
-    
     var elementResults = [];
     if (matches == null) {
-        matches[0] = elem.href;
-        matches[0] = elem.innerText;
-        matches[0] = elem.innerHTML;
+        if (isrule)
+            matches[0] = elem.href;
+        if (isrecord)
+            matches[0] = content;   
     }
 
     matches.forEach(function (value) {
         var elemRes = {};
         elemRes.id = rule.id;
 
-        // ссылки
-        if (rule.level != null) {
+        if (isrule) {
             elemRes.level = rule.level;
             elemRes.href = value;
         }
 
-        // записи
-        if (rule.key != null) {
+        if (isrecord) {
             elemRes.key = rule.key;
             elemRes.value = value;
         }
@@ -208,26 +222,7 @@ function getElementResults(rule, elem, firstGroupResult) {
         elementResults.push(elemRes);
     });
 
-    // записи
-    if (rule.key != null) {
-        if (resText != '')
-            var value = resText;
-        else
-            value = elem.innerText;
-        if (rule.typeid === 1)
-            return {
-                id: rule.id,
-                key: rule.key,
-                value: value
-            };
-
-        if (rule.typeid === 2)
-            return {
-                id: rule.id,
-                key: rule.key,
-                value: elem.innerHTML
-            };
-    }
+    return elementResults;
 }
 
 function getResultNoElementFind(message, ruleid, critical) {
