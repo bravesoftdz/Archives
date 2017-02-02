@@ -18,8 +18,13 @@ function checkNodeMatches(matches, node, element) {
     // совпадение class
     if (node.className === undefined)
         node.className = '';
-    if (getNormalizeString(element.className) === node.className)
-        matches.isClassMatch = true;
+    var clName = node.className.toString();
+    var clArr = clName.split(' ');
+    clName = (getNormalizeString(element.className));
+    clArr.forEach(function (item) {
+        if (clName.match(item) != null)
+            matches.isClassMatch = true;
+    });
     // совпадение name
     if (node.name === undefined)
         node.name = null;
@@ -69,31 +74,37 @@ function getElementOfCollectionByName(node, collection, matches) {
     return element;
 }
 
-function processRegExps(element, regexps, firstGroupResult) {
+function processRegExps(content, regexps, firstGroupResult) {
 
-    var matches = [element.innerHTML];
+    var matches = [content];
     regexps.forEach(function (regexp) {
 
-        
-        
         var currMatches = [];
-        matches.map(function(){
-            if (regexp.type === 1) {
-                currMatches = element.innerHTML.match(regexp.regexp);
-                if (currMatches == null || firstGroupResult.noresult != null)
-                    currMatches = null;
-            }
-            if (regexp.type === 4) {
-                currMatches = element.innerText.match(regexp.regexp);
-            }
-            if (regexp.type === 5) {
-                var re = new RegExp(regexp.regexp, "g");
-                var value = element.innerText.replace(re, "");
-                currMatches.push(value);
-            }
-        
-        });
-        matches = currMatches;
+        if (matches != null) {
+            matches.map(function (value) {
+                if (regexp.type === 1) {
+                    var contain = value.match(regexp.regexp);
+                    if (contain != null) {
+                        currMatches.push(value);
+                        if (firstGroupResult != null)
+                            if (firstGroupResult.noresult != null)
+                                currMatches = null;
+                    } else
+                        currMatches = null;
+                }
+                if (regexp.type === 2) {
+                    var re = new RegExp(regexp.regexp, "g");
+                    currMatches = value.match(re);
+                }
+                if (regexp.type === 3) {
+                    re = new RegExp(regexp.regexp, "g");
+                    value = value.replace(re, "");
+                    currMatches.push(value);
+                }
+
+            });
+            matches = currMatches;
+        }
     });
 
     return matches;
@@ -172,16 +183,16 @@ function getElementResults(rule, elem, firstGroupResult) {
 
     if (elem == null)
         return [getResultNoElementFind('NoMatchInRuleNodes', rule.id, rule.critical)];
-        
+
     // пользовательская обработка
     if (rule.custom_func !== undefined)
         elem = customFuncs[rule.custom_func](elem);
-    
+
     // тип контента
     if (rule.typeid === 1)
         var content = elem.innerText;
     if (rule.typeid === 2)
-        content = elem.innerHTML;    
+        content = elem.innerHTML;
 
     // обработка RegExps
     if (rule.regexps.length > 0) {
@@ -202,7 +213,7 @@ function getElementResults(rule, elem, firstGroupResult) {
         if (isrule)
             matches[0] = elem.href;
         if (isrecord)
-            matches[0] = content;   
+            matches[0] = content;
     }
 
     matches.forEach(function (value) {
@@ -268,7 +279,7 @@ function getDataFromDOMbyGroup(group) {
         });
     }
 
-    returnObj.result = result;
+    returnObj.result = resultsFromElements;
     if (group.islast === 1)
         returnObj.islast = 1;
     return JSON.stringify(returnObj);
