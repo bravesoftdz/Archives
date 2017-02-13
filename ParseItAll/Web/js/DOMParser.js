@@ -74,7 +74,7 @@ function getElementOfCollectionByName(node, collection, matches) {
     return element;
 }
 
-function processRegExps(content, regexps, firstGroupResult) {
+function processRegExps(content, regexps, firstGroupResult, checkOnly) {
 
     var matches = [content];
     regexps.forEach(function (regexp) {
@@ -86,6 +86,7 @@ function processRegExps(content, regexps, firstGroupResult) {
                     var contain = value.match(regexp.regexp);
                     if (contain != null) {
                         currMatches.push(value);
+                        checkOnly = true;
                         if (firstGroupResult != null)
                             if (firstGroupResult.noresult != null)
                                 currMatches = null;
@@ -191,36 +192,38 @@ function getElementResults(rule, elem, firstGroupResult) {
     // тип контента
     if (rule.typeid === 1)
         var content = elem.innerText;
-    if (rule.typeid === 2)
+    if (rule.typeid === 2 || rule.typeid == null)
         content = elem.innerHTML;
 
     // обработка RegExps
     if (rule.regexps.length > 0) {
-        var matches = processRegExps(content, rule.regexps, firstGroupResult);
+        var checkOnly = false;
+        var matches = processRegExps(content, rule.regexps, firstGroupResult, checkOnly);
         if (matches == null)
             return [getResultNoElementFind('NoMatchInRegExps', rule.id, rule.critical)];
     }
 
     // ссылки
     if (rule.level != null)
-        var isrule = true;
+        var islink = true;
     // записи
     if (rule.key != null)
         var isrecord = true;
 
     var elementResults = [];
-    if (matches == null) {
-        if (isrule)
-            matches[0] = elem.href;
+    if (matches == null || checkOnly) {
+        matches = [];
+        if (islink)
+            matches.push(elem.href);
         if (isrecord)
-            matches[0] = content;
+            matches.push(content);
     }
 
     matches.forEach(function (value) {
         var elemRes = {};
         elemRes.id = rule.id;
 
-        if (isrule) {
+        if (islink) {
             elemRes.level = rule.level;
             elemRes.href = value;
         }
@@ -259,7 +262,7 @@ function getDataFromDOMbyGroup(group) {
             // не найден узел
             if (element == null) {
                 var mainRule = group.rules[0];
-                result.push([getResultNoElementFind('NoMatchInGroupNodes', mainRule.id, mainRule.critical)]);
+                resultsFromElements.push([getResultNoElementFind('NoMatchInGroupNodes', mainRule.id, mainRule.critical)]);
             }
         }
 
