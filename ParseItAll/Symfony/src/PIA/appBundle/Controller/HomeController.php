@@ -8,12 +8,14 @@ class HomeController extends Controller {
 
     public function indexAction() {
 
-        $jobs = $this->getDoctrine()->getRepository('PIABundle:Jobs')
-                ->findAll();
+        //$jobs = $this->getDoctrine()->getRepository('PIABundle:Jobs')
+        //        ->findAll();
 
-        return $this->render('PIABundle:Jobs:index.html.twig', array(
-                    'jobs' => $jobs
-        ));
+        //return $this->render('PIABundle:Jobs:index.html.twig', array(
+        //            'jobs' => $jobs
+        //));
+        
+        return $this->render('PIABundle:Home:index.html.twig');
     }
 
 }
