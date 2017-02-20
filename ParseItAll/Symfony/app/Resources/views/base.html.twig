@@ -2,14 +2,10 @@
 <html>
     <head>
         <meta charset="UTF-8" />
-        <title>{% block title %}Welcome!{% endblock %}</title>
-        {% block stylesheets %}{% endblock %}
-        <link rel="icon" type="image/x-icon" href="{{ asset('favicon.ico') }}" />
-        <script src="{{ asset('/js/vendors/jquery-3.1.1.js') }}" type="text/javascript"></script>
-        <script src="{{ asset('/js/app.js') }}" type="text/javascript"></script>
+        <title>Parse It All!</title>
+        <link rel="stylesheet" href="{{ asset('css/main.css') }}" />
     </head>
     <body>
         {% block body %}{% endblock %}
-        {% block javascripts %}{% endblock %}
     </body>
 </html>
