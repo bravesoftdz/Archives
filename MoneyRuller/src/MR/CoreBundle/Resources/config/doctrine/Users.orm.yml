@@ -1,0 +1,41 @@
+MR\CoreBundle\Entity\Users:
+    type: entity
+    table: users
+    uniqueConstraints:
+        username:
+            columns:
+                - username
+        email:
+            columns:
+                - email
+    id:
+        id:
+            type: integer
+            nullable: false
+            unsigned: false
+            id: true
+            column: Id
+            generator:
+                strategy: IDENTITY
+    fields:
+        username:
+            type: string
+            nullable: false
+            length: 25
+            fixed: false
+            default: ''
+        password:
+            type: string
+            nullable: true
+            length: 64
+            fixed: false
+        email:
+            type: string
+            nullable: true
+            length: 255
+            fixed: false
+        isActive:
+            type: boolean
+            nullable: true
+            column: is_active
+    lifecycleCallbacks: {  }
