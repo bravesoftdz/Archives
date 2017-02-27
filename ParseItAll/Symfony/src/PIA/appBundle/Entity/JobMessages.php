@@ -80,4 +80,88 @@ class JobMessages
     {
         return $this->jobNode;
     }
+    /**
+     * @var \DateTime
+     */
+    private $mtime;
+
+    /**
+     * @var string
+     */
+    private $message;
+
+    /**
+     * @var \PIA\appBundle\Entity\JobRules
+     */
+    private $jobRule;
+
+
+    /**
+     * Set mtime
+     *
+     * @param \DateTime $mtime
+     * @return JobMessages
+     */
+    public function setMtime($mtime)
+    {
+        $this->mtime = $mtime;
+
+        return $this;
+    }
+
+    /**
+     * Get mtime
+     *
+     * @return \DateTime 
+     */
+    public function getMtime()
+    {
+        return $this->mtime;
+    }
+
+    /**
+     * Set message
+     *
+     * @param string $message
+     * @return JobMessages
+     */
+    public function setMessage($message)
+    {
+        $this->message = $message;
+
+        return $this;
+    }
+
+    /**
+     * Get message
+     *
+     * @return string 
+     */
+    public function getMessage()
+    {
+        return $this->message;
+    }
+
+    /**
+     * Set jobRule
+     *
+     * @param \PIA\appBundle\Entity\JobRules $jobRule
+     * @return JobMessages
+     */
+    public function setJobRule(\PIA\appBundle\Entity\JobRules $jobRule = null)
+    {
+        $this->jobRule = $jobRule;
+
+        return $this;
+    }
+
+    /**
+     * Get jobRule
+     *
+     * @return \PIA\appBundle\Entity\JobRules 
+     */
+    public function getJobRule()
+    {
+        return $this->jobRule;
+    }
 }

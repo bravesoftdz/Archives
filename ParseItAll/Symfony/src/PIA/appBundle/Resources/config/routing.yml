@@ -1,3 +1,10 @@
+pia_login:
+    path:     /login
+    defaults: { _controller: PIABundle:Security:login }  
+    
+pia_logout:
+    path:     /logout
+
 pia_homepage:
     path:     /
     defaults: { _controller: PIABundle:Home:index }

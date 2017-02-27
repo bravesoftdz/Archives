@@ -1,6 +1,6 @@
-PIA\appBundle\Entity\Jobs:
+PIA\appBundle\Entity\TestLinks:
     type: entity
-    table: jobs
+    table: test_links
     id:
         id:
             type: integer
@@ -11,20 +11,14 @@ PIA\appBundle\Entity\Jobs:
             generator:
                 strategy: IDENTITY
     fields:
-        caption:
-            type: string
-            nullable: false
-            length: 255
-            fixed: false
-            default: ''
-        zeroLink:
+        link:
             type: text
             nullable: false
             length: 65535
             fixed: false
-            column: zero_link
-    oneToMany:
-        levels:
-            targetEntity: JobLevels
-            mappedBy: job
+        lev:
+            type: integer
+            nullable: false
+            unsigned: false
+            default: '0'
     lifecycleCallbacks: {  }
