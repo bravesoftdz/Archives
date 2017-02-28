@@ -9,6 +9,10 @@ pia_homepage:
     path:     /
     defaults: { _controller: PIABundle:Home:index }
     
+pia_jobs:
+    path:     /jobs       
+    defaults: { _controller: PIABundle:Jobs:list }
+
 pia_test_rules:
     path:     /test/{jobid}
     defaults: { _controller: PIABundle:TestRules:index }
@@ -21,5 +25,7 @@ pia_get_groups:
     defaults: { _controller: PIABundle:TestRules:groups }
     requirements:
         methods:  GET
-        levelid: \d+        
+        levelid: \d+   
+        
+        
     

@@ -1,23 +1,24 @@
 {% extends 'base.html.twig' %}
 
 {% block body %}
-    
+
     {% block header %}
         <header>
             <div class="toppanel-nav">
                 <div class="toppanel-logo"><b>Parse It All!</b></div>
+                <div class="toppanel-nav-ctr"><a href="{{ path('pia_jobs') }}">Jobs</a></div>
                 <div class="toppanel-ua-ctr">
-                {% if is_granted('IS_AUTHENTICATED_FULLY') %}
-                    <span>{{ app.user.username }} (<a href="{{ path('pia_logout') }}">Sign Out</a>)</span>
-                {% else %}
-                    <span><a href="{{ path('pia_login') }}">Sign In</a></span>
-                {% endif %}    
+                    {% if is_granted('IS_AUTHENTICATED_FULLY') %}
+                        <span>{{ app.user.username }} (<a href="{{ path('pia_logout') }}">Sign Out</a>)</span>
+                    {% else %}
+                        <span><a href="{{ path('pia_login') }}">Sign In</a></span>
+                    {% endif %}    
                 </div>
             </div>
         </header>
     {% endblock %}    
-    
+
     {% block content %}
     {% endblock %}
-    
+
 {% endblock %}

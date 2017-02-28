@@ -1,11 +1,11 @@
-{% extends 'base.html.twig' %}
+{% extends 'PIABundle:Common:common.html.twig' %}
 
-{% block body %}
+{% block content %}
     <table>
         {% for job in jobs %}
             <tr>
                 <td>{{ job.caption }}</td>
-                <td><a href="{{ path('pia_test_rules', {'jobid': job.id}) }}">Test Rules</a></td>
+                <td><a href="#">manage</a></td>
             </tr>
         {% endfor %}
     </table>

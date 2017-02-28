@@ -3,7 +3,7 @@ body {
     font: 14px sans-serif;
 }
 .toppanel-logo {
-    display: inline-block;
+    float: left;
     font-size: 1.17em;
 }
 .toppanel-nav {
@@ -11,6 +11,10 @@ body {
     padding: 5px;
     width: 1080px;
     background: #fff;
+    text-align: center;
+}
+.toppanel-nav-ctr {
+    display: inline-block;
 }
 .toppanel-ua-ctr {
     float: right;
