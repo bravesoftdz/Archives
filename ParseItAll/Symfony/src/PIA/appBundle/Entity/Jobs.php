@@ -32,8 +32,7 @@ class Jobs {
     /**
      * Constructor
      */
-    public function __construct()
-    {
+    public function __construct() {
         $this->levels = new \Doctrine\Common\Collections\ArrayCollection();
     }
 
@@ -42,8 +41,7 @@ class Jobs {
      *
      * @return integer 
      */
-    public function getId()
-    {
+    public function getId() {
         return $this->id;
     }
 
@@ -53,8 +51,7 @@ class Jobs {
      * @param string $caption
      * @return Jobs
      */
-    public function setCaption($caption)
-    {
+    public function setCaption($caption) {
         $this->caption = $caption;
 
         return $this;
@@ -65,8 +62,7 @@ class Jobs {
      *
      * @return string 
      */
-    public function getCaption()
-    {
+    public function getCaption() {
         return $this->caption;
     }
 
@@ -76,8 +72,7 @@ class Jobs {
      * @param string $zeroLink
      * @return Jobs
      */
-    public function setZeroLink($zeroLink)
-    {
+    public function setZeroLink($zeroLink) {
         $this->zeroLink = $zeroLink;
 
         return $this;
@@ -88,8 +83,7 @@ class Jobs {
      *
      * @return string 
      */
-    public function getZeroLink()
-    {
+    public function getZeroLink() {
         return $this->zeroLink;
     }
 
@@ -99,8 +93,7 @@ class Jobs {
      * @param \PIA\appBundle\Entity\JobLevels $levels
      * @return Jobs
      */
-    public function addLevel(\PIA\appBundle\Entity\JobLevels $levels)
-    {
+    public function addLevel(\PIA\appBundle\Entity\JobLevels $levels) {
         $this->levels[] = $levels;
 
         return $this;
@@ -111,8 +104,7 @@ class Jobs {
      *
      * @param \PIA\appBundle\Entity\JobLevels $levels
      */
-    public function removeLevel(\PIA\appBundle\Entity\JobLevels $levels)
-    {
+    public function removeLevel(\PIA\appBundle\Entity\JobLevels $levels) {
         $this->levels->removeElement($levels);
     }
 
@@ -121,8 +113,36 @@ class Jobs {
      *
      * @return \Doctrine\Common\Collections\Collection 
      */
-    public function getLevels()
-    {
+    public function getLevels() {
         return $this->levels;
+    }
+
+    /**
+     * @var \PIA\appBundle\Entity\Users
+     */
+    private $user;
+
+
+    /**
+     * Set user
+     *
+     * @param \PIA\appBundle\Entity\Users $user
+     * @return Jobs
+     */
+    public function setUser(\PIA\appBundle\Entity\Users $user = null)
+    {
+        $this->user = $user;
+
+        return $this;
+    }
+
+    /**
+     * Get user
+     *
+     * @return \PIA\appBundle\Entity\Users 
+     */
+    public function getUser()
+    {
+        return $this->user;
     }
 }

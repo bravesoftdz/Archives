@@ -8,8 +8,16 @@ class JobsController extends Controller {
 
     public function listAction() {
 
-        $jobs = $this->getDoctrine()->getRepository('PIABundle:Jobs')
-                ->findAll();
+        $repository = $this->getDoctrine()->getRepository('PIABundle:Jobs');
+
+        $user_id = $this->getUser()->getId();
+        
+        $query = $repository->createQueryBuilder('p')
+                ->where('p.user = :user')
+                ->setParameter('user', $user_id)
+                ->orderBy('p.id', 'ASC')
+                ->getQuery();
+        $jobs = $query->getResult();
 
         return $this->render('PIABundle:Jobs:job_list.html.twig', array(
                     'jobs' => $jobs

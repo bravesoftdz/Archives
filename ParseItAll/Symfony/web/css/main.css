@@ -2,21 +2,23 @@ body {
     margin: 0;
     font: 14px sans-serif;
 }
+.toppanel {
+    background: #fff;
+    text-align: center;
+}
 .toppanel-logo {
     float: left;
     font-size: 1.17em;
 }
-.toppanel-nav {
-    margin: 0 auto;
-    padding: 5px;
-    width: 1080px;
-    background: #fff;
-    text-align: center;
-}
-.toppanel-nav-ctr {
+.toppanel-nav-ctrl {
     display: inline-block;
 }
-.toppanel-ua-ctr {
+.toppanel-ua-ctrl {
     float: right;
     margin-left: 5px;
 }
+.content, .toppanel {
+    width: 1080px;
+    margin: 0 auto;
+    padding: 5px;
+} 

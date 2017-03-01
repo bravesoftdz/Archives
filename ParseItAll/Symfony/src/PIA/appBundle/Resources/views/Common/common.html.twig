@@ -4,10 +4,10 @@
 
     {% block header %}
         <header>
-            <div class="toppanel-nav">
+            <div class="toppanel">
                 <div class="toppanel-logo"><b>Parse It All!</b></div>
-                <div class="toppanel-nav-ctr"><a href="{{ path('pia_jobs') }}">Jobs</a></div>
-                <div class="toppanel-ua-ctr">
+                <div class="toppanel-nav-ctrl"><a href="{{ path('pia_jobs') }}">Jobs</a></div>
+                <div class="toppanel-ua-ctrl">
                     {% if is_granted('IS_AUTHENTICATED_FULLY') %}
                         <span>{{ app.user.username }} (<a href="{{ path('pia_logout') }}">Sign Out</a>)</span>
                     {% else %}
@@ -17,8 +17,10 @@
             </div>
         </header>
     {% endblock %}    
-
-    {% block content %}
-    {% endblock %}
-
+    
+    <div class="content">
+        {% block content %}
+        {% endblock %}
+    </div>
+        
 {% endblock %}
