@@ -22,3 +22,13 @@ body {
     margin: 0 auto;
     padding: 5px;
 } 
+.panel-buttons {
+    padding: 10px;
+}
+.button-add {
+    background: #6d6;
+    text-decoration: none;
+    padding: 8px;
+    color: white;
+    border-radius: 15px;
+}

@@ -2,7 +2,9 @@
 
 {% block content %}
     <hr>
-    <div>+ New Job</div>
+    <div class="panel-buttons">
+        <a class="button-add" href="{{ path('pia_job_add') }}">+ New Job</a>
+    </div>
     <table>
         {% for job in jobs %}
             <tr>

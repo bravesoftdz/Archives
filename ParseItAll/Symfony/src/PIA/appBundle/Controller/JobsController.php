@@ -23,5 +23,9 @@ class JobsController extends Controller {
                     'jobs' => $jobs
         ));
     }
+    
+    public function addAction() {
+        
+    }
 
 }

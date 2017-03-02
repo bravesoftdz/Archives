@@ -12,7 +12,11 @@ pia_homepage:
 pia_jobs:
     path:     /jobs       
     defaults: { _controller: PIABundle:Jobs:list }
-
+    
+pia_job_add:
+    path:     /jobs/add
+    defaults: { _controller: PIABundle:Jobs:add }
+    
 pia_test_rules:
     path:     /test/{jobid}
     defaults: { _controller: PIABundle:TestRules:index }
