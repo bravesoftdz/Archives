@@ -11,7 +11,7 @@ class JobsController extends Controller {
         $repository = $this->getDoctrine()->getRepository('PIABundle:Jobs');
 
         $user_id = $this->getUser()->getId();
-        
+
         $query = $repository->createQueryBuilder('p')
                 ->where('p.user = :user')
                 ->setParameter('user', $user_id)
@@ -23,9 +23,9 @@ class JobsController extends Controller {
                     'jobs' => $jobs
         ));
     }
-    
+
     public function addAction() {
-        
+        return $this->render('PIABundle:Editor:job_edit.html.twig');
     }
 
 }
