@@ -32,3 +32,13 @@ body {
     color: white;
     border-radius: 15px;
 }
+.cntrlpanel {
+    background: yellow;
+    width: 300px;
+    float: right;
+}
+.browser {
+    background: buttonface;
+    width: 780px;
+    float: left;
+}

@@ -1,5 +1,14 @@
 {% extends 'PIABundle:Common:common.html.twig' %}
 
 {% block content %}
-    <div><input type="text"></div>
+    <div class="browser">
+        <div class="browser-panel">
+            www <input id="panel-edit" type="text"> <input id="btn" type="button" value="go">
+        </div>
+    </div>
+    
+    <div class="cntrlpanel">
+        {% block cntrlpanel %}
+        {% endblock %}
+    </div>
 {% endblock %}
