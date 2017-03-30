@@ -41,4 +41,11 @@ body {
     background: buttonface;
     width: 780px;
     float: left;
+    text-align: center;
+}
+.browser-panel {
+
+}
+.browser-urlfield {
+    width: 400px;
 }

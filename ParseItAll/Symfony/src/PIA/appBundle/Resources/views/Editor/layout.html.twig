@@ -3,8 +3,9 @@
 {% block content %}
     <div class="browser">
         <div class="browser-panel">
-            www <input id="panel-edit" type="text"> <input id="btn" type="button" value="go">
+            http(s):// <input class="browser-urlfield" type="text"> <input id="btn" type="button" value="go">
         </div>
+        <iframe id="frame" src="proxy.php"></iframe>
     </div>
     
     <div class="cntrlpanel">
