@@ -1,0 +1,24 @@
+inherited frmAuth_LgXhdpiPh: TfrmAuth_LgXhdpiPh
+  ClientHeight = 695
+  ClientWidth = 450
+  DesignerMasterStyle = 3
+  inherited edtLogin: TEdit
+    Position.X = 120.000000000000000000
+  end
+  inherited edtPassword: TEdit
+    Position.X = 120.000000000000000000
+    Position.Y = 152.000000000000000000
+  end
+  inherited btnLogIn: TButton
+    Position.X = 120.000000000000000000
+    Position.Y = 208.000000000000000000
+  end
+  inherited lblLabel: TLabel
+    Position.X = 176.000000000000000000
+    Position.Y = 32.000000000000000000
+  end
+  inherited btnRegister: TButton
+    Position.X = 120.000000000000000000
+    Position.Y = 288.000000000000000000
+  end
+end

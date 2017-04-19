@@ -1,0 +1,20 @@
+object frmAccounts: TfrmAccounts
+  Left = 0
+  Top = 0
+  Caption = 'Form1'
+  ClientHeight = 480
+  ClientWidth = 640
+  FormFactor.Width = 320
+  FormFactor.Height = 480
+  FormFactor.Devices = [Desktop]
+  DesignerMasterStyle = 0
+  object mmo1: TMemo
+    Touch.InteractiveGestures = [Pan, LongTap, DoubleTap]
+    Position.X = 16.000000000000000000
+    Position.Y = 16.000000000000000000
+    Size.Width = 473.000000000000000000
+    Size.Height = 417.000000000000000000
+    Size.PlatformDefault = False
+    TabOrder = 0
+  end
+end

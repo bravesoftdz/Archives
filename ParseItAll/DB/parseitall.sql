@@ -1,8 +1,7 @@
 ﻿# Host: 127.0.0.1  (Version 5.5.23)
-# Date: 2017-02-28 17:22:27
-# Generator: MySQL-Front 6.0  (Build 1.48)
+# Date: 2017-04-19 10:16:09
+# Generator: MySQL-Front 6.0  (Build 1.124)
 
-/*!40101 SET NAMES utf8 */;
 
 #
 # Structure for table "job_groups"

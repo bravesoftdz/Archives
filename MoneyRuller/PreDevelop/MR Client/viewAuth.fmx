@@ -1,0 +1,70 @@
+object frmAuth: TfrmAuth
+  Left = 0
+  Top = 0
+  Caption = 'MoneyRuller'
+  ClientHeight = 334
+  ClientWidth = 626
+  Position = ScreenCenter
+  FormFactor.Width = 320
+  FormFactor.Height = 480
+  FormFactor.Devices = [Desktop]
+  DesignerMasterStyle = 0
+  object edtLogin: TEdit
+    Touch.InteractiveGestures = [LongTap, DoubleTap]
+    TabOrder = 0
+    Position.X = 200.000000000000000000
+    Position.Y = 80.000000000000000000
+    HelpType = htKeyword
+    Size.Width = 217.000000000000000000
+    Size.Height = 32.000000000000000000
+    Size.PlatformDefault = False
+    TextPrompt = 'Login'
+    KillFocusByReturn = True
+  end
+  object edtPassword: TEdit
+    Touch.InteractiveGestures = [LongTap, DoubleTap]
+    TabOrder = 1
+    Password = True
+    Position.X = 200.000000000000000000
+    Position.Y = 120.000000000000000000
+    Size.Width = 217.000000000000000000
+    Size.Height = 32.000000000000000000
+    Size.PlatformDefault = False
+    TextPrompt = 'Password'
+  end
+  object btnLogIn: TButton
+    Position.X = 200.000000000000000000
+    Position.Y = 160.000000000000000000
+    Size.Width = 217.000000000000000000
+    Size.Height = 30.000000000000000000
+    Size.PlatformDefault = False
+    TabOrder = 2
+    Text = 'Sign in'
+    OnClick = btnLogInClick
+  end
+  object lblLabel: TLabel
+    Position.X = 272.000000000000000000
+    Position.Y = 40.000000000000000000
+    Size.Width = 73.000000000000000000
+    Size.Height = 25.000000000000000000
+    Size.PlatformDefault = False
+    Text = 'MoneyRuller'
+  end
+  object btnRegister: TButton
+    Position.X = 200.000000000000000000
+    Position.Y = 208.000000000000000000
+    Size.Width = 217.000000000000000000
+    Size.Height = 30.000000000000000000
+    Size.PlatformDefault = False
+    TabOrder = 4
+    Text = 'Register'
+  end
+  object lblForgotPass: TLabel
+    Position.X = 296.000000000000000000
+    Position.Y = 256.000000000000000000
+    Size.Width = 129.000000000000000000
+    Size.Height = 17.000000000000000000
+    Size.PlatformDefault = False
+    Text = 'Forgot your password?'
+  end
+end

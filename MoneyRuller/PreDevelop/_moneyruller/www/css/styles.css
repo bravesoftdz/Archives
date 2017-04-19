@@ -1,0 +1,175 @@
+body {
+    margin: 0;
+    padding: 0;
+    font: 10pt arial;
+}
+.header {
+    position: fixed;
+    margin: 0;
+    height: 40px;
+    line-height: 40px;
+    width: 100%;
+    background: #E6E6FA;
+    z-index: 2;
+    min-width: 750px;
+}
+.header_title {
+    float:left;
+    margin: 0;
+    margin-left: 5px;
+}
+.login {
+    float: left;
+    margin-left: 50px;
+}
+.menu {
+    float: left;
+    margin: 0;
+    margin-left: 50px;
+    padding: 0;
+    list-style: none;
+}
+.menu_inside {
+    display: none;
+    background: #E6E6FA;
+}
+.menu:hover .menu_inside {
+    display: list-item;
+}
+li.menu_top:hover, li.menu_inside:hover {
+    background: #FE9A2E;
+}
+.content {
+    position: absolute;
+    top: 40px;
+    margin: 10px;
+    z-index: 1;
+    min-width: 750px;
+}
+table.subtype .field_empty {
+    background: #E6E6FA;
+    width: 10px;
+    border: 0px solid #FFFAFA;
+}
+.row_total {
+    background: #FFFAFA;
+}
+div.setting {
+    margin: 10px;
+    margin-left: 20px;
+    margin-right: 10px;    
+}
+span.setting_element {
+    margin-right: 5px; 
+}
+span.setting_element input {
+    width: 100px;
+    height: 16px;
+    font: 8pt arial;
+}
+span.setting_element select {
+    height: 22px;
+}
+/*main color*/
+div.type {
+    background: #E6E6FA;
+}
+/*context columns*/
+div.types_column {
+    display: inline-block;
+}
+div.total_column {
+    position: fixed;
+    left: 475px;
+    top: 50px;
+}
+/*type block*/
+div.type, .editble_text{
+    margin-bottom: 5px;
+    padding: 5px;
+}
+table.subtype {
+    margin: 10px;
+    margin-left: 20px;
+    margin-right: 20px;
+    border-collapse: collapse;
+}
+table.subtype td {
+    border: 1px solid #FFFAFA;
+}
+table.subtype td, span.type {
+    padding: 2px;
+}
+tr.head {
+    background: #B3B7BD;
+}
+tr.head td.quota_val, tr.head td.val {
+    font: 8pt arial;
+    text-align: center;
+}
+td.subtype_name {
+    width: 260px;
+}
+td.type_name {
+    width: 200px;
+}
+td.quota_val {
+    color:mediumslateblue;
+}
+td.quota_val, td.val {
+    width: 65px;
+    text-align: right;
+}
+td.slave_val, td.empty, div.setting_ext {
+    display: none;
+}
+td.subtype_name:hover, span.type:hover {
+    background: #FE9A2E;
+}
+td.subtype_name a, span.type a {
+    height: 100%;
+    color: black;
+    text-decoration: none;
+}
+td.subtype_name a{
+    display: block;
+}
+span.type a {
+    display: block-inline;
+}
+
+
+/* текст с возможностью редактирования */
+.editble-text {
+    display: table;
+}
+.editble-label {
+    display: table-cell;
+    padding-right: 4px;
+}
+.editble-field {
+    display: table-cell;
+    padding: 4px;
+    border: 1px solid white;
+}
+.editble-icon, .apply-icon {
+    display: table-cell;
+    padding-left: 2px;
+    padding-right: 2px;
+    width: 13px;
+    text-decoration: none;
+}
+.edit-attrs {
+    color: black;
+    display: none;
+}
+.editble-text:hover > .editble-field {
+    border: 1px solid #E6E6FA;
+}
+.editble-text:hover > .editble-icon {
+    background: #E6E6FA;
+}
+.editble-text:hover > .editble-icon .edit-attrs {
+    display: inline-block;
+}
+/******************************************************************************/
