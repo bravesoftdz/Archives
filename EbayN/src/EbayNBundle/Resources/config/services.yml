@@ -1,4 +1,0 @@
-services:
-#    ebay_n.example:
-#        class: EbayNBundle\Example
-#        arguments: ["@service_id", "plain_value", "%parameter%"]

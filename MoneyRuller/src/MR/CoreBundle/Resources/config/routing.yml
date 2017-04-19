@@ -1,7 +1,0 @@
-login:
-    path:     /login
-    defaults: { _controller: MRCoreBundle:Security:login }
-
-mr_core_homepage:
-    path:     /
-    defaults: { _controller: MRCoreBundle:Home:index }
