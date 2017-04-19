@@ -1,0 +1,326 @@
+unit Model;
+
+interface
+
+uses
+   API_MVC
+  ,API_Parse;
+
+type
+  TModel = class(TModelAbstract)
+  private
+    FParcer: TParser;
+    procedure ParseCities;
+    procedure ParseCategories(aLinkId: Integer);
+    procedure ParseOrganizationsList(aLinkId: Integer);
+    procedure ParseOrganizations(aLinkId: Integer);
+    procedure CustomerTableAddRecord(aLinkId, aNum: integer);
+    function GetOrganizationURL(aPageNum: integer; aRubricId, aReginId, aKey: string): string;
+  private
+    procedure Execute; override;
+  end;
+
+implementation
+
+uses
+   System.SysUtils
+  ,System.JSON
+  ,API_Files
+  ,API_DBases
+  ,FireDAC.Comp.Client
+  ,FireDAC.Stan.Param
+  ,Data.DB;
+
+procedure TModel.CustomerTableAddRecord(aLinkId, aNum: integer);
+var
+  dsQuery: TFDQuery;
+  sql, tx: string;
+  level: Integer;
+  City: string;
+  Title: string;
+  Content: string;
+begin
+  dsQuery:=TFDQuery.Create(nil);
+  try
+    sql:='insert into parsed_sites set';
+    sql:=sql+' ctime=:ctime';
+    sql:=sql+',category_identifier=:category_identifier';
+    sql:=sql+',ru_title=:ru_title';
+    sql:=sql+',ru_city=:ru_city';
+    sql:=sql+',ru_country=:ru_country';
+    sql:=sql+',ru_address=:ru_address';
+    sql:=sql+',email=:email';
+    sql:=sql+',phone=:phone';
+    sql:=sql+',ru_content=:ru_content';
+    sql:=sql+',site_url=:site_url';
+    sql:=sql+',source=:source';
+    dsQuery.SQL.Text:=sql;
+
+    dsQuery.ParamByName('ctime').AsDateTime:=Now;
+    dsQuery.ParamByName('category_identifier').AsString:=FParcer.GetValueByKey(aLinkId, 'CategoryID', level);
+    Title:=FParcer.GetValueByKey(aLinkId, 'OrganizationName', level, aNum);
+    dsQuery.ParamByName('ru_title').AsString:=Title;
+    City:=FParcer.GetValueByKey(aLinkId, 'CityName', level);
+    dsQuery.ParamByName('ru_city').AsString:=City;
+    dsQuery.ParamByName('ru_country').AsString:=FParcer.GetValueByKey(aLinkId, 'Country', level, aNum);
+    dsQuery.ParamByName('ru_address').AsString:=Trim(City+' '+FParcer.GetValueByKey(aLinkId, 'Address', level, aNum));
+
+    dsQuery.ParamByName('site_url').AsString:=TParser.Inplode(FParcer.GetArrayByKey(aLinkId, 'Website', aNum),', ');
+    dsQuery.ParamByName('phone').AsString:=TParser.Inplode(FParcer.GetArrayByKey(aLinkId, 'Phone', aNum),', ');
+    dsQuery.ParamByName('email').AsString:=TParser.Inplode(FParcer.GetArrayByKey(aLinkId, 'Email', aNum),', ');
+
+    Content:=FParcer.GetValueByKey(aLinkId, 'Content', level, aNum);
+    Content:=StringReplace(Content, '#Name', Title, [rfReplaceAll, rfIgnoreCase]);
+    Content:=StringReplace(Content, '#City', City, [rfReplaceAll, rfIgnoreCase]);
+    dsQuery.ParamByName('ru_content').AsString:=Content;
+
+    tx:='http://2gis.ru/';
+    tx:=tx+FParcer.GetValueByKey(aLinkId, 'CityNameEN', level, aNum);
+    tx:=tx+'/search/rubricId/';
+    tx:=tx+FParcer.GetValueByKey(aLinkId, 'RubricID', level, aNum);
+    tx:=tx+'/firm/'+FParcer.GetValueByKey(aLinkId, 'OrgID', level, aNum);
+    dsQuery.ParamByName('source').AsString:=tx;
+
+    FDBEngine.ExecQuery(dsQuery);
+  finally
+    dsQuery.Free;
+  end;
+end;
+
+procedure TModel.ParseOrganizations(aLinkId: Integer);
+var
+  Page: string;
+  jsnObject: TJSONObject;
+  jsnArray: TJSONArray;
+  jsnContactGroups: TJSONArray;
+  jsnContacts: TJSONArray;
+  jsnContact: TJSONObject;
+  i,j,k: Integer;
+  RubricID, RegionID, Key: string;
+  level: Integer;
+  url, tx: string;
+  PageNume: Integer;
+begin
+  Page:=FParcer.GetHTMLByLinkId(aLinkId);
+  //TFilesEngine.SaveTextToFile('1.html', Page);
+
+  jsnObject:=TJSONObject(TJSONObject.ParseJSONValue(Page));
+  jsnObject:=TJSONObject(jsnObject.GetValue('result'));
+  if jsnObject=nil then Exit;
+
+  jsnArray:=TJSONArray(jsnObject.GetValue('items'));
+
+  for i:=0 to jsnArray.Count-1 do
+    begin
+      jsnObject:=TJSONObject(jsnArray.Items[i]);
+      FParcer.AddData(aLinkId, i+1, 'OrganizationName', jsnObject.GetValue('name').Value);
+
+      // телефон, сайт
+      jsnContactGroups:=TJSONArray(jsnObject.GetValue('contact_groups'));
+      for j:=0 to jsnContactGroups.Count-1 do
+        begin
+          jsnContacts:=TJSONArray(TJSONObject(jsnContactGroups.Items[j]).GetValue('contacts'));
+          for k:=0 to jsnContacts.Count-1 do
+            begin
+              jsnContact:=TJSONObject(jsnContacts.Items[k]);
+              if jsnContact.GetValue('type').Value='phone' then
+                begin
+                  FParcer.AddData(aLinkId, i+1, 'Phone', jsnContact.GetValue('value').Value);
+                end;
+              if jsnContact.GetValue('type').Value='website' then
+                begin
+                  FParcer.AddData(aLinkId, i+1, 'Website', jsnContact.GetValue('text').Value);
+                end;
+              if jsnContact.GetValue('type').Value='email' then
+                begin
+                  FParcer.AddData(aLinkId, i+1, 'Email', jsnContact.GetValue('text').Value);
+                end;
+            end;
+        end;
+
+      // адрес
+      if jsnObject.GetValue('address_name')<>nil then
+        FParcer.AddData(aLinkId, i+1, 'Address', jsnObject.GetValue('address_name').Value);
+
+      // id
+      tx:=jsnObject.GetValue('id').Value;
+      tx:=FParcer.ParseByKey(tx,'','_');
+      FParcer.AddData(aLinkId, i+1, 'OrgID', tx);
+
+      // запись в таблицу заказчика
+      CustomerTableAddRecord(aLinkId, i+1);
+    end;
+
+  // генерируем урл след страницы
+  RubricID:=FParcer.GetValueByKey(aLinkId, 'RubricID', level);
+  RegionID:=FParcer.GetValueByKey(aLinkId, 'RegionID', level);
+  Key:=FParcer.GetValueByKey(aLinkId, 'WebKey', level);
+  tx:=FParcer.ParseByKey(FParcer.GetLinkById(aLinkId),'&page=','&');
+  PageNume:=StrToInt(tx)+1;
+  url:=GetOrganizationURL(PageNume, RubricID, RegionID, Key);
+  FParcer.AddLink(3, url, aLinkId, 1);
+end;
+
+function TModel.GetOrganizationURL(aPageNum: integer; aRubricId, aReginId, aKey: string): string;
+var
+  url: string;
+begin
+  url:='http://catalog.api.2gis.ru/2.0/catalog/branch/list?isIndexedFrame=true&shouldTrackSearch=false';
+  url:=url+'&page='+IntToStr(aPageNum);
+  url:=url+'&page_size=12';
+  url:=url+'&rubric_id='+aRubricId;
+  //url:=url+'&hash=c2j5122fjlkdquxr';
+  url:=url+'&stat%5Bpr%5D=10';
+  url:=url+'&region_id='+aReginId;
+  url:=url+'&fields=items.region_id%2Citems.adm_div%2Citems.contact_groups%2Citems.flags%2Citems.address%2Citems.rubrics';
+  url:=url+'%2Citems.name_ex%2Citems.point%2Citems.external_content%2Citems.schedule%2Citems.org%2Citems.ads.options%2Citems.reg_bc_url%2Crequest_type%2Cwidgets%2Cfilters%2Citems.reviews%2Ccontext_rubrics%2Chash%2Csearch_attributes';
+  url:=url+'&key='+aKey;
+  Result:=url;
+end;
+
+procedure TModel.ParseOrganizationsList(aLinkId: Integer);
+var
+  Page: string;
+  url, tx: string;
+  RubricID, RegionID, Key: string;
+  level: Integer;
+begin
+  Page:=FParcer.GetHTMLByLinkId(aLinkId);
+
+  tx:=FParcer.ParseByKey(Page, '"cityForInit":"', '"');
+  FParcer.AddData(aLinkId, 1, 'RegionID', tx);
+
+  tx:=FParcer.ParseByKey(Page, '"webApiKey":"', '"');
+  FParcer.AddData(aLinkId, 1, 'WebKey', tx);
+
+  RubricID:=FParcer.GetValueByKey(aLinkId, 'RubricID', level);
+  RegionID:=FParcer.GetValueByKey(aLinkId, 'RegionID', level);
+  Key:=FParcer.GetValueByKey(aLinkId, 'WebKey', level);
+  url:=GetOrganizationURL(1, RubricID, RegionID, Key);
+  FParcer.AddLink(3, url, aLinkId, 1);
+end;
+
+procedure TModel.ParseCategories(aLinkId: Integer);
+var
+  Page: string;
+  Rows: TArray<string>;
+  Words: TArray<string>;
+  i: Integer;
+  Row: string;
+  tx, url: string;
+begin
+  Page:=FParcer.GetHTMLByLinkId(aLinkId);
+  Rows:=FParcer.MultiParseByKey(Page,'{"id":"',',"parent_id"');
+
+  i:=0;
+  for Row in Rows do
+    begin
+      if Pos('general_rubric', Row)=0 then
+        if Pos('avtomojjki', Row)>0 then
+          begin
+            inc(i);
+
+            tx:=FParcer.ParseByKey(Row, '"name":"', '"');
+            FParcer.AddData(aLinkId, i, 'CategoryName', tx);
+            FParcer.AddData(aLinkId, i, 'CategoryID', 'Carwash');
+
+            tx:='#Name – профессиональная автомойка из города #City для ';
+            tx:=tx+'вашего любимого автомобиля. Широкий ассортимент услуг для любого ';
+            tx:=tx+'автомобиля. Наши цены, гибкая система ценообразования и ';
+            tx:=tx+'дополнительные бонусы для постоянных клиентов вас приятно удивят. ';
+            tx:=tx+'Огромный опыт работы и профессиональная команда работников позволит ';
+            tx:=tx+'получить непревзойдённый результат. Вы точно останетесь довольны и ';
+            tx:=tx+'будете рекомендовать #Name из города #City своим ';
+            tx:=tx+'друзьям и знакомым. Обратившись к нам однажды - вы станете нашим ';
+            tx:=tx+'клиентом на долгие годы.';
+            FParcer.AddData(aLinkId, i, 'Content', tx);
+
+            url:=FParcer.GetLinkById(aLinkId);
+            Words:=FParcer.Explode(url,'/');
+
+            tx:=FParcer.ParseByKey(Row, '', '"');
+            FParcer.AddData(aLinkId, i, 'RubricID', tx);
+
+            url:=Words[0]+'//'+Words[2]+'/'+Words[3]+'/search/rubricId/'+tx;
+            FParcer.AddData(aLinkId, i, 'CityNameEN', Words[3]);
+            FParcer.AddLink(2, url, aLinkId, i);
+          end;
+    end;
+end;
+
+procedure TModel.ParseCities;
+var
+  Page: string;
+  Rows: TArray<string>;
+  LinkId: Integer;
+  Row, tx: string;
+  i: Integer;
+begin
+  LinkId:=FParcer.AddLink(0, 'http://2gis.ru/countries/global/moscow?queryState=center%2F37.62017%2C55.753466%2Fzoom%2F5', 0, 1);
+  Page:=FParcer.GetHTMLByLinkId(LinkId);
+  Rows:=FParcer.MultiParseByKey(Page, 'listItemName"><a href="', '</li>');
+
+  i:=0;
+  for Row in Rows do
+    begin
+      Inc(i);
+
+      tx:=Copy(Row, 1, Pos('"', Row)-1) + '/rubrics';
+      FParcer.AddLink(1, tx, LinkId, i);
+
+      tx:=FParcer.ParseByKey(Row, 'listItemNameLink">', '<');
+      FParcer.AddData(LinkId, i, 'CityName', tx);
+
+      tx:=FParcer.ParseByKeyReverse(Page, 'world__listItemNameLink">'+tx, '"world__sectionHeaderIn">', 0);
+      tx:=FParcer.ParseByKey(tx,'','<');
+      FParcer.AddData(LinkId, i, 'Country', tx);
+    end;
+end;
+
+procedure TModel.Execute;
+var
+  level: Integer;
+  LinkId: Integer;
+  LinkCount: Integer;
+  HandledCount: Integer;
+begin
+  // код модели
+  FDBEngine:=FObjData.Items['MySQLEngine'] as TMySQLEngine;
+  FParcer := TParser.Create(TMySQLEngine(FDBEngine), 'roman_2gis');
+  try
+    while FParcer.GetLinkToProcess(LinkId, level, LinkCount, HandledCount) do
+      begin
+        FEventData.AddOrSetValue('LinkCount',IntToStr(LinkCount));
+        FEventData.AddOrSetValue('HandledCount',IntToStr(HandledCount+1));
+        Self.GenerateEvent('UpdateGrid');
+
+        if Self.FIsStopped then
+          begin
+            Self.GenerateEvent('Stopped');
+            Exit;
+          end;
+
+        if level=0 then
+          begin
+            ParseCities;
+          end;
+        if level=1 then
+          begin
+            ParseCategories(LinkId);
+          end;
+        if level=2 then
+          begin
+            ParseOrganizationsList(LinkId);
+          end;
+        if level=3 then
+          begin
+            ParseOrganizations(LinkId);
+          end;
+      end;
+    Self.GenerateEvent('Complite');
+  finally
+    FParcer.Free;
+  end;
+end;
+
+end.

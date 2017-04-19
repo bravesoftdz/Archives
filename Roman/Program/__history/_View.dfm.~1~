@@ -1,0 +1,64 @@
+object frmView: TfrmView
+  Left = 0
+  Top = 0
+  BorderIcons = [biSystemMenu, biMinimize]
+  BorderStyle = bsSingle
+  Caption = #1055#1072#1088#1089#1077#1088#1099
+  ClientHeight = 298
+  ClientWidth = 673
+  Color = clBtnFace
+  Font.Charset = DEFAULT_CHARSET
+  Font.Color = clWindowText
+  Font.Height = -11
+  Font.Name = 'Tahoma'
+  Font.Style = []
+  OldCreateOrder = False
+  Position = poDesktopCenter
+  OnActivate = FormActivate
+  PixelsPerInch = 96
+  TextHeight = 13
+  object btnStart: TButton
+    Left = 24
+    Top = 254
+    Width = 75
+    Height = 25
+    Caption = #1057#1090#1072#1088#1090
+    TabOrder = 0
+    OnClick = btnStartClick
+  end
+  object ParsersGrid: TStringGrid
+    Left = 8
+    Top = 8
+    Width = 657
+    Height = 233
+    DefaultRowHeight = 18
+    FixedCols = 0
+    Options = [goFixedVertLine, goFixedHorzLine, goVertLine, goHorzLine, goColSizing, goRowSelect]
+    TabOrder = 1
+    OnClick = ParsersGridClick
+    ColWidths = (
+      89
+      79
+      82
+      82
+      310)
+  end
+  object btnStop: TButton
+    Left = 136
+    Top = 254
+    Width = 75
+    Height = 25
+    Caption = #1057#1090#1086#1087
+    Enabled = False
+    TabOrder = 2
+    OnClick = btnStopClick
+  end
+  object edtThrdCount: TEdit
+    Left = 272
+    Top = 256
+    Width = 57
+    Height = 21
+    TabOrder = 3
+    Text = '1'
+  end
+end

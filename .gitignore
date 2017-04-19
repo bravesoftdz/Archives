@@ -49,3 +49,7 @@ __history
 *.local
 *.identcache
 *.tvsconfig
+*.~dpr
+*.~ddp
+*.~dfm
+*.~pas

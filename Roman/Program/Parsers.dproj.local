@@ -1,0 +1,66 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<BorlandProject>
+	<Transactions>
+    <Transaction>1899/12/30 00:00:00.000.663,C:\Users\nekrash\Google Диск\Programs\Libraries\API_Parse.pas=C:\Users\nekrash\Google Диск\Programs\Projects\Roman_Parsers\Program\Unit1.pas</Transaction>
+    <Transaction>1899/12/30 00:00:00.000.935,C:\Users\nekrash\Google Диск\Programs\Libraries\API_Parse.pas=C:\Users\nekrash\Google Диск\Programs\Libraries\_API_Parse.pas</Transaction>
+    <Transaction>1899/12/30 00:00:00.000.441,=C:\Users\nekrash\Google Диск\Programs\Libraries\API_Controls.pas</Transaction>
+    <Transaction>1899/12/30 00:00:00.000.466,=C:\Users\nekrash\Google Диск\Programs\Templates\Delphi MVC\Unit1.pas</Transaction>
+    <Transaction>1899/12/30 00:00:00.000.270,C:\Users\nekrash\Google Диск\Programs\Projects\Roman_Parsers\Program\Model_TripAdviser.pas=C:\Users\nekrash\Google Диск\Programs\Projects\Roman_Parsers\Program\Model_TripAdvisor.pas</Transaction>
+    <Transaction>1899/12/30 00:00:00.000.081,C:\Users\nekrash\Google Диск\Programs\Templates\Delphi MVC\Unit1.pas=C:\Users\nekrash\Google Диск\Programs\Templates\Delphi MVC\View.pas</Transaction>
+    <Transaction>1899/12/30 00:00:00.000.837,C:\Users\nekrash\Google Диск\Programs\Templates\Delphi MVC\Unit1.pas=C:\Users\nekrash\Google Диск\Programs\Templates\Delphi MVC\Controller.pas</Transaction>
+    <Transaction>1899/12/30 00:00:00.000.654,=C:\Users\nekrash\Google Диск\Programs\Projects\Roman_Parsers\Program\Unit1.pas</Transaction>
+    <Transaction>1899/12/30 00:00:00.000.153,C:\Users\nekrash\Google Диск\Programs\Projects\Roman_Parsers\Program\Unit1.pas=C:\Users\nekrash\Google Диск\Programs\Projects\Roman_Parsers\Program\Model_Wiki.pas</Transaction>
+    <Transaction>1899/12/30 00:00:00.000.810,C:\Users\nekrash\Google Диск\Programs\Projects\Roman_Parsers\Program\Unit1.pas=C:\Users\nekrash\Google Диск\Programs\Projects\Roman_Parsers\Program\Model_T.pas</Transaction>
+    <Transaction>1899/12/30 00:00:00.000.972,=C:\Users\nekrash\Google Диск\Programs\Projects\Roman_Parsers\Program\Unit1.pas</Transaction>
+    <Transaction>1899/12/30 00:00:00.000.072,C:\Users\nekrash\Google Диск\Programs\Projects\Roman_Parsers\Program\Unit1.pas=C:\Users\nekrash\Google Диск\Programs\Projects\Roman_Parsers\Program\View.pas</Transaction>
+    <Transaction>1899/12/30 00:00:00.000.599,=C:\Users\nekrash\Google Диск\Programs\Projects\Roman_Parsers\Program\Unit1.pas</Transaction>
+    <Transaction>1899/12/30 00:00:00.000.151,C:\Users\nekrash\Google Диск\Programs\Projects\Roman_Parsers\Program\Unit1.pas=C:\Users\nekrash\Google Диск\Programs\Libraries\API.pas</Transaction>
+    <Transaction>1899/12/30 00:00:00.000.813,=C:\Users\nekrash\Google Диск\Programs\Projects\Roman_Parsers\Program\Unit1.pas</Transaction>
+    <Transaction>1899/12/30 00:00:00.000.837,=C:\Users\nekrash\Documents\Embarcadero\Studio\Projects\Unit1.pas</Transaction>
+    <Transaction>1899/12/30 00:00:00.000.289,=C:\Users\nekrash\Documents\Embarcadero\Studio\Projects\Unit1.pas</Transaction>
+    <Transaction>1899/12/30 00:00:00.000.203,C:\Users\nekrash\Documents\Embarcadero\Studio\Projects\Unit1.pas=C:\Users\nekrash\Google Диск\Programs\Templates\Delphi MVC\Unit1.pas</Transaction>
+    <Transaction>1899/12/30 00:00:00.000.421,C:\Users\nekrash\Google Диск\Programs\Projects\Roman_Parsers\Program\Model_T.pas=C:\Users\nekrash\Google Диск\Programs\Projects\Roman_Parsers\Program\Model_TripAdviser.pas</Transaction>
+    <Transaction>1899/12/30 00:00:00.000.333,=C:\Users\nekrash\Google Диск\Programs\Libraries\API_Files.pas</Transaction>
+    <Transaction>1899/12/30 00:00:00.000.990,=C:\Users\nekrash\Google Диск\Programs\Libraries\API_Files.pas</Transaction>
+    <Transaction>1899/12/30 00:00:00.000.203,C:\Users\nekrash\Documents\Embarcadero\Studio\Projects\Unit1.dfm=C:\Users\nekrash\Google Диск\Programs\Templates\Delphi MVC\Unit1.dfm</Transaction>
+    <Transaction>1899/12/30 00:00:00.000.383,C:\Users\alezzle\Google Диск\Programs\Projects\Roman_Parsers\Program\Unit1.pas=C:\Users\alezzle\Google Диск\Programs\Projects\Roman_Parsers\Program\Model_Convertor.pas</Transaction>
+    <Transaction>1899/12/30 00:00:00.000.874,C:\Users\nekrash\Documents\Embarcadero\Studio\Projects\Project1.dproj=C:\Users\nekrash\Google Диск\Programs\Templates\Delphi MVC\templateMVC.dproj</Transaction>
+    <Transaction>1899/12/30 00:00:00.000.021,=C:\Users\nekrash\Google Диск\Programs\Libraries\API_MVC.pas</Transaction>
+    <Transaction>1899/12/30 00:00:00.000.706,=C:\Users\nekrash\Google Диск\Programs\Libraries\API_MVC.pas</Transaction>
+    <Transaction>1899/12/30 00:00:00.000.219,C:\Users\nekrash\Google Диск\Programs\Projects\Roman_Parsers\Program\View.pas=C:\Users\nekrash\Google Диск\Programs\Projects\Roman_Parsers\Program\_View.pas</Transaction>
+    <Transaction>1899/12/30 00:00:00.000.596,=C:\Users\alezzle\Google Диск\Programs\Projects\Roman_Parsers\Program\Unit1.pas</Transaction>
+    <Transaction>1899/12/30 00:00:00.000.992,=C:\Users\alezzle\Google Диск\Programs\Projects\Roman_Parsers\Program\Unit1.pas</Transaction>
+    <Transaction>1899/12/30 00:00:00.000.290,=C:\Users\alezzle\Google Диск\Programs\Projects\Roman_Parsers\Program\Unit1.pas</Transaction>
+    <Transaction>1899/12/30 00:00:00.000.477,=C:\Users\nekrash\Google Диск\Programs\Projects\Roman_Parsers\Program\Unit1.pas</Transaction>
+    <Transaction>1899/12/30 00:00:00.000.566,C:\Users\nekrash\Google Диск\Programs\Projects\Roman_Parsers\Program\Model_2GISNew.pas=C:\Users\nekrash\Google Диск\Programs\Projects\Roman_Parsers\Program\Model_2GIS.pas</Transaction>
+    <Transaction>1899/12/30 00:00:00.000.173,C:\Users\nekrash\Google Диск\Programs\Projects\Roman_Parsers\Program\Model_2GISNew.pas=C:\Users\nekrash\Google Диск\Programs\Projects\Roman_Parsers\Program\Model_2GIS.pas</Transaction>
+    <Transaction>1899/12/30 00:00:00.000.419,C:\Users\nekrash\Google Диск\Programs\Projects\Roman_Parsers\Program\Model_2GISNew.pas=C:\Users\nekrash\Google Диск\Programs\Projects\Roman_Parsers\Program\Unit1.pas</Transaction>
+    <Transaction>1899/12/30 00:00:00.000.052,C:\Users\nekrash\Google Диск\Programs\Projects\Roman_Parsers\Program\Model_TripAdvisorNew.pas=C:\Users\nekrash\Google Диск\Programs\Projects\Roman_Parsers\Program\Unit1.pas</Transaction>
+    <Transaction>1899/12/30 00:00:00.000.660,C:\Users\nekrash\Google Диск\Programs\Libraries\API_Types.pas=</Transaction>
+    <Transaction>1899/12/30 00:00:00.000.297,C:\Users\alezzle\Google Диск\Programs\Libraries\API_Threads.pas=C:\Users\alezzle\Google Диск\Programs\Projects\Roman_Parsers\Program\Unit1.pas</Transaction>
+    <Transaction>1899/12/30 00:00:00.000.693,C:\Users\nekrash\Google Диск\Programs\Projects\Roman_Parsers\Program\Model_TripAdvisorNew.pas=C:\Users\nekrash\Google Диск\Programs\Projects\Roman_Parsers\Program\Model_TripAdvisor.pas</Transaction>
+    <Transaction>1899/12/30 00:00:00.000.283,C:\Users\nekrash\Google Диск\Programs\Libraries\API.pas=C:\Users\nekrash\Google Диск\Programs\Libraries\API_Yandex.pas</Transaction>
+    <Transaction>1899/12/30 00:00:00.000.168,=C:\Users\nekrash\Google Диск\Programs\Libraries\API_DBases.pas</Transaction>
+    <Transaction>1899/12/30 00:00:00.000.204,C:\Users\nekrash\Google Диск\Programs\Projects\Roman_Parsers\Program\Parsers.dproj=C:\Users\nekrash\Google Диск\Programs\Projects\Roman_Parsers\Program\templateMVC.dproj</Transaction>
+    <Transaction>1899/12/30 00:00:00.000.274,C:\Users\nekrash\Google Диск\Programs\Libraries\_API_Parse.pas=</Transaction>
+    <Transaction>1899/12/30 00:00:00.000.986,=C:\Users\nekrash\Google Диск\Programs\Libraries\API_DBases.pas</Transaction>
+    <Transaction>1899/12/30 00:00:00.000.861,C:\Users\nekrash\Google Диск\Programs\Projects\Roman_Parsers\Program\Model.pas=C:\Users\nekrash\Google Диск\Programs\Projects\Roman_Parsers\Program\Model_2GIS.pas</Transaction>
+    <Transaction>1899/12/30 00:00:00.000.634,C:\Users\nekrash\Google Диск\Programs\Projects\Roman_Parsers\Program\Model.pas=C:\Users\nekrash\Google Диск\Programs\Projects\Roman_Parsers\Program\Unit1.pas</Transaction>
+    <Transaction>1899/12/30 00:00:00.000.791,C:\Users\nekrash\Google Диск\Programs\Projects\Roman_Parsers\Program\Model_TripAdvisor.pas=</Transaction>
+    <Transaction>1899/12/30 00:00:00.000.813,=C:\Users\nekrash\Google Диск\Programs\Projects\Roman_Parsers\Program\Unit1.pas</Transaction>
+    <Transaction>1899/12/30 00:00:00.000.464,C:\Users\nekrash\Google Диск\Programs\Projects\Roman_Parsers\Program\Model_2GIS.pas=C:\Users\nekrash\Google Диск\Programs\Projects\Roman_Parsers\Program\Model_2GISNew.pas</Transaction>
+    <Transaction>1899/12/30 00:00:00.000.279,C:\Users\nekrash\Google Диск\Programs\Projects\Roman_Parsers\Program\Model_2GIS.pas=</Transaction>
+    <Transaction>1899/12/30 00:00:00.000.791,C:\Users\nekrash\Google Диск\Programs\Projects\Roman_Parsers\Program\Unit1.pas=C:\Users\nekrash\Google Диск\Programs\Libraries\API_Parse.pas</Transaction>
+    <Transaction>1899/12/30 00:00:00.000.138,=C:\Users\nekrash\Google Диск\Programs\Projects\Roman_Parsers\Program\Unit1.pas</Transaction>
+    <Transaction>1899/12/30 00:00:00.000.551,=C:\Users\nekrash\Google Диск\Programs\Projects\Roman_Parsers\Program\Unit1.pas</Transaction>
+    <Transaction>1899/12/30 00:00:00.000.987,=C:\Users\nekrash\Google Диск\Programs\Projects\Roman_Parsers\Program\Unit1.pas</Transaction>
+    <Transaction>1899/12/30 00:00:00.000.560,C:\Users\nekrash\Google Диск\Programs\Projects\Roman_Parsers\Program\Model_2GIS.pas=C:\Users\nekrash\Google Диск\Programs\Projects\Roman_Parsers\Program\Model_2GISNew.pas</Transaction>
+    <Transaction>1899/12/30 00:00:00.000.219,C:\Users\nekrash\Google Диск\Programs\Projects\Roman_Parsers\Program\View.dfm=C:\Users\nekrash\Google Диск\Programs\Projects\Roman_Parsers\Program\_View.dfm</Transaction>
+    <Transaction>1899/12/30 00:00:00.000.285,=C:\Users\alezzle\Google Диск\Programs\Libraries\API_Types.pas</Transaction>
+    <Transaction>1899/12/30 00:00:00.000.178,=C:\Users\nekrash\Google Диск\Programs\Libraries\API_Types.pas</Transaction>
+    <Transaction>1899/12/30 00:00:00.000.081,C:\Users\nekrash\Google Диск\Programs\Templates\Delphi MVC\Unit1.dfm=C:\Users\nekrash\Google Диск\Programs\Templates\Delphi MVC\View.dfm</Transaction>
+    <Transaction>1899/12/30 00:00:00.000.075,C:\Users\nekrash\Google Диск\Programs\Projects\Roman_Parsers\Program\Model_2GIS.pas=C:\Users\nekrash\Google Диск\Programs\Projects\Roman_Parsers\Program\Model_2GISNew.pas</Transaction>
+    <Transaction>1899/12/30 00:00:00.000.072,C:\Users\nekrash\Google Диск\Programs\Projects\Roman_Parsers\Program\Unit1.dfm=C:\Users\nekrash\Google Диск\Programs\Projects\Roman_Parsers\Program\View.dfm</Transaction>
+    <Transaction>1899/12/30 00:00:00.000.791,C:\Users\nekrash\Google Диск\Programs\Projects\Roman_Parsers\Program\Unit1.dfm=C:\Users\nekrash\Google Диск\Programs\Libraries\API_Parse.dfm</Transaction>
+  </Transactions>
+</BorlandProject>
