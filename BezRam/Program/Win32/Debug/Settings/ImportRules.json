@@ -1,0 +1,186 @@
+{
+    "orders": {
+        "Id": "Id",
+        "order_date": "order_date",
+        "customer_name": [
+            "customer_id",
+            "customers",
+            "name",
+            "Id"
+        ],
+        "customer_adress": [
+            "customer_id",
+            "customers",
+            "address",
+            "Id"
+        ],
+        "customer_phone": [
+            "customer_id",
+            "customers",
+            "phone",
+            "Id"
+        ],
+        "width": "width",
+        "square": "square",
+        "glass_count": "glass_count",
+        "fix_count": "fix_count",
+        "mov_count": "mov_count",
+        "glass_thick": "glass_thick",
+        "cost": "cost",
+        "discount": "discount",
+        "cost_w_discount": "cost_w_discount",
+        "install_cost": "install_cost",
+        "total_cost": "total_cost",
+        "constructions_count": "constructions_count",
+        "customer_type": [
+            "customer_id",
+            "customers",
+            "type",
+            "Id"
+        ],
+        "contract_num": "contract_num",
+        "am_cost": "am_cost",
+        "am_discount": "am_discount",
+        "am_cost_w_discount": "am_cost_w_discount",
+        "am_install_cost": "am_install_cost",
+        "am_total_cost": "am_total_cost",
+        "as_total_cost": "as_total_cost",
+        "order_total_cost": "order_total_cost",
+        "m_for_contract": "m_for_contract",
+        "vat_m_for_contract": "vat_m_for_contract",
+        "w_for_contract": "w_for_contract",
+        "vat_w_for_contract": "vat_w_for_contract",
+        "passport": [
+            "customer_id",
+            "customers",
+            "passport",
+            "Id"
+        ],
+        "passport_out": [
+            "customer_id",
+            "customers",
+            "passport_out",
+            "Id"
+        ],
+        "passport_date": [
+            "customer_id",
+            "customers",
+            "passport_date",
+            "Id"
+        ],
+        "attorney_name": [
+            "customer_id",
+            "customers",
+            "attorney_name",
+            "Id"
+        ],
+        "attorney_doc": [
+            "customer_id",
+            "customers",
+            "attorney_doc",
+            "Id"
+        ],
+        "customer_bank": [
+            "customer_id",
+            "customers",
+            "customer_bank",
+            "Id"
+        ],
+        "dealer": [
+            "customer_id",
+            "customers",
+            "is_dealer",
+            "Id"
+        ],
+        "customer_notes": "customer_notes",
+        "system_type": "system_type",
+        "no_install": "is_no_install",
+        "no_am_install": "is_no_am_install",
+        "ce_on_calc_day": "ce_on_calc_day",
+        "customer_inn": [
+            "customer_id",
+            "customers",
+            "customer_inn",
+            "Id"
+        ]
+    },
+    "additional_materials": {
+        "Id": "Id",
+        "am_name": "am_name",
+        "measure": "measure",
+        "cost": "cost",
+        "am_category_id": "am_category_id",
+        "cost_euro": "cost_euro"
+    },
+    "additional_services": {
+        "Id": "Id",
+        "as_name": "as_name",
+        "mesuare": "mesuare",
+        "cost": "cost"
+    },
+    "am_categories": {
+        "Id": "Id",
+        "am_category_name": "am_category_name"
+    },
+    "am_orders": {
+        "Id": "Id",
+        "order_id": "order_id",
+        "am_id": "am_id",
+        "quantity": "quantity",
+        "sum": "sum"
+    },
+    "as_orders": {
+        "Id": "Id",
+        "order_id": "order_id",
+        "as_id": "as_id",
+        "quantity": "quantity",
+        "sum": "sum"
+    },
+    "component_price": {
+        "Id": "Id",
+        "c_code": "c_code",
+        "component_en": "component_en",
+        "component_ru": "component_ru",
+        "mill_finish": "mill_finish",
+        "white": "white",
+        "dark_oak": "dark_oak",
+        "anod_inox": "anod_inox",
+        "anod_silver": "anod_silver",
+        "unit": "unit",
+        "price": "price"
+    },
+    "constructions": {
+        "Id": "Id",
+        "order_id": "order_id",
+        "con_id": "con_id",
+        "flap_count": "flap_count",
+        "width": "width",
+        "height": "height"
+    },
+    "currency_exchange": {
+        "Id": "Id",
+        "actual_date": "actual_date",
+        "eur_rur": "eur_rur"
+    },
+    "documents": {
+        "Id": "Id",
+        "order_id": "order_id",
+        "doc_type": "doc_type",
+        "doc_date": "doc_date",
+        "link": "link"
+    },
+    "glass_price": {
+        "Id": "Id",
+        "height_meters": "height_meters",
+        "thick_6": "thick_6",
+        "thick_8": "thick_8",
+        "thick_10": "thick_10"
+    },
+    "glass_price_dealer": {
+        "Id": "Id",
+        "height_meters": "height_meters",
+        "thick_6": "thick_6",
+        "thick_8": "thick_8",
+        "thick_10": "thick_10"
+    }
+}
