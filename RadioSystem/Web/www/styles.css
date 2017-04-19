@@ -1,0 +1,316 @@
+body { margin: 0; }
+#header, #sidebar, #content { position: absolute; }
+#sidebar, #content { overflow: auto; }
+#header 
+{
+    left: 170px;  /* Расстояние от левого края */
+    right: 0;     /* Расстояние от правого края */
+    height: 80px; /* Высота слоя */
+    background: #eaeaea;  /* Цвет фона */
+    font: normal 10px Arial; /* Шрифт */
+    white-space: nowrap; /* Пробелы не учитываются, переносы строк в коде HTML игнорируются */
+    overflow: auto; /* если блок целиком не помещается */
+}
+#header h1
+{ 
+    padding: 6px; /* поле вокруг содержимого элемента */
+    margin: 0;    /* отступ от каждого края элемента  */
+    float: left;  /* обтекание */
+    position: relative;
+}
+#sidebar 
+{ 
+    width: 150px;  /* ширина */
+    background: #eaeaea;   /* Цвет фона */
+    top: 0; /* Расстояние от верхнего края */ 
+    bottom: 0; /* Расстояние снизу  */
+    padding: 10px;  /* поле вокруг содержимого элемента */
+    padding-top: 90px;  /* поле сверху содержимого элемента */
+    font: normal 12px Arial; /* Шрифт */
+} 
+#content 
+{
+    padding: 10px; /* поле вокруг содержимого элемента */
+    top: 80px; /* Расстояние от верхнего края */
+    left: 170px; /* Расстояние от левого края */ 
+    bottom: 0; 
+    right: 0; 
+    font: normal 12px Arial;
+    min-width: 1080px;
+}
+#login 
+{
+    font: normal 12px Arial;
+    width: 280px;
+    height: 150px; 
+    background: #eaeaea;
+    padding: 6px;
+    margin: auto;
+}
+#log_submit 
+{
+    margin-left: 110px;
+    font: normal 12px Arial;
+}
+#log_info 
+{
+    background: #fff;
+    width: 100px;
+    height: 68px; 
+    margin-top: 6px;
+    float: right;
+    margin-right: 20px;
+    padding-left: 2px;
+    border: 1px solid #333; /* Рамка */
+}
+
+#bts_info_block
+{
+    border: 2px solid #333; /* Рамка */  
+    padding: 6px; /* поле вокруг содержимого элемента */
+    width: 400px;  /* ширина */
+    margin-top: 15px;  /* поле сверху */
+} 
+#bts_ad_info_block
+{
+    border: 2px solid #333; /* Рамка */  
+    padding: 6px; /* поле вокруг содержимого элемента */
+    width: 600px;  /* ширина */
+    margin-top: 15px;  /* поле сверху */
+}   
+
+#select_field 
+{
+    width:250px;
+    margin-left: 2px;
+}
+#select_field_small 
+{
+    width:60px;
+    margin-left: 2px;
+    margin-right: 4px;
+}
+#select_field_medium 
+{
+    width:120px;
+    margin-left: 2px;
+    margin-right: 4px;
+} 
+
+#note_edit {
+    width: 250px;   /* ширина */
+    height: 100px;  /* высота */
+    margin-left: 2px;    /* поле слева */
+}
+#info_left_indent 
+{
+    width: 416px;
+    float: left;
+}
+#info_right_indent 
+{
+    width: 616px;
+    float: left;
+    margin-left: 14px;
+}
+
+/* кнопки */  
+#button {   /* левая кнопка навигации */  
+    border: 1px solid #333; /* Рамка */
+    padding: 5px 14px; /* Поля */
+    text-decoration: none; /* Убираем подчёркивание */
+    color: #fff; /* Цвет текста */
+    background-color: #CD0000;  /* Цвет фона */
+    margin: 10px; /* отступы */
+    height: 30px;  /* высота */
+    width: 104px;  /* широта */
+    display: table;
+}  
+#button_ed {  /* кнопки редактирования  */  
+    border: 1px solid #333; /* Рамка */
+    display: inline-block; /* отображать как горизонтальные блоки */
+    padding: 5px 5px; /* Поля */
+    height: 30px;  /* высота */
+    width: 110px;  /* широта */
+    text-decoration: none; /* Убираем подчёркивание */
+    background-color: #eaeaea;  /* Цвет фона */
+} 
+#button_info {  /* кнопки доп. информации  */  
+    border: 1px solid #333; /* Рамка */
+    display: inline-block; /* отображать как горизонтальные блоки */
+    padding: 5px 5px; /* Поля */
+    height: 30px;  /* высота */
+    width: 110px;  /* широта */
+    text-decoration: none; /* Убираем подчёркивание */
+    background-color: #e0f0ff;  /* Цвет фона */
+} 
+
+/* текст */ 
+#text_in_button_parent {   /* текст в кнопке  */  
+    display: table;
+    height: 100%;  /* высота */
+    width: 100%;  /* широта */
+}   
+#text_in_button_child {   /* текст в кнопке  */  
+    display: table-cell;
+    vertical-align: middle;
+}   
+.text_center {   /* текст внутри центрировать по горизонтали */ 
+    text-align:  center;
+}
+.text_right {   /* текст внутри прижать по право по горизонтали */  
+    float: right;
+}
+
+/* блоки */
+#actions_list, #info_list {   /* список кнопок редактирования и доп. информации*/
+    padding: 6px; /* поле вокруг содержимого элемента */
+    margin-top: 5px;  /* поле сверху */
+    margin-bottom: 8px;  /* поле снизу */
+    display: inline-block; /* отображать как горизонтальные блоки */
+}
+#left_indent { /* левый блок редактора */
+    float: left;
+    width: 280px;
+    line-height:2.3;
+}
+#right_indent { /* правый блок редактора */
+    width: 280px;
+    float: left;
+    line-height:2.3;
+}
+#add_indent { /* дополнительный блок редактора */
+    margin-left: 40px; /* отступ слева */
+    width: 460px;
+    float: left;
+    line-height:2.3;
+}
+#navigation { /* блок горизонтальной навигации по секциям */
+    font-size	: 11px;
+    line-height	: 1.5;
+    margin-bottom: 10px;
+}
+#main_content { /* блок основного контента */
+    margin-top: 15px;
+}
+#budget_table_block { /* блок основной таблицы бюджета */
+    float: left;
+} 
+#budget_summary_block { /* блок результирующей таблицы бюджета */
+    margin-top: 15px;
+    margin-left: 14px;
+    border: 2px solid #333; /* Рамка */ 
+    padding: 6px; /* поле вокруг содержимого элемента */
+    width: 150px;
+    float: left;
+}
+#inline { /* горизонтальные блоки */
+    display: inline-block; /* отображать как горизонтальные блоки */
+}
+#filters_form { /* скрытая форма настройки фильтра */
+    width: 350px;
+    padding: 6px; /* поле вокруг содержимого элемента */
+    line-height:2.3;
+    border: 1px solid #333; /* Рамка */
+    position: fixed;
+    z-index: 99999;
+    background: #eaeaea;
+    top: 8%;
+    left: 30%;
+    display: none;
+}
+
+/* элементы */  
+#label {  /* метка перед полем редактирования */
+    width: 150px;       /* ширина */
+    display: inline-block; /* отображать как горизонтальные блоки */
+} 
+#text_field_medium {  /* текстовое поле среднее */
+    width: 190px;       /* ширина */
+    margin-left: 2px;   /* отступ слева */
+} 
+#text_field_large {  /* текстовое поле большое */
+    width: 300px;       /* ширина */
+    margin-left: 2px;   /* отступ слева */
+} 
+#date_field  {   /* поле выбора даты */
+    width:245px;       /* ширина */
+    margin-left: 2px; /* отступ слева */
+} 
+
+/* таблицы */  
+#result_table {      /* основная таблица вывода результатов */
+    margin-top: 15px;
+    border: 2px solid #333; /* Рамка */ 
+    border-collapse: collapse; /* Убираем двойные границы между ячейками */
+    padding: 3px;    /* отступ от каждого края элемента  */
+} 
+#rs_td {           /* ячейка основной таблицы вывода результатов */
+    border: 1px solid #333; /* Рамка */
+    padding: 2px; /* поле вокруг содержимого элемента */
+}  
+#section_display_cell {  /* нижняя ячейка таблицы горизонтальной навигации */
+    font-size	: 11px;
+    color: #ff3300;    /* Цвет текста */
+    height: 18px;  /* высота */
+}  
+#additional_table  {  /* дополнительная таблица вывода результатов */
+    border-collapse: collapse; /* Убираем двойные границы между ячейками */
+    border: 1px solid #eaeaea; /* Рамка */ 
+    margin: 2px;    /* отступ от каждого края элемента  */
+}
+#ad_td {  /* ячейка доп. таблицы */
+    border: 1px solid #eaeaea; /* Рамка */
+    padding: 3px; /* поле вокруг содержимого элемента */
+    text-align: left;
+    vertical-align: top;
+} 
+.green_row {
+    background: greenyellow;
+}
+.red_row {
+    background: salmon;
+}
+
+/* график */  
+.demo-container {
+    box-sizing: border-box;
+    width: 1060px;
+    height: 550px;
+    padding: 20px 15px 15px 15px;
+    margin: 15px;
+    border: 1px solid #ddd;
+    background: #fff;
+    background: linear-gradient(#f6f6f6 0, #fff 50px);
+    background: -o-linear-gradient(#f6f6f6 0, #fff 50px);
+    background: -ms-linear-gradient(#f6f6f6 0, #fff 50px);
+    background: -moz-linear-gradient(#f6f6f6 0, #fff 50px);
+    background: -webkit-linear-gradient(#f6f6f6 0, #fff 50px);
+    box-shadow: 0 3px 10px rgba(0,0,0,0.15);
+    -o-box-shadow: 0 3px 10px rgba(0,0,0,0.1);
+    -ms-box-shadow: 0 3px 10px rgba(0,0,0,0.1);
+    -moz-box-shadow: 0 3px 10px rgba(0,0,0,0.1);
+    -webkit-box-shadow: 0 3px 10px rgba(0,0,0,0.1);
+}
+.demo-placeholder {
+    width: 100%;
+    height: 100%;
+    font-size: 14px;
+    line-height: 1.2em;
+}
+#placeholder   {
+    float:left;
+    width:850px;
+}
+#overview  {
+    float:right;
+    width:160px;
+    height:125px;
+    margin-right: 6px;
+}  
+#graph_options   {
+    float:left;
+    margin-left: 20px;
+    margin-top: 30px;
+    width:150px;
+}  

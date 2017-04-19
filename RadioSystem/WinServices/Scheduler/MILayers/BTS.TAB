@@ -1,0 +1,28 @@
+!table
+!version 300
+!charset WindowsCyrillic
+
+Definition Table
+  Type NATIVE Charset "WindowsCyrillic"
+  Fields 21
+    bts_number Char (7) Index 1 ;
+    site_type Char (4) ;
+    address Char (100) ;
+    place_owner Char (100) ;
+    cooperative Char (30) ;
+    info_2G Char (100) ;
+    config_GSM Char (50) ;
+    config_DCS Char (50) ;
+    info_3G Char (100) ;
+    config_UMTS Char (50) ;
+    powerment Char (50) ;
+    longitudel_s Char (50) ;
+    longitudel_d Char (50) ;
+    notes Char (150) ;
+    BSC Char (8) ;
+    lac_2g Char (4) ;
+    RNC Char (8) ;
+    lac_3g Char (4) ;
+    switching_gsm Char (20) ;
+    switching_dcs Char (20) ;
+    switching_3g Char (20) ;

@@ -1,0 +1,1 @@
+{"StatName":"trau","TableName":"statistics_trau","SearchPath":"C:\\CCLEAR\\Programs\\MTS","FileMask":"HW A-interface pool.xls","SchedulerMode":"daily","SchedulerTime":"14:01","LogFile":"Logs\\trau.log","ImportRules":{"\u0414\u0430\u043D\u043D\u044B\u0435$":{"bsc_id":5,"stat_date":1,"seizure_traffic":39,"outgoing_available":55}},"KeyFields":["bsc_id","stat_date"]}

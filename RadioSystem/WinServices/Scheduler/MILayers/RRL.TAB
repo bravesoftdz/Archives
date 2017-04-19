@@ -1,0 +1,24 @@
+!table
+!version 300
+!charset WindowsCyrillic
+
+Definition Table
+  Type NATIVE Charset "WindowsCyrillic"
+  Fields 17
+    direction Char (10) ;
+    bts_1 Char (100) ;
+    height_point1 Char (10) ;
+    diam_point1 Char (10) ;
+    azimuth_point1 Char (10) ;
+    bts_2 Char (100) ;
+    height_point2 Char (10) ;
+    diam_point2 Char (10) ;
+    azimuth_point2 Char (10) ;
+    fr_range Char (10) ;
+    equipment Char (20) ;
+    stream_work Char (10) ;
+    reserve Char (10) ;
+    notes Char (100) ;
+    switching Char (20) ;
+    load Char (10) ;
+    load_without_demontation Char (10) ;
