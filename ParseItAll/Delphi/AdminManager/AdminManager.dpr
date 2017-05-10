@@ -10,7 +10,10 @@ uses
   API_DB_MySQL in '..\..\..\..\Libraries\Delphi\API_DB_MySQL.pas',
   API_Files in '..\..\..\..\Libraries\Delphi\API_Files.pas',
   vLogin in 'vLogin.pas' {ViewLogin},
-  mLogin in 'mLogin.pas';
+  mLogin in 'mLogin.pas',
+  eEntities in 'eEntities.pas',
+  mJobs in 'mJobs.pas',
+  vJob in 'vJob.pas' {ViewJob};
 
 {$R *.res}
 
