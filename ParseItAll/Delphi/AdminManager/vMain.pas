@@ -5,15 +5,22 @@ interface
 uses
   Winapi.Windows, Winapi.Messages, System.SysUtils, System.Variants, System.Classes, Vcl.Graphics,
   Vcl.Controls, Vcl.Forms, Vcl.Dialogs,
-  API_MVC;
+  API_MVC, Vcl.ComCtrls, Vcl.ExtCtrls, Vcl.Grids, Vcl.StdCtrls, Vcl.Buttons;
 
 type
   TViewMain = class(TViewAbstract)
-    procedure FormActivate(Sender: TObject);
+    statBar: TStatusBar;
+    pnlJobs: TPanel;
+    stgdJobs: TStringGrid;
+    pnlButtons: TPanel;
+    btnNewJob: TBitBtn;
+    procedure btnNewJobClick(Sender: TObject);
+    procedure FormShow(Sender: TObject);
   private
     { Private declarations }
   protected
     procedure InitMVC; override;
+    procedure InitView; override;
   public
     { Public declarations }
   end;
@@ -28,7 +35,17 @@ implementation
 uses
   cController;
 
-procedure TViewMain.FormActivate(Sender: TObject);
+procedure TViewMain.InitView;
+begin
+  ViewMain := Self;
+end;
+
+procedure TViewMain.btnNewJobClick(Sender: TObject);
+begin
+  SendMessage('CreateJob');
+end;
+
+procedure TViewMain.FormShow(Sender: TObject);
 begin
   Self.SendMessage('ShowViewLogin');
 end;

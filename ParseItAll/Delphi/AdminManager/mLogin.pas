@@ -7,9 +7,6 @@ uses
 
 type
   TModelLogin = class(TModelDB)
-  private
-    procedure LoginOK;
-    procedure LoginFail;
   public
     procedure Execute; override;
   end;
@@ -17,20 +14,13 @@ type
 implementation
 
 uses
-  FireDAC.Comp.Client;
-
-procedure TModelLogin.LoginOK;
-begin
-end;
-
-procedure TModelLogin.LoginFail;
-begin
-
-end;
+  FireDAC.Comp.Client,
+  IdIPWatch;
 
 procedure TModelLogin.Execute;
 var
   dsQuery: TFDQuery;
+  IdIPWatch: TIdIPWatch;
 begin
   dsQuery:=TFDQuery.Create(nil);
   try
@@ -39,7 +29,18 @@ begin
     FDBEngine.OpenQuery(dsQuery);
 
     if dsQuery.FieldByName('password').AsString = FData.Items['password'] then
-      CreateEvent('LoginOK')
+      begin
+        FData.AddOrSetValue('user', dsQuery.FieldByName('login').AsString);
+
+        IdIPWatch := TIdIPWatch.Create(nil);
+        try
+          FData.AddOrSetValue('ip', IdIPWatch.LocalIP);
+        finally
+          IdIPWatch.Free;
+        end;
+
+        CreateEvent('LoginOK');
+      end
     else
       CreateEvent('LoginFail');
   finally

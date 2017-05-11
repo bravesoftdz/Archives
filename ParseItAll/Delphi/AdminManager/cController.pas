@@ -11,30 +11,54 @@ type
   TController = class(TControllerDB)
   protected
     procedure InitDB; override;
-    procedure PerfomViewMessage(aMsg: string; aViewSender: TViewAbstract); override;
+    procedure PerfomViewMessage(aMsg: string); override;
     procedure EventListener(aEventMsg: string); override;
   end;
 
 implementation
 
 uses
+  vMain,
   vLogin,
-  mLogin;
+  vJob,
+  mLogin,
+  mJobs,
+  eEntities;
 
 procedure TController.EventListener(aEventMsg: string);
 begin
+  if aEventMsg = 'LoginOK' then
+    begin
+      ViewLogin.Close;
+      ViewMain.statBar.Panels[0].Text := 'user: ' + FData.Items['user'];
+      ViewMain.statBar.Panels[1].Text := 'ip: ' + FData.Items['ip'];
+    end;
 
 end;
 
-procedure TController.PerfomViewMessage(aMsg: string; aViewSender: TViewAbstract);
+procedure TController.PerfomViewMessage(aMsg: string);
+var
+  Job: TJob;
 begin
   if aMsg = 'ShowViewLogin' then CallView(TViewLogin, True);
 
   if aMsg = 'PerfomLoggining' then
     begin
-      FData.Add('login', TViewLogin(aViewSender).edtLogin.Text);
-      FData.Add('password', TViewLogin(aViewSender).edtPassword.Text);
+      FData.Add('login', ViewLogin.edtLogin.Text);
+      FData.Add('password', ViewLogin.edtPassword.Text);
       CallModel(TModelLogin);
+    end;
+
+  if aMsg = 'CreateJob' then
+    begin
+      CallModel(TModelJobs, 'CreateJob');
+
+      //Job := TJob.Create;
+      //FObjData.Add('Job', Job);
+      //CallView(TViewJob);
+      // создать объект
+      // вызвать форму объекта
+      // сохранить объект
     end;
 end;
 

@@ -19,6 +19,8 @@ type
     procedure btnApplyClick(Sender: TObject);
   private
     { Private declarations }
+  protected
+    procedure InitView; override;
   public
     { Public declarations }
   end;
@@ -29,6 +31,11 @@ var
 implementation
 
 {$R *.dfm}
+
+procedure TViewLogin.InitView;
+begin
+  ViewLogin := Self;
+end;
 
 procedure TViewLogin.btnApplyClick(Sender: TObject);
 begin
