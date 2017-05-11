@@ -12,7 +12,7 @@ object ViewMain: TViewMain
   Font.Style = []
   OldCreateOrder = False
   Position = poScreenCenter
-  OnActivate = FormActivate
+  OnShow = FormShow
   PixelsPerInch = 96
   TextHeight = 13
   object statBar: TStatusBar
@@ -41,8 +41,6 @@ object ViewMain: TViewMain
     Height = 230
     Align = alClient
     TabOrder = 1
-    ExplicitTop = 32
-    ExplicitHeight = 239
     object stgdJobs: TStringGrid
       Left = 1
       Top = 1
@@ -53,10 +51,6 @@ object ViewMain: TViewMain
       FixedCols = 0
       RowCount = 2
       TabOrder = 0
-      ExplicitLeft = 200
-      ExplicitTop = 64
-      ExplicitWidth = 320
-      ExplicitHeight = 120
     end
   end
   object pnlButtons: TPanel
@@ -66,9 +60,6 @@ object ViewMain: TViewMain
     Height = 41
     Align = alTop
     TabOrder = 2
-    ExplicitLeft = 48
-    ExplicitTop = 8
-    ExplicitWidth = 185
     object btnNewJob: TBitBtn
       Left = 16
       Top = 8

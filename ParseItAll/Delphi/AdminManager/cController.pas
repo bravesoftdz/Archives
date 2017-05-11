@@ -49,11 +49,13 @@ begin
       CallModel(TModelLogin);
     end;
 
-  if aMsg = 'AddJob' then
+  if aMsg = 'CreateJob' then
     begin
-      Job := TJob.Create;
-      FObjData.Add('Job', Job);
-      CallView(TViewJob);
+      CallModel(TModelJobs, 'CreateJob');
+
+      //Job := TJob.Create;
+      //FObjData.Add('Job', Job);
+      //CallView(TViewJob);
       // создать объект
       // вызвать форму объекта
       // сохранить объект

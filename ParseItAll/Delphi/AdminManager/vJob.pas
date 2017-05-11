@@ -5,10 +5,18 @@ interface
 uses
   Winapi.Windows, Winapi.Messages, System.SysUtils, System.Variants, System.Classes, Vcl.Graphics,
   Vcl.Controls, Vcl.Forms, Vcl.Dialogs,
-  API_MVC;
+  API_MVC, Vcl.ExtCtrls, cefvcl, Vcl.StdCtrls, Vcl.Buttons;
 
 type
   TViewJob = class(TViewAbstract)
+    pnlBrowser: TPanel;
+    pnlURL: TPanel;
+    pnlFields: TPanel;
+    chrmBrowser: TChromium;
+    edtURL: TEdit;
+    lblURL: TLabel;
+    btnNavigate: TBitBtn;
+    procedure btnNavigateClick(Sender: TObject);
   private
     { Private declarations }
   protected
@@ -23,6 +31,11 @@ var
 implementation
 
 {$R *.dfm}
+
+procedure TViewJob.btnNavigateClick(Sender: TObject);
+begin
+  chrmBrowser.Load(edtURL.Text);
+end;
 
 procedure TViewJob.InitView;
 begin

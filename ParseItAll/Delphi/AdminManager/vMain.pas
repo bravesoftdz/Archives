@@ -14,8 +14,8 @@ type
     stgdJobs: TStringGrid;
     pnlButtons: TPanel;
     btnNewJob: TBitBtn;
-    procedure FormActivate(Sender: TObject);
     procedure btnNewJobClick(Sender: TObject);
+    procedure FormShow(Sender: TObject);
   private
     { Private declarations }
   protected
@@ -42,10 +42,10 @@ end;
 
 procedure TViewMain.btnNewJobClick(Sender: TObject);
 begin
-  SendMessage('AddJob');
+  SendMessage('CreateJob');
 end;
 
-procedure TViewMain.FormActivate(Sender: TObject);
+procedure TViewMain.FormShow(Sender: TObject);
 begin
   Self.SendMessage('ShowViewLogin');
 end;
