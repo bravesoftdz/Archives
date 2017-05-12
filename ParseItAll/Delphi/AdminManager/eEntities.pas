@@ -3,21 +3,15 @@ unit eEntities;
 interface
 
 uses
-  System.Generics.Collections;
+  System.Generics.Collections,
+  API_ORM;
 
 type
-  TJob = class
-  public
-    constructor Create(aID: integer = 0);
+  TJob = class(TEntityAbstract)
   end;
 
   TJobList = TObjectList<TJob>;
 
 implementation
-
-constructor TJob.Create(aID: Integer = 0);
-begin
-
-end;
 
 end.

@@ -22,8 +22,7 @@ uses
   vLogin,
   vJob,
   mLogin,
-  mJobs,
-  eEntities;
+  mJobs;
 
 procedure TController.EventListener(aEventMsg: string);
 begin
@@ -37,8 +36,6 @@ begin
 end;
 
 procedure TController.PerfomViewMessage(aMsg: string);
-var
-  Job: TJob;
 begin
   if aMsg = 'ShowViewLogin' then CallView(TViewLogin, True);
 

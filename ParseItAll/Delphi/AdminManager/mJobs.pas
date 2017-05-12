@@ -13,9 +13,14 @@ type
 
 implementation
 
-procedure TModelJobs.CreateJob;
-begin
+uses
+  eEntities;
 
+procedure TModelJobs.CreateJob;
+var
+  Job: TJob;
+begin
+  Job := GetEntity<TJob>;
 end;
 
 end.
