@@ -12,11 +12,11 @@ uses
   vLogin in 'vLogin.pas' {ViewLogin},
   mLogin in 'mLogin.pas',
   eEntities in 'eEntities.pas',
-  mJobs in 'mJobs.pas',
   vJob in 'vJob.pas' {ViewJob},
   ceflib,
   API_CRUD in '..\..\..\..\Libraries\Delphi\API_CRUD.pas',
-  API_ORM in '..\..\..\..\Libraries\Delphi\API_ORM.pas';
+  API_ORM in '..\..\..\..\Libraries\Delphi\API_ORM.pas',
+  mJobs in 'mJobs.pas';
 
 {$R *.res}
 

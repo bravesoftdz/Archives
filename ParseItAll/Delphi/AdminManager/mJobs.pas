@@ -14,13 +14,19 @@ type
 implementation
 
 uses
-  eEntities;
+  eEntities,
+  System.SysUtils,
+  Vcl.Dialogs;
 
 procedure TModelJobs.CreateJob;
 var
   Job: TJob;
 begin
-  Job := GetEntity<TJob>;
+  Job := TJob.Create(FDBEngine, 1);
+  Job.Caption := 'New Caption';
+  Job.SaveEntity;
+
+  ShowMessage(Job.Caption);
 end;
 
 end.

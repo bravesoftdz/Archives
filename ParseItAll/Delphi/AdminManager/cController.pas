@@ -37,7 +37,7 @@ end;
 
 procedure TController.PerfomViewMessage(aMsg: string);
 begin
-  if aMsg = 'ShowViewLogin' then CallView(TViewLogin, True);
+  if aMsg = 'ShowViewLogin' then CallView(TViewLogin);
 
   if aMsg = 'PerfomLoggining' then
     begin
