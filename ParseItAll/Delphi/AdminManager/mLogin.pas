@@ -39,7 +39,7 @@ begin
           IdIPWatch.Free;
         end;
 
-        CreateEvent('LoginOK');
+        CreateEvent('LoginDone');
       end
     else
       CreateEvent('LoginFail');

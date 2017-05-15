@@ -14,15 +14,21 @@ type
     stgdJobs: TStringGrid;
     pnlButtons: TPanel;
     btnNewJob: TBitBtn;
+    btnEditJob: TBitBtn;
+    btnEditRules: TBitBtn;
     procedure btnNewJobClick(Sender: TObject);
     procedure FormShow(Sender: TObject);
+    procedure btnEditJobClick(Sender: TObject);
+    procedure btnEditRulesClick(Sender: TObject);
   private
     { Private declarations }
+    function GetSelectedJobID: integer;
   protected
     procedure InitMVC; override;
     procedure InitView; override;
   public
     { Public declarations }
+    property SelectedJobID: Integer read GetSelectedJobID;
   end;
 
 var
@@ -35,9 +41,28 @@ implementation
 uses
   cController;
 
+function TViewMain.GetSelectedJobID: Integer;
+begin
+  Result := StrToInt(stgdJobs.Cells[0, stgdJobs.Row]);
+end;
+
 procedure TViewMain.InitView;
 begin
   ViewMain := Self;
+
+  stgdJobs.Cells[0,0] := 'ID';
+  stgdJobs.Cells[1,0] := 'UserID';
+  stgdJobs.Cells[2,0] := 'Title';
+end;
+
+procedure TViewMain.btnEditJobClick(Sender: TObject);
+begin
+  SendMessage('EditJob');
+end;
+
+procedure TViewMain.btnEditRulesClick(Sender: TObject);
+begin
+  SendMessage('EditRules');
 end;
 
 procedure TViewMain.btnNewJobClick(Sender: TObject);

@@ -109,6 +109,11 @@
         <DCCReference Include="..\..\..\..\Libraries\Delphi\API_CRUD.pas"/>
         <DCCReference Include="..\..\..\..\Libraries\Delphi\API_ORM.pas"/>
         <DCCReference Include="mJobs.pas"/>
+        <DCCReference Include="vRules.pas">
+            <Form>ViewRules</Form>
+            <FormType>dfm</FormType>
+        </DCCReference>
+        <DCCReference Include="mRules.pas"/>
         <BuildConfiguration Include="Release">
             <Key>Cfg_2</Key>
             <CfgParent>Base</CfgParent>

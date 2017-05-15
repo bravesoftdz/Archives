@@ -47,10 +47,16 @@ object ViewMain: TViewMain
       Width = 552
       Height = 228
       Align = alClient
-      ColCount = 2
+      ColCount = 3
+      DefaultRowHeight = 18
       FixedCols = 0
       RowCount = 2
+      Options = [goFixedVertLine, goFixedHorzLine, goVertLine, goHorzLine, goRangeSelect, goRowSelect]
       TabOrder = 0
+      ColWidths = (
+        55
+        53
+        431)
     end
   end
   object pnlButtons: TPanel
@@ -68,6 +74,24 @@ object ViewMain: TViewMain
       Caption = 'btnAddJob'
       TabOrder = 0
       OnClick = btnNewJobClick
+    end
+    object btnEditJob: TBitBtn
+      Left = 104
+      Top = 8
+      Width = 75
+      Height = 25
+      Caption = 'btnEditJob'
+      TabOrder = 1
+      OnClick = btnEditJobClick
+    end
+    object btnEditRules: TBitBtn
+      Left = 192
+      Top = 8
+      Width = 75
+      Height = 25
+      Caption = 'btnEditRules'
+      TabOrder = 2
+      OnClick = btnEditRulesClick
     end
   end
 end

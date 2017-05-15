@@ -8,25 +8,34 @@ uses
 type
   TModelJobs = class(TModelDB)
   published
-    procedure CreateJob;
+    procedure GetJob;
+    procedure GetJobList;
   end;
 
 implementation
 
 uses
-  eEntities,
   System.SysUtils,
-  Vcl.Dialogs;
+  FireDAC.Comp.Client,
+  eEntities;
 
-procedure TModelJobs.CreateJob;
+procedure TModelJobs.GetJobList;
+var
+  JobList: TJobList;
+begin
+  JobList := TJobList.Create(FDBEngine, [], []);
+  FObjData.AddOrSetValue('JobList', JobList);
+  CreateEvent('GetJobListDone');
+end;
+
+procedure TModelJobs.GetJob;
 var
   Job: TJob;
 begin
-  Job := TJob.Create(FDBEngine, 0);
-  Job.ZeroLink := 'https://ru.wikipedia.org/';
+  Job := TJob.Create(FDBEngine, FData.Items['JobID']);
 
   FObjData.AddOrSetValue('Job', Job);
-  CreateEvent('CreateJobOK');
+  CreateEvent('GetJobDone');
 end;
 
 end.

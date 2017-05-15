@@ -16,7 +16,9 @@ uses
   ceflib,
   API_CRUD in '..\..\..\..\Libraries\Delphi\API_CRUD.pas',
   API_ORM in '..\..\..\..\Libraries\Delphi\API_ORM.pas',
-  mJobs in 'mJobs.pas';
+  mJobs in 'mJobs.pas',
+  vRules in 'vRules.pas' {ViewRules},
+  mRules in 'mRules.pas';
 
 {$R *.res}
 

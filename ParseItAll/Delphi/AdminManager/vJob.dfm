@@ -12,6 +12,7 @@ object ViewJob: TViewJob
   Font.Style = []
   OldCreateOrder = False
   Position = poMainFormCenter
+  OnCreate = FormCreate
   PixelsPerInch = 96
   TextHeight = 13
   object pnlBrowser: TPanel
@@ -63,7 +64,7 @@ object ViewJob: TViewJob
       OnClick = btnNavigateClick
     end
   end
-  object pnlFields: TPanel
+  object pnlFieldsContainer: TPanel
     Left = 377
     Top = 33
     Width = 177

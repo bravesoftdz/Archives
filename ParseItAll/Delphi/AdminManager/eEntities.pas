@@ -3,22 +3,38 @@ unit eEntities;
 interface
 
 uses
-  //System.Generics.Collections,
+  System.Generics.Collections,
   Data.DB,
   API_ORM;
 
 type
+  TJobLevel = class(TEntityAbstract)
+  protected
+    // Getters Setters
+    function GetLevel: integer;
+    procedure SetLevel(aValue: integer);
+    //
+    procedure InitFields; override;
+  public
+    class function GetTableName: string; override;
+    property Level: Integer read GetLevel write SetLevel;
+  end;
+
+  TJobLevelList = class(TEntityList)
+  protected
+    procedure InitListClass; override;
+  end;
+
   TJob = class(TEntityAbstract)
   protected
+    // Getters Setters
     function GetCaption: string;
     procedure SetCaption(aValue: string);
-
     function GetZeroLink: string;
     procedure SetZeroLink(aValue: string);
-
     function GetUserID: integer;
     procedure SetUserID(aValue: integer);
-
+    //
     procedure InitFields; override;
   public
     class function GetTableName: string; override;
@@ -27,9 +43,43 @@ type
     property UserID: Integer read GetUserID write SetUserID;
   end;
 
-  //TJobList = TObjectList<TJob>;
+  TJobList = class(TEntityList)
+  protected
+    procedure InitListClass; override;
+  end;
 
 implementation
+
+procedure TJobList.InitListClass;
+begin
+  FEntityAbstractClass := TJob;
+end;
+
+procedure TJobLevelList.InitListClass;
+begin
+  FEntityAbstractClass := TJobLevel;
+end;
+
+function TJobLevel.GetLevel: integer;
+begin
+  Result := FData.Items['LEVEL'];
+end;
+
+procedure TJobLevel.SetLevel(aValue: integer);
+begin
+  FData.AddOrSetValue('LEVEL', aValue);
+end;
+
+procedure TJobLevel.InitFields;
+begin
+  AddField('JOB_ID', ftInteger);
+  AddField('LEVEL', ftInteger);
+end;
+
+class function TJobLevel.GetTableName: string;
+begin
+  Result := 'job_levels';
+end;
 
 function TJob.GetUserID: integer;
 begin
@@ -63,7 +113,7 @@ end;
 
 class function TJob.GetTableName: string;
 begin
-  Result := 'Jobs';
+  Result := 'jobs';
 end;
 
 procedure TJob.InitFields;
