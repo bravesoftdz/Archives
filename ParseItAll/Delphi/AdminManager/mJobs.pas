@@ -22,11 +22,11 @@ procedure TModelJobs.CreateJob;
 var
   Job: TJob;
 begin
-  Job := TJob.Create(FDBEngine, 1);
-  Job.Caption := 'New Caption';
-  Job.SaveEntity;
+  Job := TJob.Create(FDBEngine, 0);
+  Job.ZeroLink := 'https://ru.wikipedia.org/';
 
-  ShowMessage(Job.Caption);
+  FObjData.AddOrSetValue('Job', Job);
+  CreateEvent('CreateJobOK');
 end;
 
 end.

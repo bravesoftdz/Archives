@@ -30,10 +30,6 @@ object ViewJob: TViewJob
       Align = alClient
       DefaultUrl = 'about:blank'
       TabOrder = 0
-      ExplicitLeft = 72
-      ExplicitTop = 88
-      ExplicitWidth = 100
-      ExplicitHeight = 41
     end
   end
   object pnlURL: TPanel
@@ -73,11 +69,6 @@ object ViewJob: TViewJob
     Width = 177
     Height = 257
     Align = alClient
-    Caption = 'pnlFields'
     TabOrder = 2
-    ExplicitLeft = 440
-    ExplicitTop = 96
-    ExplicitWidth = 185
-    ExplicitHeight = 41
   end
 end

@@ -17,22 +17,22 @@ object ViewLogin: TViewLogin
   TextHeight = 13
   object lblLogin: TLabel
     Left = 15
-    Top = 21
+    Top = 20
     Width = 25
     Height = 13
     Caption = 'Login'
   end
   object lblPassword: TLabel
-    Left = 16
-    Top = 49
+    Left = 15
+    Top = 48
     Width = 46
     Height = 13
     Caption = 'Password'
   end
   object edtLogin: TEdit
-    Left = 69
+    Left = 70
     Top = 17
-    Width = 172
+    Width = 171
     Height = 21
     TabOrder = 0
   end

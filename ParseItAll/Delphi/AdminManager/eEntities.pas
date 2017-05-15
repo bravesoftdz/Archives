@@ -16,35 +16,49 @@ type
     function GetZeroLink: string;
     procedure SetZeroLink(aValue: string);
 
+    function GetUserID: integer;
+    procedure SetUserID(aValue: integer);
+
     procedure InitFields; override;
   public
     class function GetTableName: string; override;
     property Caption: string read GetCaption write SetCaption;
     property ZeroLink: string read GetZeroLink write SetZeroLink;
+    property UserID: Integer read GetUserID write SetUserID;
   end;
 
   //TJobList = TObjectList<TJob>;
 
 implementation
 
-procedure TJob.SetZeroLink(aValue: string);
+function TJob.GetUserID: integer;
 begin
-  FData.AddOrSetValue('zero_link', aValue);
+  Result := FData.Items['USER_ID'];
 end;
 
-function TJob.GetZeroLink;
+procedure TJob.SetUserID(aValue: integer);
 begin
-  Result := FData.Items['zero_link'];
+  FData.AddOrSetValue('USER_ID', aValue);
+end;
+
+procedure TJob.SetZeroLink(aValue: string);
+begin
+  FData.AddOrSetValue('ZERO_LINK', aValue);
+end;
+
+function TJob.GetZeroLink: string;
+begin
+  Result := FData.Items['ZERO_LINK'];
 end;
 
 procedure TJob.SetCaption(aValue: string);
 begin
-  FData.AddOrSetValue('caption', aValue);
+  FData.AddOrSetValue('CAPTION', aValue);
 end;
 
 function TJob.GetCaption;
 begin
-  Result := FData.Items['caption'];
+  Result := FData.Items['CAPTION'];
 end;
 
 class function TJob.GetTableName: string;

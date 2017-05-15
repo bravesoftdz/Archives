@@ -22,9 +22,12 @@ uses
   vLogin,
   vJob,
   mLogin,
-  mJobs;
+  mJobs,
+  eEntities;
 
 procedure TController.EventListener(aEventMsg: string);
+var
+  Job: TJob;
 begin
   if aEventMsg = 'LoginOK' then
     begin
@@ -33,6 +36,12 @@ begin
       ViewMain.statBar.Panels[1].Text := 'ip: ' + FData.Items['ip'];
     end;
 
+  if aEventMsg = 'CreateJobOK' then
+    begin
+      CallView(TViewJob);
+      Job := FObjData.Items['Job'] as TJob;
+      ViewJob.edtURL.Text := Job.ZeroLink;
+    end;
 end;
 
 procedure TController.PerfomViewMessage(aMsg: string);
@@ -49,13 +58,6 @@ begin
   if aMsg = 'CreateJob' then
     begin
       CallModel(TModelJobs, 'CreateJob');
-
-      //Job := TJob.Create;
-      //FObjData.Add('Job', Job);
-      //CallView(TViewJob);
-      // создать объект
-      // вызвать форму объекта
-      // сохранить объект
     end;
 end;
 
