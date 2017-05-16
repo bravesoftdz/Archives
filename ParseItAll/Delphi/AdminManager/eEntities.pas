@@ -20,10 +20,7 @@ type
     property Level: Integer read GetLevel write SetLevel;
   end;
 
-  TJobLevelList = class(TEntityList)
-  protected
-    procedure InitListClass; override;
-  end;
+  TJobLevelList = TEntityList<TJobLevel>;
 
   TJob = class(TEntityAbstract)
   protected
@@ -43,22 +40,9 @@ type
     property UserID: Integer read GetUserID write SetUserID;
   end;
 
-  TJobList = class(TEntityList)
-  protected
-    procedure InitListClass; override;
-  end;
+  TJobList = TEntityList<TJob>;
 
 implementation
-
-procedure TJobList.InitListClass;
-begin
-  FEntityAbstractClass := TJob;
-end;
-
-procedure TJobLevelList.InitListClass;
-begin
-  FEntityAbstractClass := TJobLevel;
-end;
 
 function TJobLevel.GetLevel: integer;
 begin
