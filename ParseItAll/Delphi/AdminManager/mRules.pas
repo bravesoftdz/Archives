@@ -29,6 +29,9 @@ begin
   ListFilter := ListFilter + [Format('JOB_ID = "%d"', [JobID])];
   ListOrder := ListOrder + ['LEVEL'];
   JobLevelList := TJobLevelList.Create(FDBEngine, ListFilter, ListOrder);
+
+  FObjData.AddOrSetValue('JobLevelList', JobLevelList);
+  CreateEvent('GetLevelsDone');
 end;
 
 end.

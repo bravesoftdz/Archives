@@ -46,19 +46,17 @@ implementation
 procedure TViewJob.LoadStart(Sender: TObject; const browser: ICefBrowser; const frame: ICefFrame);
 begin
   edtURL.Text := frame.Url;
-  ZeroLinkEdit.Text := frame.Url;
+  if frame.Url <> 'about:blank' then ZeroLinkEdit.Text := frame.Url;
 end;
 
 procedure TViewJob.SetBrowserLinks;
 begin
+  chrmBrowser.OnLoadStart := LoadStart;
   ZeroLinkEdit := CRUDPanel.FindComponent('cntrl' + 'ZERO_LINK') as TEdit;
   ZeroLinkEdit.Enabled := False;
 
   if ZeroLinkEdit.Text <> '' then
-    begin
-      edtURL.Text := ZeroLinkEdit.Text;
-      btnNavigate.Click;
-    end;
+    chrmBrowser.Load(ZeroLinkEdit.Text);
 end;
 
 procedure TViewJob.ApplyChanges(Sender: TObject);
@@ -74,7 +72,6 @@ end;
 procedure TViewJob.btnNavigateClick(Sender: TObject);
 begin
   chrmBrowser.Load(edtURL.Text);
-  chrmBrowser.OnLoadStart := LoadStart;
 end;
 
 procedure TViewJob.FormCreate(Sender: TObject);

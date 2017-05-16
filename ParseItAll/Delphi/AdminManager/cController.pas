@@ -9,6 +9,9 @@ uses
 
 type
   TController = class(TControllerDB)
+  private
+    procedure GetLevelsDone;
+    procedure CreateGroup;
   protected
     procedure InitDB; override;
     procedure PerfomViewMessage(aMsg: string); override;
@@ -27,6 +30,39 @@ uses
   mJobs,
   mRules,
   eEntities;
+
+procedure TController.CreateGroup;
+var
+  LevelList: TJobLevelList;
+  Group: TJobGroup;
+begin
+  LevelList := FObjData.Items['JobLevelList'] as TJobLevelList;
+
+  Group := TJobGroup.Create(FDBEngine, 0);
+  Group.Notes := 'New Group';
+
+  LevelList.Items[0].Groups.Add(Group);
+  ViewRules.SetControlTree(LevelList.Items[0].Groups);
+end;
+
+procedure TController.GetLevelsDone;
+var
+  LevelList: TJobLevelList;
+  Level: TJobLevel;
+begin
+  LevelList := FObjData.Items['JobLevelList'] as TJobLevelList;
+
+  if LevelList.Count = 0 then
+    begin
+      Level := TJobLevel.Create(FDBEngine, 0);
+      Level.Level := 1;
+      Level.BaseLink := FData.Items['ZeroLink'];
+      LevelList.Add(Level);
+    end;
+
+  CallView(TViewRules);
+  ViewRules.SetLevels(LevelList);
+end;
 
 procedure TController.EventListener(aEventMsg: string);
 var
@@ -68,10 +104,16 @@ begin
         JobList.Free;
       end;
     end;
+
+  if aEventMsg = 'GetLevelsDone' then GetLevelsDone;
 end;
 
 procedure TController.PerfomViewMessage(aMsg: string);
+var
+  Job: TJob;
 begin
+  if aMsg = 'CreateGroup' then CreateGroup;
+
   if aMsg = 'ShowViewLogin' then CallView(TViewLogin);
   if aMsg = 'PerfomLoggining' then
     begin
@@ -100,9 +142,14 @@ begin
 
   if aMsg = 'EditRules' then
     begin
-      FData.AddOrSetValue('JobID', ViewMain.SelectedJobID);
-      CallModel(TModelRules, 'GetLevels');
-      //CallView(TViewRules);
+      Job := TJob.Create(FDBEngine, ViewMain.SelectedJobID);
+      try
+        FData.AddOrSetValue('JobID', Job.ID);
+        FData.AddOrSetValue('ZeroLink', Job.ZeroLink);
+        CallModel(TModelRules, 'GetLevels');
+      finally
+        Job.Free;
+      end;
     end;
 end;
 

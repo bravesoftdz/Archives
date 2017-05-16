@@ -31,10 +31,6 @@ object ViewRules: TViewRules
       Align = alClient
       DefaultUrl = 'about:blank'
       TabOrder = 0
-      ExplicitLeft = 88
-      ExplicitTop = 112
-      ExplicitWidth = 100
-      ExplicitHeight = 41
     end
   end
   object pnlControls: TPanel
@@ -44,10 +40,6 @@ object ViewRules: TViewRules
     Height = 349
     Align = alClient
     TabOrder = 1
-    ExplicitLeft = 496
-    ExplicitTop = 64
-    ExplicitWidth = 185
-    ExplicitHeight = 41
     object pnlLevel: TPanel
       Left = 1
       Top = 1
@@ -57,7 +49,7 @@ object ViewRules: TViewRules
       TabOrder = 0
       object lbllevel: TLabel
         Left = 119
-        Top = 11
+        Top = 12
         Width = 25
         Height = 13
         Caption = 'Level'
@@ -67,15 +59,15 @@ object ViewRules: TViewRules
         Top = 8
         Width = 81
         Height = 21
+        Style = csDropDownList
         TabOrder = 0
-        Text = 'cbbLevel'
       end
       object btnAddLevel: TBitBtn
         Left = 15
         Top = 6
         Width = 75
         Height = 25
-        Caption = 'btnAddLevel'
+        Caption = 'btnAddL'
         TabOrder = 1
       end
     end
@@ -83,34 +75,39 @@ object ViewRules: TViewRules
       Left = 1
       Top = 41
       Width = 248
-      Height = 144
+      Height = 184
       Align = alTop
       Caption = 'pnlTree'
       TabOrder = 1
       object tvTree: TTreeView
         Left = 1
-        Top = 1
+        Top = 32
         Width = 246
-        Height = 142
-        Align = alClient
+        Height = 151
+        Align = alBottom
         Indent = 19
         TabOrder = 0
-        ExplicitLeft = 48
-        ExplicitTop = 40
-        ExplicitWidth = 121
-        ExplicitHeight = 97
+      end
+      object btnAG: TBitBtn
+        Left = 8
+        Top = 4
+        Width = 33
+        Height = 25
+        Caption = 'btnAG'
+        TabOrder = 1
+        OnClick = btnAGClick
       end
     end
     object pnlFields: TPanel
       Left = 1
-      Top = 185
+      Top = 225
       Width = 248
-      Height = 163
+      Height = 123
       Align = alClient
       Caption = 'pnlFields'
       TabOrder = 2
-      ExplicitTop = 192
-      ExplicitHeight = 156
+      ExplicitTop = 216
+      ExplicitHeight = 132
     end
   end
 end

@@ -8,16 +8,39 @@ uses
   API_ORM;
 
 type
-  TJobLevel = class(TEntityAbstract)
+  TJobGroup = class(TEntityAbstract)
   protected
     // Getters Setters
+    function GetLevelID: Integer;
+    procedure SetLevelID(aValue: integer);
+    function GetNotes: string;
+    procedure SetNotes(aValue: string);
+    //////////////////
+    procedure InitFields; override;
+  public
+    class function GetTableName: string; override;
+    property LevelID: Integer read GetLevelID write SetLevelID;
+    property Notes: string read GetNotes write SetNotes;
+  end;
+
+  TJobGroupList = TEntityList<TJobGroup>;
+
+  TJobLevel = class(TEntityAbstract)
+  protected
+    FGroups: TJobGroupList;
+    // Getters Setters
+    function GetGroups: TJobGroupList;
     function GetLevel: integer;
     procedure SetLevel(aValue: integer);
-    //
+    function GetBaseLink: string;
+    procedure SetBaseLink(aValue: string);
+    //////////////////
     procedure InitFields; override;
   public
     class function GetTableName: string; override;
     property Level: Integer read GetLevel write SetLevel;
+    property BaseLink: string read GetBaseLink write SetBaseLink;
+    property Groups: TJobGroupList read GetGroups;
   end;
 
   TJobLevelList = TEntityList<TJobLevel>;
@@ -31,7 +54,7 @@ type
     procedure SetZeroLink(aValue: string);
     function GetUserID: integer;
     procedure SetUserID(aValue: integer);
-    //
+    //////////////////
     procedure InitFields; override;
   public
     class function GetTableName: string; override;
@@ -43,6 +66,59 @@ type
   TJobList = TEntityList<TJob>;
 
 implementation
+
+uses
+  System.SysUtils;
+
+class function TJobGroup.GetTableName: string;
+begin
+  Result := 'job_groups';
+end;
+
+function TJobLevel.GetGroups: TJobGroupList;
+begin
+  if not Assigned(FGroups)  then
+    FGroups := TJobGroupList.Create(FDBEngine, ['LEVEL_ID='+IntToStr(Self.ID)], []);
+
+  Result := FGroups;
+  //Result := GetOneToManyList<TJobGroup, TJobGroupList>;
+end;
+
+function TJobGroup.GetNotes: string;
+begin
+  Result := FData.Items['NOTES'];
+end;
+
+procedure TJobGroup.SetNotes(aValue: string);
+begin
+  FData.AddOrSetValue('NOTES', aValue);
+end;
+
+function TJobGroup.GetLevelID: Integer;
+begin
+  Result := FData.Items['LEVEL_ID'];
+end;
+
+procedure TJobGroup.SetLevelID(aValue: integer);
+begin
+  FData.AddOrSetValue('LEVEL_ID', aValue);
+end;
+
+procedure TJobGroup.InitFields;
+begin
+  AddField('LEVEL_ID', ftInteger);
+  AddField('NOTES', ftString);
+end;
+
+function TJobLevel.GetBaseLink: string;
+begin
+  Result := FData.Items['BASE_LINK'];
+end;
+
+procedure TJobLevel.SetBaseLink(aValue: string);
+begin
+  FData.AddOrSetValue('BASE_LINK', aValue);
+end;
 
 function TJobLevel.GetLevel: integer;
 begin
@@ -58,6 +134,7 @@ procedure TJobLevel.InitFields;
 begin
   AddField('JOB_ID', ftInteger);
   AddField('LEVEL', ftInteger);
+  AddField('BASE_LINK', ftString);
 end;
 
 class function TJobLevel.GetTableName: string;
