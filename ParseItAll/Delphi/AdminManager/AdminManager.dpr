@@ -1,5 +1,7 @@
 program AdminManager;
 
+
+
 uses
   Vcl.Forms,
   vMain in 'vMain.pas' {ViewMain},

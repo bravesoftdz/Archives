@@ -6,7 +6,7 @@ uses
   Winapi.Windows, Winapi.Messages, System.SysUtils, System.Variants, System.Classes, Vcl.Graphics,
   Vcl.Controls, Vcl.Forms, Vcl.Dialogs, Vcl.ExtCtrls, cefvcl, Vcl.StdCtrls, Vcl.Buttons, Vcl.ComCtrls,
   API_MVC,
-  eEntities;
+  eEntities, Vcl.ImgList;
 
 type
   TViewRules = class(TViewAbstract)
@@ -21,6 +21,7 @@ type
     pnlFields: TPanel;
     tvTree: TTreeView;
     btnAG: TBitBtn;
+    ilIcons: TImageList;
     procedure btnAGClick(Sender: TObject);
   private
     { Private declarations }
@@ -56,6 +57,8 @@ begin
   for Group in aJobGroupList do
     begin
       GroupNode := TGroupNode.Create(TreeNodes);
+      GroupNode.ImageIndex := 0;
+      GroupNode.ExpandedImageIndex := 1;
       GroupNode.Group := Group;
 
       TreeNodes.AddChild(GroupNode, Group.Notes);
