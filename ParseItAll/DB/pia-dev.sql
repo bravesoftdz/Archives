@@ -1,6 +1,6 @@
 ﻿# Host: 127.0.0.1  (Version 5.5.23)
-# Date: 2017-05-16 20:50:14
-# Generator: MySQL-Front 6.0  (Build 1.182)
+# Date: 2017-05-18 18:09:27
+# Generator: MySQL-Front 6.0  (Build 1.194)
 
 
 #
@@ -37,6 +37,24 @@ CREATE TABLE `job_groups` (
 
 #
 # Data for table "job_groups"
+#
+
+
+#
+# Structure for table "job_rules"
+#
+
+CREATE TABLE `job_rules` (
+  `Id` int(11) NOT NULL AUTO_INCREMENT,
+  `group_id` int(11) NOT NULL DEFAULT '0',
+  `description` varchar(255) DEFAULT NULL,
+  PRIMARY KEY (`Id`),
+  KEY `group_id` (`group_id`),
+  CONSTRAINT `job_rules_ibfk_1` FOREIGN KEY (`group_id`) REFERENCES `job_groups` (`Id`) ON DELETE CASCADE ON UPDATE CASCADE
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+
+#
+# Data for table "job_rules"
 #
 
 

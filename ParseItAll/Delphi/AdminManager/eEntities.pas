@@ -8,6 +8,21 @@ uses
   API_ORM;
 
 type
+  TJobRule = class(TEntityAbstract)
+  protected
+    // Getters Setters
+    function GetGroupID: Integer;
+    procedure SetGroupID(aValue: integer);
+    function GetDescription: string;
+    procedure SetDescription(aValue: string);
+    //////////////////
+    procedure InitFields; override;
+  public
+    class function GetTableName: string; override;
+    property GroupID: Integer read GetGroupID write SetGroupID;
+    property Description: string read GetDescription write SetDescription;
+  end;
+
   TJobGroup = class(TEntityAbstract)
   protected
     // Getters Setters
@@ -47,7 +62,9 @@ type
 
   TJob = class(TEntityAbstract)
   protected
+    FLevels: TJobLevelList;
     // Getters Setters
+    function GetLevels: TJobLevelList;
     function GetCaption: string;
     procedure SetCaption(aValue: string);
     function GetZeroLink: string;
@@ -61,6 +78,7 @@ type
     property Caption: string read GetCaption write SetCaption;
     property ZeroLink: string read GetZeroLink write SetZeroLink;
     property UserID: Integer read GetUserID write SetUserID;
+    property Levels: TJobLevelList read GetLevels;
   end;
 
   TJobList = TEntityList<TJob>;
@@ -69,6 +87,45 @@ implementation
 
 uses
   System.SysUtils;
+
+function TJob.GetLevels: TJobLevelList;
+begin
+  if not Assigned(FLevels)  then
+    FLevels := TJobLevelList.Create(FDBEngine, 'JOB_ID', Self.ID);
+
+  Result := FLevels;
+end;
+
+function TJobRule.GetGroupID: Integer;
+begin
+  Result := FData.Items['GROUP_ID'];
+end;
+
+procedure TJobRule.SetGroupID(aValue: integer);
+begin
+  FData.AddOrSetValue('GROUP_ID', aValue);
+end;
+
+function TJobRule.GetDescription: string;
+begin
+  Result := FData.Items['DESCRIPTION'];
+end;
+
+procedure TJobRule.SetDescription(aValue: string);
+begin
+  FData.AddOrSetValue('DESCRIPTION', aValue);
+end;
+
+procedure TJobRule.InitFields;
+begin
+  AddField('GROUP_ID', ftInteger);
+  AddField('DESCRIPTION', ftString);
+end;
+
+class function TJobRule.GetTableName: string;
+begin
+  Result := 'job_rules';
+end;
 
 class function TJobGroup.GetTableName: string;
 begin

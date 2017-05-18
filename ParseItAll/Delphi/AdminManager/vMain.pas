@@ -62,7 +62,7 @@ end;
 
 procedure TViewMain.btnEditRulesClick(Sender: TObject);
 begin
-  SendMessage('EditRules');
+  SendMessage('EditJobRules');
 end;
 
 procedure TViewMain.btnNewJobClick(Sender: TObject);

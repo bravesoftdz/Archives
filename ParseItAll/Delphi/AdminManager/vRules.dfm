@@ -99,15 +99,41 @@ object ViewRules: TViewRules
         TabOrder = 1
         OnClick = btnAGClick
       end
+      object btnAR: TBitBtn
+        Left = 49
+        Top = 3
+        Width = 33
+        Height = 25
+        Caption = 'btnAR'
+        TabOrder = 2
+      end
     end
     object pnlFields: TPanel
       Left = 1
       Top = 225
       Width = 248
-      Height = 123
-      Align = alClient
+      Height = 88
+      Align = alTop
       Caption = 'pnlFields'
       TabOrder = 2
+    end
+    object btnApply: TButton
+      Left = 16
+      Top = 320
+      Width = 75
+      Height = 25
+      Caption = 'btnApply'
+      TabOrder = 3
+      OnClick = btnApplyClick
+    end
+    object btnCancel: TButton
+      Left = 160
+      Top = 320
+      Width = 75
+      Height = 25
+      Caption = 'btnCancel'
+      TabOrder = 4
+      OnClick = btnCancelClick
     end
   end
   object ilIcons: TImageList
@@ -115,7 +141,7 @@ object ViewRules: TViewRules
     Left = 32
     Top = 32
     Bitmap = {
-      494C010102000800240010001000FFFFFFFF2100FFFFFFFFFFFFFFFF424D3600
+      494C010102000800280010001000FFFFFFFF2110FFFFFFFFFFFFFFFF424D3600
       0000000000003600000028000000400000001000000001002000000000000010
       0000000000000000000000000000000000000000000000000000000000000000
       0000000000000000000000000000000000000000000000000000000000000000
@@ -251,6 +277,7 @@ object ViewRules: TViewRules
       FFFFFFFF00000000800180010000000080018001000000008001800100000000
       8001800100000000800180010000000080018000000000008001800100000000
       8001800300000000800180030000000081FF81FF00000000FFFFFFFF00000000
-      FFFFFFFF00000000FFFFFFFF00000000}
+      FFFFFFFF00000000FFFFFFFF0000000000000000000000000000000000000000
+      000000000000}
   end
 end

@@ -22,7 +22,12 @@ type
     tvTree: TTreeView;
     btnAG: TBitBtn;
     ilIcons: TImageList;
+    btnAR: TBitBtn;
+    btnApply: TButton;
+    btnCancel: TButton;
     procedure btnAGClick(Sender: TObject);
+    procedure btnCancelClick(Sender: TObject);
+    procedure btnApplyClick(Sender: TObject);
   private
     { Private declarations }
   protected
@@ -81,6 +86,16 @@ end;
 procedure TViewRules.btnAGClick(Sender: TObject);
 begin
   SendMessage('CreateGroup');
+end;
+
+procedure TViewRules.btnApplyClick(Sender: TObject);
+begin
+  SendMessage('StoreJobRules');
+end;
+
+procedure TViewRules.btnCancelClick(Sender: TObject);
+begin
+  Close;
 end;
 
 procedure TViewRules.InitView;

@@ -16,6 +16,10 @@ type
     procedure InitDB; override;
     procedure PerfomViewMessage(aMsg: string); override;
     procedure EventListener(aEventMsg: string); override;
+  published
+    procedure EditJobRules;
+    procedure StoreJobRules;
+
   end;
 
 implementation
@@ -30,6 +34,26 @@ uses
   mJobs,
   mRules,
   eEntities;
+
+procedure TController.EditJobRules;
+var
+  Job: TJob;
+begin
+  Job := TJob.Create(FDBEngine, ViewMain.SelectedJobID);
+  try
+    //FData.AddOrSetValue('JobID', Job.ID);
+    //FData.AddOrSetValue('ZeroLink', Job.ZeroLink);
+    //CallModel(TModelRules, 'GetLevels');
+    FObjData.AddOrSetValue('Job', Job);
+  finally
+    Job.Free;
+  end;
+end;
+
+procedure TController.StoreJobRules;
+begin
+
+end;
 
 procedure TController.CreateGroup;
 var
@@ -109,8 +133,6 @@ begin
 end;
 
 procedure TController.PerfomViewMessage(aMsg: string);
-var
-  Job: TJob;
 begin
   if aMsg = 'CreateGroup' then CreateGroup;
 
@@ -138,18 +160,6 @@ begin
       ViewJob.CRUDPanel.UpdateEntity;
       ViewJob.CRUDPanel.Entity.SaveEntity;
       CallModel(TModelJobs, 'GetJobList');
-    end;
-
-  if aMsg = 'EditRules' then
-    begin
-      Job := TJob.Create(FDBEngine, ViewMain.SelectedJobID);
-      try
-        FData.AddOrSetValue('JobID', Job.ID);
-        FData.AddOrSetValue('ZeroLink', Job.ZeroLink);
-        CallModel(TModelRules, 'GetLevels');
-      finally
-        Job.Free;
-      end;
     end;
 end;
 
