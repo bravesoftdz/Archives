@@ -10,7 +10,6 @@ uses
 type
   TController = class(TControllerDB)
   private
-    procedure GetLevelsDone;
     procedure CreateGroup;
   protected
     procedure InitDB; override;
@@ -38,21 +37,34 @@ uses
 procedure TController.EditJobRules;
 var
   Job: TJob;
+  Levels: TJobLevelList;
+  Level: TJobLevel;
 begin
   Job := TJob.Create(FDBEngine, ViewMain.SelectedJobID);
+  FObjData.AddOrSetValue('Job', Job);
   try
-    //FData.AddOrSetValue('JobID', Job.ID);
-    //FData.AddOrSetValue('ZeroLink', Job.ZeroLink);
-    //CallModel(TModelRules, 'GetLevels');
-    FObjData.AddOrSetValue('Job', Job);
+    Levels := Job.Levels;
+
+    if Levels.Count = 0 then
+      begin
+        Level := TJobLevel.Create(FDBEngine, 0);
+        Level.Level := 1;
+        Level.BaseLink := Job.ZeroLink;
+        Levels.Add(Level);
+      end;
+
+    CallView(TViewRules);
+    ViewRules.SetLevels(Levels);
   finally
     Job.Free;
   end;
 end;
 
 procedure TController.StoreJobRules;
+var
+  Job: TJob;
 begin
-
+  Job := FObjData.Items['Job'] as TJob;
 end;
 
 procedure TController.CreateGroup;
@@ -67,25 +79,6 @@ begin
 
   LevelList.Items[0].Groups.Add(Group);
   ViewRules.SetControlTree(LevelList.Items[0].Groups);
-end;
-
-procedure TController.GetLevelsDone;
-var
-  LevelList: TJobLevelList;
-  Level: TJobLevel;
-begin
-  LevelList := FObjData.Items['JobLevelList'] as TJobLevelList;
-
-  if LevelList.Count = 0 then
-    begin
-      Level := TJobLevel.Create(FDBEngine, 0);
-      Level.Level := 1;
-      Level.BaseLink := FData.Items['ZeroLink'];
-      LevelList.Add(Level);
-    end;
-
-  CallView(TViewRules);
-  ViewRules.SetLevels(LevelList);
 end;
 
 procedure TController.EventListener(aEventMsg: string);
@@ -125,11 +118,9 @@ begin
             Inc(i);
           end;
       finally
-        JobList.Free;
+        FreeAndNil(JobList);
       end;
     end;
-
-  if aEventMsg = 'GetLevelsDone' then GetLevelsDone;
 end;
 
 procedure TController.PerfomViewMessage(aMsg: string);

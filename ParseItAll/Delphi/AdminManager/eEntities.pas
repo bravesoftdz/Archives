@@ -138,7 +138,6 @@ begin
     FGroups := TJobGroupList.Create(FDBEngine, ['LEVEL_ID='+IntToStr(Self.ID)], []);
 
   Result := FGroups;
-  //Result := GetOneToManyList<TJobGroup, TJobGroupList>;
 end;
 
 function TJobGroup.GetNotes: string;
