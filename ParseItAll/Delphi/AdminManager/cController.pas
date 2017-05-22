@@ -37,27 +37,23 @@ uses
 procedure TController.EditJobRules;
 var
   Job: TJob;
-  Levels: TJobLevelList;
+  Levels: TLevelList;
   Level: TJobLevel;
 begin
   Job := TJob.Create(FDBEngine, ViewMain.SelectedJobID);
   FObjData.AddOrSetValue('Job', Job);
-  try
-    Levels := Job.Levels;
 
-    if Levels.Count = 0 then
-      begin
-        Level := TJobLevel.Create(FDBEngine, 0);
-        Level.Level := 1;
-        Level.BaseLink := Job.ZeroLink;
-        Levels.Add(Level);
-      end;
+  Levels := Job.Levels;
+  if Levels.Count = 0 then
+    begin
+      Level := TJobLevel.Create(FDBEngine, 0);
+      Level.Level := 1;
+      Level.BaseLink := Job.ZeroLink;
+      Levels.Add(Level);
+    end;
 
-    CallView(TViewRules);
-    ViewRules.SetLevels(Levels);
-  finally
-    Job.Free;
-  end;
+  CallView(TViewRules);
+  ViewRules.SetLevels(Levels);
 end;
 
 procedure TController.StoreJobRules;
@@ -65,14 +61,15 @@ var
   Job: TJob;
 begin
   Job := FObjData.Items['Job'] as TJob;
+  Job.SaveAll;
 end;
 
 procedure TController.CreateGroup;
 var
-  LevelList: TJobLevelList;
+  LevelList: TLevelList;
   Group: TJobGroup;
 begin
-  LevelList := FObjData.Items['JobLevelList'] as TJobLevelList;
+  LevelList := FObjData.Items['LevelList'] as TLevelList;
 
   Group := TJobGroup.Create(FDBEngine, 0);
   Group.Notes := 'New Group';

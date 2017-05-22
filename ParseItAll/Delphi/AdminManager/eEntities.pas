@@ -38,13 +38,13 @@ type
     property Notes: string read GetNotes write SetNotes;
   end;
 
-  TJobGroupList = TEntityList<TJobGroup>;
+  TGroupList = TEntityList<TJobGroup>;
 
   TJobLevel = class(TEntityAbstract)
   protected
-    FGroups: TJobGroupList;
+    FGroups: TGroupList;
     // Getters Setters
-    function GetGroups: TJobGroupList;
+    function GetGroups: TGroupList;
     function GetLevel: integer;
     procedure SetLevel(aValue: integer);
     function GetBaseLink: string;
@@ -55,16 +55,16 @@ type
     class function GetTableName: string; override;
     property Level: Integer read GetLevel write SetLevel;
     property BaseLink: string read GetBaseLink write SetBaseLink;
-    property Groups: TJobGroupList read GetGroups;
+    property Groups: TGroupList read GetGroups;
   end;
 
-  TJobLevelList = TEntityList<TJobLevel>;
+  TLevelList = TEntityList<TJobLevel>;
 
   TJob = class(TEntityAbstract)
   protected
-    FLevels: TJobLevelList;
+    FLevels: TLevelList;
     // Getters Setters
-    function GetLevels: TJobLevelList;
+    function GetLevels: TLevelList;
     function GetCaption: string;
     procedure SetCaption(aValue: string);
     function GetZeroLink: string;
@@ -75,10 +75,11 @@ type
     procedure InitFields; override;
   public
     class function GetTableName: string; override;
+  published
     property Caption: string read GetCaption write SetCaption;
     property ZeroLink: string read GetZeroLink write SetZeroLink;
     property UserID: Integer read GetUserID write SetUserID;
-    property Levels: TJobLevelList read GetLevels;
+    property Levels: TLevelList read GetLevels;
   end;
 
   TJobList = TEntityList<TJob>;
@@ -88,10 +89,13 @@ implementation
 uses
   System.SysUtils;
 
-function TJob.GetLevels: TJobLevelList;
+function TJob.GetLevels: TLevelList;
 begin
-  if not Assigned(FLevels)  then
-    FLevels := TJobLevelList.Create(FDBEngine, 'JOB_ID', Self.ID);
+  if not Assigned(FLevels) then
+    begin
+      FLevels := TLevelList.Create(FDBEngine, 'JOB_ID', Self.ID);
+      FLists := FLists + [FLevels];
+    end;
 
   Result := FLevels;
 end;
@@ -132,10 +136,10 @@ begin
   Result := 'job_groups';
 end;
 
-function TJobLevel.GetGroups: TJobGroupList;
+function TJobLevel.GetGroups: TGroupList;
 begin
   if not Assigned(FGroups)  then
-    FGroups := TJobGroupList.Create(FDBEngine, ['LEVEL_ID='+IntToStr(Self.ID)], []);
+    FGroups := TGroupList.Create(FDBEngine, ['LEVEL_ID='+IntToStr(Self.ID)], []);
 
   Result := FGroups;
 end;

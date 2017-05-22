@@ -19,7 +19,7 @@ uses
 
 procedure TModelRules.GetLevels;
 var
-  JobLevelList: TJobLevelList;
+  LevelList: TLevelList;
   JobID: integer;
   ListFilter: TArray<string>;
   ListOrder: TArray<string>;
@@ -28,9 +28,9 @@ begin
 
   ListFilter := ListFilter + [Format('JOB_ID = "%d"', [JobID])];
   ListOrder := ListOrder + ['LEVEL'];
-  JobLevelList := TJobLevelList.Create(FDBEngine, ListFilter, ListOrder);
+  LevelList := TLevelList.Create(FDBEngine, ListFilter, ListOrder);
 
-  FObjData.AddOrSetValue('JobLevelList', JobLevelList);
+  FObjData.AddOrSetValue('LevelList', LevelList);
   CreateEvent('GetLevelsDone');
 end;
 

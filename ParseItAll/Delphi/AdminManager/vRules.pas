@@ -34,8 +34,8 @@ type
     procedure InitView; override;
   public
     { Public declarations }
-    procedure SetLevels(aLevelList: TJobLevelList);
-    procedure SetControlTree(aJobGroupList: TJobGroupList);
+    procedure SetLevels(aLevelList: TLevelList);
+    procedure SetControlTree(aJobGroupList: TGroupList);
   end;
 
   TGroupNode = class(TTreeNode)
@@ -50,7 +50,7 @@ implementation
 
 {$R *.dfm}
 
-procedure TViewRules.SetControlTree(aJobGroupList: TJobGroupList);
+procedure TViewRules.SetControlTree(aJobGroupList: TGroupList);
 var
   Group: TJobGroup;
   GroupNode: TGroupNode;
@@ -70,7 +70,7 @@ begin
     end;
 end;
 
-procedure TViewRules.SetLevels(aLevelList: TJobLevelList);
+procedure TViewRules.SetLevels(aLevelList: TLevelList);
 var
   Level: TJobLevel;
 begin
