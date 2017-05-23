@@ -25,6 +25,7 @@ implementation
 
 uses
   System.SysUtils,
+  API_ORM,
   vMain,
   vLogin,
   vJob,
@@ -37,7 +38,7 @@ uses
 procedure TController.EditJobRules;
 var
   Job: TJob;
-  Levels: TLevelList;
+  Levels: TEntityList<TJobLevel>;
   Level: TJobLevel;
 begin
   Job := TJob.Create(FDBEngine, ViewMain.SelectedJobID);
@@ -66,10 +67,10 @@ end;
 
 procedure TController.CreateGroup;
 var
-  LevelList: TLevelList;
+  LevelList: TEntityList<TJobLevel>;
   Group: TJobGroup;
 begin
-  LevelList := FObjData.Items['LevelList'] as TLevelList;
+  LevelList := TEntityList<TJobLevel>(FObjData.Items['LevelList']);
 
   Group := TJobGroup.Create(FDBEngine, 0);
   Group.Notes := 'New Group';

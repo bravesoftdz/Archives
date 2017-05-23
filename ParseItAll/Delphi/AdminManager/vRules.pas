@@ -6,6 +6,7 @@ uses
   Winapi.Windows, Winapi.Messages, System.SysUtils, System.Variants, System.Classes, Vcl.Graphics,
   Vcl.Controls, Vcl.Forms, Vcl.Dialogs, Vcl.ExtCtrls, cefvcl, Vcl.StdCtrls, Vcl.Buttons, Vcl.ComCtrls,
   API_MVC,
+  API_ORM,
   eEntities, Vcl.ImgList;
 
 type
@@ -34,7 +35,7 @@ type
     procedure InitView; override;
   public
     { Public declarations }
-    procedure SetLevels(aLevelList: TLevelList);
+    procedure SetLevels(aLevelList: TEntityList<TJobLevel>);
     procedure SetControlTree(aJobGroupList: TGroupList);
   end;
 
@@ -70,7 +71,7 @@ begin
     end;
 end;
 
-procedure TViewRules.SetLevels(aLevelList: TLevelList);
+procedure TViewRules.SetLevels(aLevelList: TEntityList<TJobLevel>);
 var
   Level: TJobLevel;
 begin

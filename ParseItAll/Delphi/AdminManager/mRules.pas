@@ -15,11 +15,12 @@ implementation
 
 uses
   System.SysUtils,
+  API_ORM,
   eEntities;
 
 procedure TModelRules.GetLevels;
 var
-  LevelList: TLevelList;
+  LevelList: TEntityList<TJobLevel>;
   JobID: integer;
   ListFilter: TArray<string>;
   ListOrder: TArray<string>;
@@ -28,7 +29,7 @@ begin
 
   ListFilter := ListFilter + [Format('JOB_ID = "%d"', [JobID])];
   ListOrder := ListOrder + ['LEVEL'];
-  LevelList := TLevelList.Create(FDBEngine, ListFilter, ListOrder);
+  LevelList := TEntityList<TJobLevel>.Create(FDBEngine, ListFilter, ListOrder);
 
   FObjData.AddOrSetValue('LevelList', LevelList);
   CreateEvent('GetLevelsDone');
