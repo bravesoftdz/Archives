@@ -6,7 +6,7 @@ uses
   Winapi.Windows, Winapi.Messages, System.SysUtils, System.Variants, System.Classes, Vcl.Graphics,
   Vcl.Controls, Vcl.Forms, Vcl.Dialogs, Vcl.ExtCtrls, cefvcl, ceflib, Vcl.StdCtrls, Vcl.Buttons,
   API_MVC,
-  API_CRUD;
+  API_ORM_Cntrls;
 
 type
   TCRUDPanel = class(TCRUDPanelAbstract)

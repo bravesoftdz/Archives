@@ -53,8 +53,11 @@ begin
       Levels.Add(Level);
     end;
 
+  FObjData.AddOrSetValue('LevelList', Levels);
+
   CallView(TViewRules);
   ViewRules.SetLevels(Levels);
+  ViewRules.SetControlTree(Levels[0].Groups);
 end;
 
 procedure TController.StoreJobRules;
@@ -67,16 +70,18 @@ end;
 
 procedure TController.CreateGroup;
 var
-  LevelList: TEntityList<TJobLevel>;
+  Levels: TLevelList;
+  Level: TJobLevel;
   Group: TJobGroup;
 begin
-  LevelList := TEntityList<TJobLevel>(FObjData.Items['LevelList']);
+  Levels := FObjData.Items['LevelList'] as TLevelList;
+  Level := Levels.Items[ViewRules.cbbLevel.ItemIndex];
 
   Group := TJobGroup.Create(FDBEngine, 0);
   Group.Notes := 'New Group';
 
-  LevelList.Items[0].Groups.Add(Group);
-  ViewRules.SetControlTree(LevelList.Items[0].Groups);
+  Level.Groups.Add(Group);
+  ViewRules.SetControlTree(Level.Groups);
 end;
 
 procedure TController.EventListener(aEventMsg: string);

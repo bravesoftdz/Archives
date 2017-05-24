@@ -51,6 +51,7 @@ type
     procedure SetBaseLink(aValue: string);
     //////////////////
     procedure InitFields; override;
+    procedure SaveLists; override;
   public
     class function GetTableName: string; override;
     property Level: Integer read GetLevel write SetLevel;
@@ -60,7 +61,7 @@ type
 
   TLevelList = TEntityList<TJobLevel>;
 
-  TJob = class(TEntity)
+  TJob = class(TEntityAbstract)
   protected
     FLevels: TLevelList;
     // Getters Setters
@@ -73,6 +74,7 @@ type
     procedure SetUserID(aValue: integer);
     //////////////////
     procedure InitFields; override;
+    procedure SaveLists; override;
   public
     class function GetTableName: string; override;
   published
@@ -89,12 +91,20 @@ implementation
 uses
   System.SysUtils;
 
+procedure TJobLevel.SaveLists;
+begin
+  if Assigned(FGroups) then FGroups.SaveList(ID);
+end;
+
+procedure TJob.SaveLists;
+begin
+  if Assigned(FLevels) then FLevels.SaveList(ID);
+end;
+
 function TJob.GetLevels: TLevelList;
 begin
   if not Assigned(FLevels) then
-    begin
-      FLevels := GetList<TJobLevel>;
-    end;
+    FLevels := TLevelList.Create(FDBEngine, 'JOB_ID', ID);
 
   Result := FLevels;
 end;
@@ -138,7 +148,7 @@ end;
 function TJobLevel.GetGroups: TGroupList;
 begin
   if not Assigned(FGroups)  then
-    FGroups := TGroupList.Create(FDBEngine, ['LEVEL_ID='+IntToStr(Self.ID)], []);
+    FGroups := TGroupList.Create(FDBEngine, 'LEVEL_ID', ID);
 
   Result := FGroups;
 end;
@@ -237,17 +247,10 @@ begin
 end;
 
 procedure TJob.InitFields;
-var
-  ListInfo: TListInfo;
 begin
   AddField('user_id', ftInteger);
   AddField('caption', ftString);
   AddField('zero_link', ftString);
-
-  ListInfo.EntityClass := TjobLevel;
-  ListInfo.MasterKeyField := 'ID';
-  ListInfo.SlaveKeyField := 'JOB_ID';
-  AddList(ListInfo);
 end;
 
 end.
