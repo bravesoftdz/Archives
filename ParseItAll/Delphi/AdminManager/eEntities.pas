@@ -58,11 +58,13 @@ type
     property Groups: TGroupList read GetGroups;
   end;
 
-  TJob = class(TEntityAbstract)
+  TLevelList = TEntityList<TJobLevel>;
+
+  TJob = class(TEntity)
   protected
-    FLevels: TEntityList<TJobLevel>;
+    FLevels: TLevelList;
     // Getters Setters
-    function GetLevels: TEntityList<TJobLevel>;
+    function GetLevels: TLevelList;
     function GetCaption: string;
     procedure SetCaption(aValue: string);
     function GetZeroLink: string;
@@ -77,7 +79,7 @@ type
     property Caption: string read GetCaption write SetCaption;
     property ZeroLink: string read GetZeroLink write SetZeroLink;
     property UserID: Integer read GetUserID write SetUserID;
-    property Levels: TEntityList<TJobLevel> read GetLevels;
+    property Levels: TLevelList read GetLevels;
   end;
 
   TJobList = TEntityList<TJob>;
@@ -87,11 +89,10 @@ implementation
 uses
   System.SysUtils;
 
-function TJob.GetLevels: TEntityList<TJobLevel>;
+function TJob.GetLevels: TLevelList;
 begin
   if not Assigned(FLevels) then
     begin
-      //FLevels := TEntityList<TJobLevel>.Create(FDBEngine, 'JOB_ID', Self.ID);
       FLevels := GetList<TJobLevel>;
     end;
 
@@ -243,7 +244,7 @@ begin
   AddField('caption', ftString);
   AddField('zero_link', ftString);
 
-  ListInfo.EntityItemClass := TJobLevel;
+  ListInfo.EntityClass := TjobLevel;
   ListInfo.MasterKeyField := 'ID';
   ListInfo.SlaveKeyField := 'JOB_ID';
   AddList(ListInfo);
