@@ -20,7 +20,8 @@ uses
   mJobs in 'mJobs.pas',
   vRules in 'vRules.pas' {ViewRules},
   mRules in 'mRules.pas',
-  API_ORM_Cntrls in '..\..\..\..\Libraries\Delphi\API_ORM_Cntrls.pas';
+  API_ORM_Cntrls in '..\..\..\..\Libraries\Delphi\API_ORM_Cntrls.pas',
+  API_MVC_Bind in '..\..\..\..\Libraries\Delphi\API_MVC_Bind.pas';
 
 {$R *.res}
 

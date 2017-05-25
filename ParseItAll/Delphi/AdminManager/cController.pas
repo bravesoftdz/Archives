@@ -18,6 +18,7 @@ type
   published
     procedure EditJobRules;
     procedure StoreJobRules;
+    procedure TreeNodeSelected;
 
   end;
 
@@ -26,6 +27,7 @@ implementation
 uses
   System.SysUtils,
   API_ORM,
+  API_MVC_Bind,
   vMain,
   vLogin,
   vJob,
@@ -34,6 +36,21 @@ uses
   mJobs,
   mRules,
   eEntities;
+
+procedure TController.TreeNodeSelected;
+var
+  GroupID: Integer;
+  Group: TJobGroup;
+begin
+  with ViewRules do
+    begin
+      GroupID := BindData.GetEntID('GroupNodes', tvTree.Selected.Index);
+
+      Group := (FObjData.Items['Level'] as TJobLevel).Groups.FindByID(GroupID);
+
+      pnlEntityFields.BuildControls(Group);
+    end;
+end;
 
 procedure TController.EditJobRules;
 var
@@ -53,11 +70,10 @@ begin
       Levels.Add(Level);
     end;
 
-  FObjData.AddOrSetValue('LevelList', Levels);
-
   CallView(TViewRules);
   ViewRules.SetLevels(Levels);
   ViewRules.SetControlTree(Levels[0].Groups);
+  FObjData.AddOrSetValue('Level', Levels[0]);
 end;
 
 procedure TController.StoreJobRules;
@@ -66,16 +82,15 @@ var
 begin
   Job := FObjData.Items['Job'] as TJob;
   Job.SaveAll;
+  ViewRules.Close;
 end;
 
 procedure TController.CreateGroup;
 var
-  Levels: TLevelList;
   Level: TJobLevel;
   Group: TJobGroup;
 begin
-  Levels := FObjData.Items['LevelList'] as TLevelList;
-  Level := Levels.Items[ViewRules.cbbLevel.ItemIndex];
+  Level := FObjData.Items['Level'] as TJobLevel;
 
   Group := TJobGroup.Create(FDBEngine, 0);
   Group.Notes := 'New Group';

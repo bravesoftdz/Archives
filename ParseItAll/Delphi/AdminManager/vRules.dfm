@@ -2,7 +2,7 @@ object ViewRules: TViewRules
   Left = 0
   Top = 0
   Caption = 'Parse It All! Rules'
-  ClientHeight = 349
+  ClientHeight = 405
   ClientWidth = 691
   Color = clBtnFace
   Font.Charset = DEFAULT_CHARSET
@@ -12,34 +12,38 @@ object ViewRules: TViewRules
   Font.Style = []
   OldCreateOrder = False
   Position = poMainFormCenter
+  OnCreate = FormCreate
   PixelsPerInch = 96
   TextHeight = 13
   object pnlBrowser: TPanel
     Left = 0
     Top = 0
     Width = 441
-    Height = 349
+    Height = 405
     Align = alLeft
     Anchors = [akLeft, akTop, akRight, akBottom]
     Caption = 'pnlBrowser'
     TabOrder = 0
+    ExplicitHeight = 349
     object chrmBrowser: TChromium
       Left = 1
       Top = 1
       Width = 439
-      Height = 347
+      Height = 403
       Align = alClient
       DefaultUrl = 'about:blank'
       TabOrder = 0
+      ExplicitHeight = 347
     end
   end
   object pnlControls: TPanel
     Left = 441
     Top = 0
     Width = 250
-    Height = 349
+    Height = 405
     Align = alClient
     TabOrder = 1
+    ExplicitHeight = 349
     object pnlLevel: TPanel
       Left = 1
       Top = 1
@@ -75,20 +79,21 @@ object ViewRules: TViewRules
       Left = 1
       Top = 41
       Width = 248
-      Height = 184
+      Height = 160
       Align = alTop
       Caption = 'pnlTree'
       TabOrder = 1
       object tvTree: TTreeView
         Left = 1
-        Top = 32
+        Top = 38
         Width = 246
-        Height = 151
+        Height = 121
         Align = alBottom
         Images = ilIcons
         Indent = 19
         ReadOnly = True
         TabOrder = 0
+        OnChange = tvTreeChange
       end
       object btnAG: TBitBtn
         Left = 8
@@ -110,16 +115,15 @@ object ViewRules: TViewRules
     end
     object pnlFields: TPanel
       Left = 1
-      Top = 225
+      Top = 201
       Width = 248
-      Height = 88
+      Height = 160
       Align = alTop
-      Caption = 'pnlFields'
       TabOrder = 2
     end
     object btnApply: TButton
       Left = 16
-      Top = 320
+      Top = 372
       Width = 75
       Height = 25
       Caption = 'btnApply'
@@ -128,7 +132,7 @@ object ViewRules: TViewRules
     end
     object btnCancel: TButton
       Left = 160
-      Top = 320
+      Top = 372
       Width = 75
       Height = 25
       Caption = 'btnCancel'
@@ -141,7 +145,7 @@ object ViewRules: TViewRules
     Left = 32
     Top = 32
     Bitmap = {
-      494C010102000800280010001000FFFFFFFF2110FFFFFFFFFFFFFFFF424D3600
+      494C010102000800440010001000FFFFFFFF2110FFFFFFFFFFFFFFFF424D3600
       0000000000003600000028000000400000001000000001002000000000000010
       0000000000000000000000000000000000000000000000000000000000000000
       0000000000000000000000000000000000000000000000000000000000000000
