@@ -12,7 +12,7 @@ uses
 
 type
   TEntityPanel = class(TEntityPanelAbstract)
-  private
+  protected
     procedure InitPanel; override;
     procedure AfterEditChange(aEdit: TEdit);
   end;
@@ -33,11 +33,13 @@ type
     btnAR: TBitBtn;
     btnApply: TButton;
     btnCancel: TButton;
+    btnDG: TBitBtn;
     procedure btnAGClick(Sender: TObject);
     procedure btnCancelClick(Sender: TObject);
     procedure btnApplyClick(Sender: TObject);
     procedure FormCreate(Sender: TObject);
     procedure tvTreeChange(Sender: TObject; Node: TTreeNode);
+    procedure btnDGClick(Sender: TObject);
   private
     { Private declarations }
   protected
@@ -49,6 +51,9 @@ type
     procedure SetControlTree(aJobGroupList: TGroupList);
   end;
 
+  // FBindData Item Keys
+  // GroupNodes
+
 var
   ViewRules: TViewRules;
 
@@ -57,6 +62,7 @@ implementation
 {$R *.dfm}
 
 uses
+  System.UITypes,
   API_MVC_Bind;
 
 procedure TEntityPanel.AfterEditChange(aEdit: TEdit);
@@ -86,7 +92,7 @@ begin
 
       TreeNodes.AddChild(GroupNode, Group.Notes);
 
-      FBindData.AddBind('GroupNodes', GroupNode.Index, Group.ID);
+      FBindData.AddBind('GroupNodes', TreeNodes.Count - 1, Group.ID);
     end;
 end;
 
@@ -121,6 +127,12 @@ end;
 procedure TViewRules.btnCancelClick(Sender: TObject);
 begin
   Close;
+end;
+
+procedure TViewRules.btnDGClick(Sender: TObject);
+begin
+  if MessageDlg('Are you sure?', mtConfirmation, [mbYes, mbCancel], 0) = mrYes then
+    SendMessage('DeleteGroup');
 end;
 
 procedure TViewRules.FormCreate(Sender: TObject);

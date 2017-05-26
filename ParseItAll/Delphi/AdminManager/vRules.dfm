@@ -24,7 +24,6 @@ object ViewRules: TViewRules
     Anchors = [akLeft, akTop, akRight, akBottom]
     Caption = 'pnlBrowser'
     TabOrder = 0
-    ExplicitHeight = 349
     object chrmBrowser: TChromium
       Left = 1
       Top = 1
@@ -33,7 +32,6 @@ object ViewRules: TViewRules
       Align = alClient
       DefaultUrl = 'about:blank'
       TabOrder = 0
-      ExplicitHeight = 347
     end
   end
   object pnlControls: TPanel
@@ -43,7 +41,6 @@ object ViewRules: TViewRules
     Height = 405
     Align = alClient
     TabOrder = 1
-    ExplicitHeight = 349
     object pnlLevel: TPanel
       Left = 1
       Top = 1
@@ -105,12 +102,21 @@ object ViewRules: TViewRules
         OnClick = btnAGClick
       end
       object btnAR: TBitBtn
-        Left = 49
-        Top = 3
+        Left = 88
+        Top = 4
         Width = 33
         Height = 25
         Caption = 'btnAR'
         TabOrder = 2
+      end
+      object btnDG: TBitBtn
+        Left = 44
+        Top = 4
+        Width = 33
+        Height = 25
+        Caption = 'btnDG'
+        TabOrder = 3
+        OnClick = btnDGClick
       end
     end
     object pnlFields: TPanel
@@ -145,7 +151,7 @@ object ViewRules: TViewRules
     Left = 32
     Top = 32
     Bitmap = {
-      494C010102000800440010001000FFFFFFFF2110FFFFFFFFFFFFFFFF424D3600
+      494C0101020008004C0010001000FFFFFFFF2110FFFFFFFFFFFFFFFF424D3600
       0000000000003600000028000000400000001000000001002000000000000010
       0000000000000000000000000000000000000000000000000000000000000000
       0000000000000000000000000000000000000000000000000000000000000000

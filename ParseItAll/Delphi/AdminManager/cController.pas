@@ -8,19 +8,29 @@ uses
   API_DB_MySQL;
 
 type
+  {$M+}
+
   TController = class(TControllerDB)
-  private
-    procedure CreateGroup;
   protected
     procedure InitDB; override;
     procedure PerfomViewMessage(aMsg: string); override;
     procedure EventListener(aEventMsg: string); override;
   published
+    procedure GetJobList;
+
     procedure EditJobRules;
     procedure StoreJobRules;
+
     procedure TreeNodeSelected;
 
+    procedure CreateGroup;
+    procedure DeleteGroup;
   end;
+
+  // FObjData Item Keys
+  // Job
+  // LevelList
+  // Level
 
 implementation
 
@@ -37,17 +47,38 @@ uses
   mRules,
   eEntities;
 
+procedure TController.GetJobList;
+var
+  JobList: TJobList;
+begin
+  JobList := TJobList.Create(FDBEngine, [], []);
+  try
+    ViewMain.SetJobsGrid(JobList);
+  finally
+    FreeAndNil(JobList);
+  end;
+end;
+
+procedure TController.DeleteGroup;
+var
+  Groups: TGroupList;
+begin
+  Groups := (FObjData.Items['Level'] as TJobLevel).Groups;
+  Groups.DeleteByIndex(ViewRules.tvTree.Selected.Index);
+
+  ViewRules.SetControlTree(Groups);
+  ViewRules.pnlEntityFields.ClearControls;
+end;
+
 procedure TController.TreeNodeSelected;
 var
-  GroupID: Integer;
   Group: TJobGroup;
 begin
   with ViewRules do
     begin
-      GroupID := BindData.GetEntID('GroupNodes', tvTree.Selected.Index);
+      Group := (FObjData.Items['Level'] as TJobLevel).Groups.Items[tvTree.Selected.Index];
 
-      Group := (FObjData.Items['Level'] as TJobLevel).Groups.FindByID(GroupID);
-
+      pnlEntityFields.ClearControls;
       pnlEntityFields.BuildControls(Group);
     end;
 end;
@@ -69,11 +100,11 @@ begin
       Level.BaseLink := Job.ZeroLink;
       Levels.Add(Level);
     end;
+  FObjData.AddOrSetValue('Level', Levels[0]);
 
   CallView(TViewRules);
   ViewRules.SetLevels(Levels);
   ViewRules.SetControlTree(Levels[0].Groups);
-  FObjData.AddOrSetValue('Level', Levels[0]);
 end;
 
 procedure TController.StoreJobRules;
@@ -110,7 +141,7 @@ begin
       ViewLogin.Close;
       ViewMain.statBar.Panels[0].Text := 'user: ' + FData.Items['user'];
       ViewMain.statBar.Panels[1].Text := 'ip: ' + FData.Items['ip'];
-      CallModel(TModelJobs, 'GetJobList');
+      GetJobList;
     end;
 
   if aEventMsg = 'GetJobDone' then
@@ -120,30 +151,15 @@ begin
       ViewJob.CRUDPanel.BuildCRUD(Job);
       ViewJob.SetBrowserLinks;
     end;
-
-  if aEventMsg = 'GetJobListDone' then
-    begin
-      JobList := FObjData.Items['JobList'] as TJobList;
-      try
-        i := 0;
-        ViewMain.stgdJobs.RowCount := 2;
-        for Job in JobList do
-          begin
-            if i > 0 then ViewMain.stgdJobs.RowCount := ViewMain.stgdJobs.RowCount + 1;
-            ViewMain.stgdJobs.Cells[0, ViewMain.stgdJobs.RowCount - 1] := IntToStr(Job.ID);
-            ViewMain.stgdJobs.Cells[1, ViewMain.stgdJobs.RowCount - 1] := IntToStr(Job.UserID);
-            ViewMain.stgdJobs.Cells[2, ViewMain.stgdJobs.RowCount - 1] := Job.Caption;
-            Inc(i);
-          end;
-      finally
-        FreeAndNil(JobList);
-      end;
-    end;
 end;
 
 procedure TController.PerfomViewMessage(aMsg: string);
 begin
-  if aMsg = 'CreateGroup' then CreateGroup;
+  if aMsg = 'ViewRulesClosed' then
+    begin
+      FObjData.Items['Job'].Free;
+      //FObjData.
+    end;
 
   if aMsg = 'ShowViewLogin' then CallView(TViewLogin);
   if aMsg = 'PerfomLoggining' then

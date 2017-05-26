@@ -29,7 +29,7 @@ begin
 
   ListFilter := ListFilter + [Format('JOB_ID = "%d"', [JobID])];
   ListOrder := ListOrder + ['LEVEL'];
-  LevelList := TEntityList<TJobLevel>.Create(FDBEngine, ListFilter, ListOrder);
+  //LevelList := TEntityList<TJobLevel>.Create(FDBEngine, ListFilter, ListOrder);
 
   FObjData.AddOrSetValue('LevelList', LevelList);
   CreateEvent('GetLevelsDone');

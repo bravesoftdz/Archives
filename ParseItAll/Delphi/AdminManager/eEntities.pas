@@ -36,6 +36,7 @@ type
     class function GetTableName: string; override;
     property LevelID: Integer read GetLevelID write SetLevelID;
     property Notes: string read GetNotes write SetNotes;
+    destructor Destroy; override;
   end;
 
   TGroupList = TEntityList<TJobGroup>;
@@ -91,6 +92,11 @@ implementation
 uses
   System.SysUtils;
 
+destructor TJobGroup.Destroy;
+begin
+  inherited;
+end;
+
 procedure TJobLevel.SaveLists;
 begin
   if Assigned(FGroups) then FGroups.SaveList(ID);
@@ -104,7 +110,7 @@ end;
 function TJob.GetLevels: TLevelList;
 begin
   if not Assigned(FLevels) then
-    FLevels := TLevelList.Create(FDBEngine, 'JOB_ID', ID);
+    FLevels := TLevelList.Create(Self, 'JOB_ID', ID);
 
   Result := FLevels;
 end;
@@ -148,7 +154,7 @@ end;
 function TJobLevel.GetGroups: TGroupList;
 begin
   if not Assigned(FGroups)  then
-    FGroups := TGroupList.Create(FDBEngine, 'LEVEL_ID', ID);
+    FGroups := TGroupList.Create(Self, 'LEVEL_ID', ID);
 
   Result := FGroups;
 end;

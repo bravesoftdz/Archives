@@ -4,8 +4,10 @@ interface
 
 uses
   Winapi.Windows, Winapi.Messages, System.SysUtils, System.Variants, System.Classes, Vcl.Graphics,
-  Vcl.Controls, Vcl.Forms, Vcl.Dialogs,
-  API_MVC, Vcl.ComCtrls, Vcl.ExtCtrls, Vcl.Grids, Vcl.StdCtrls, Vcl.Buttons;
+  Vcl.Controls, Vcl.Forms, Vcl.Dialogs, Vcl.ComCtrls, Vcl.ExtCtrls, Vcl.Grids, Vcl.StdCtrls,
+  Vcl.Buttons,
+  API_MVC,
+  eEntities;
 
 type
   TViewMain = class(TViewAbstract)
@@ -28,6 +30,7 @@ type
     procedure InitView; override;
   public
     { Public declarations }
+    procedure SetJobsGrid(aJobs: TJobList);
     property SelectedJobID: Integer read GetSelectedJobID;
   end;
 
@@ -40,6 +43,23 @@ implementation
 
 uses
   cController;
+
+procedure TViewMain.SetJobsGrid(aJobs: TJobList);
+var
+  i: Integer;
+  Job: TJob;
+begin
+  i := 0;
+  stgdJobs.RowCount := 2;
+  for Job in aJobs do
+    begin
+      if i > 0 then stgdJobs.RowCount := stgdJobs.RowCount + 1;
+      stgdJobs.Cells[0, stgdJobs.RowCount - 1] := IntToStr(Job.ID);
+      stgdJobs.Cells[1, stgdJobs.RowCount - 1] := IntToStr(Job.UserID);
+      stgdJobs.Cells[2, stgdJobs.RowCount - 1] := Job.Caption;
+      Inc(i);
+    end;
+end;
 
 function TViewMain.GetSelectedJobID: Integer;
 begin
