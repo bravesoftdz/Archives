@@ -1,6 +1,6 @@
-﻿# Host: 127.0.0.1  (Version 5.5.23)
-# Date: 2017-05-19 18:13:09
-# Generator: MySQL-Front 6.0  (Build 1.194)
+﻿# Host: localhost  (Version 5.5.29)
+# Date: 2017-05-29 07:41:42
+# Generator: MySQL-Front 6.0  (Build 2.10)
 
 
 #
@@ -15,12 +15,13 @@ CREATE TABLE `job_levels` (
   PRIMARY KEY (`Id`),
   UNIQUE KEY `job_levels_unq` (`job_id`,`level`),
   CONSTRAINT `job_levels_ibfk_1` FOREIGN KEY (`job_id`) REFERENCES `jobs` (`Id`) ON DELETE CASCADE ON UPDATE CASCADE
-) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+) ENGINE=InnoDB AUTO_INCREMENT=2 DEFAULT CHARSET=utf8;
 
 #
 # Data for table "job_levels"
 #
 
+REPLACE INTO `job_levels` VALUES (1,1,1,'https://ru.wikipedia.org/wiki/%D0%9A%D0%B0%D1%82%D0%B5%D0%B3%D0%BE%D1%80%D0%B8%D1%8F:%D0%90%D0%BA%D1%82%D1%91%D1%80%D1%8B_%D0%BF%D0%BE_%D0%B0%D0%BB%D1%84%D0%B0%D0%B2%D0%B8%D1%82%D1%83');
 
 #
 # Structure for table "job_groups"
@@ -33,12 +34,13 @@ CREATE TABLE `job_groups` (
   PRIMARY KEY (`Id`),
   KEY `level_id` (`level_id`),
   CONSTRAINT `job_groups_ibfk_1` FOREIGN KEY (`level_id`) REFERENCES `job_levels` (`Id`) ON DELETE CASCADE ON UPDATE CASCADE
-) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+) ENGINE=InnoDB AUTO_INCREMENT=3 DEFAULT CHARSET=utf8;
 
 #
 # Data for table "job_groups"
 #
 
+REPLACE INTO `job_groups` VALUES (2,1,'New Group 1');
 
 #
 # Structure for table "job_rules"
@@ -48,15 +50,37 @@ CREATE TABLE `job_rules` (
   `Id` int(11) NOT NULL AUTO_INCREMENT,
   `group_id` int(11) NOT NULL DEFAULT '0',
   `description` varchar(255) DEFAULT NULL,
+  `container_offset` int(3) DEFAULT NULL,
+  `critical_type` tinyint(3) DEFAULT NULL,
   PRIMARY KEY (`Id`),
   KEY `group_id` (`group_id`),
   CONSTRAINT `job_rules_ibfk_1` FOREIGN KEY (`group_id`) REFERENCES `job_groups` (`Id`) ON DELETE CASCADE ON UPDATE CASCADE
-) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+) ENGINE=InnoDB AUTO_INCREMENT=2 DEFAULT CHARSET=utf8;
 
 #
 # Data for table "job_rules"
 #
 
+REPLACE INTO `job_rules` VALUES (1,2,'jhh',NULL,NULL);
+
+#
+# Structure for table "job_rule_links"
+#
+
+CREATE TABLE `job_rule_links` (
+  `Id` int(11) NOT NULL AUTO_INCREMENT,
+  `job_rule_id` int(11) NOT NULL DEFAULT '0',
+  `level` int(11) NOT NULL DEFAULT '0',
+  PRIMARY KEY (`Id`),
+  KEY `job_rule_id` (`job_rule_id`),
+  CONSTRAINT `job_rule_links_ibfk_1` FOREIGN KEY (`job_rule_id`) REFERENCES `job_rules` (`Id`) ON DELETE CASCADE ON UPDATE CASCADE
+) ENGINE=InnoDB AUTO_INCREMENT=2 DEFAULT CHARSET=utf8;
+
+#
+# Data for table "job_rule_links"
+#
+
+REPLACE INTO `job_rule_links` VALUES (1,1,2);
 
 #
 # Structure for table "users"

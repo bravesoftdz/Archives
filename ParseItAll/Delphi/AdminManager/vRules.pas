@@ -78,21 +78,23 @@ end;
 procedure TViewRules.SetControlTree(aJobGroupList: TGroupList);
 var
   Group: TJobGroup;
-  GroupNode: TTreeNode;
-  TreeNodes: TTreeNodes;
+  Link: TJobLink;
+  GroupNode, LinkNode: TTreeNode;
 begin
   ViewRules.tvTree.Items.Clear;
-  TreeNodes := TTreeNodes.Create(ViewRules.tvTree);
 
   for Group in aJobGroupList do
     begin
-      GroupNode := TTreeNode.Create(TreeNodes);
+      GroupNode := tvTree.Items.Add(nil, Group.Notes);
       GroupNode.ImageIndex := 0;
-      GroupNode.ExpandedImageIndex := 1;
 
-      TreeNodes.AddChild(GroupNode, Group.Notes);
+      for Link in Group.Links do
+        begin
+          LinkNode := tvTree.Items.AddChild(GroupNode, Link.Level.ToString);
+          LinkNode.ImageIndex := 1;
+        end;
 
-      FBindData.AddBind('GroupNodes', TreeNodes.Count - 1, Group.ID);
+      //FBindData.AddBind('GroupNodes', TreeNodes.Count - 1, Group.ID);
     end;
 end;
 

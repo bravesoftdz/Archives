@@ -73,13 +73,26 @@ end;
 procedure TController.TreeNodeSelected;
 var
   Group: TJobGroup;
+  Link: TJobLink;
+  Entity: TEntityAbstract;
+  i: Integer;
 begin
   with ViewRules do
     begin
-      Group := (FObjData.Items['Level'] as TJobLevel).Groups.Items[tvTree.Selected.Index];
+      i := tvTree.Selected.Level;
+
+      case tvTree.Selected.Level of
+        0: begin
+             Entity := (FObjData.Items['Level'] as TJobLevel).Groups.Items[tvTree.Selected.Index];
+             FObjData.AddOrSetValue('Group', Entity as TJobGroup);
+           end;
+        1: Entity :=
+      end;
+
+      //Group := (FObjData.Items['Level'] as TJobLevel).Groups.Items[tvTree.Selected.Index];
 
       pnlEntityFields.ClearControls;
-      pnlEntityFields.BuildControls(Group);
+      pnlEntityFields.BuildControls(Entity);
     end;
 end;
 

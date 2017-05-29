@@ -17,6 +17,7 @@ type
     btnCancel: TBitBtn;
     procedure btnCancelClick(Sender: TObject);
     procedure btnApplyClick(Sender: TObject);
+    procedure FormCreate(Sender: TObject);
   private
     { Private declarations }
   protected
@@ -45,6 +46,13 @@ end;
 procedure TViewLogin.btnCancelClick(Sender: TObject);
 begin
   Close;
+end;
+
+procedure TViewLogin.FormCreate(Sender: TObject);
+begin
+  edtLogin.Text := 'admin';
+  edtPassword.Text := '123';
+  btnApply.Click;
 end;
 
 end.
