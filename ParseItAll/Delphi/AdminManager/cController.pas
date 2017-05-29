@@ -25,6 +25,12 @@ type
 
     procedure CreateGroup;
     procedure DeleteGroup;
+
+    procedure CreateLink;
+    procedure DeleteLink;
+
+    procedure CreateRecord;
+    procedure DeleteRecord;
   end;
 
   // FObjData Item Keys
@@ -46,6 +52,62 @@ uses
   mJobs,
   mRules,
   eEntities;
+
+procedure TController.CreateRecord;
+var
+  Level: TJobLevel;
+  Group: TJobGroup;
+  JobRecord: TJobRecord;
+begin
+  Level := FObjData.Items['Level'] as TJobLevel;
+  Group := Level.Groups[ViewRules.tvTree.Selected.Index];
+
+  JobRecord := TJobRecord.Create(FDBEngine);
+  Group.Records.Add(JobRecord);
+
+  ViewRules.SetControlTree(Level.Groups);
+end;
+
+procedure TController.DeleteRecord;
+var
+  Level: TJobLevel;
+  Group: TJobGroup;
+begin
+  Level := FObjData.Items['Level'] as TJobLevel;
+  Group := Level.Groups[ViewRules.tvTree.Selected.Parent.Index];
+
+  Group.Records.DeleteByIndex(ViewRules.tvTree.Selected.Index - Group.Links.Count);
+  ViewRules.SetControlTree(Level.Groups);
+  ViewRules.pnlEntityFields.ClearControls;
+end;
+
+procedure TController.DeleteLink;
+var
+  Level: TJobLevel;
+  Group: TJobGroup;
+begin
+  Level := FObjData.Items['Level'] as TJobLevel;
+  Group := Level.Groups[ViewRules.tvTree.Selected.Parent.Index];
+
+  Group.Links.DeleteByIndex(ViewRules.tvTree.Selected.Index);
+  ViewRules.SetControlTree(Level.Groups);
+  ViewRules.pnlEntityFields.ClearControls;
+end;
+
+procedure TController.CreateLink;
+var
+  Level: TJobLevel;
+  Group: TJobGroup;
+  Link: TJobLink;
+begin
+  Level := FObjData.Items['Level'] as TJobLevel;
+  Group := Level.Groups[ViewRules.tvTree.Selected.Index];
+
+  Link := TJobLink.Create(FDBEngine);
+  Group.Links.Add(Link);
+
+  ViewRules.SetControlTree(Level.Groups);
+end;
 
 procedure TController.GetJobList;
 var
@@ -72,24 +134,45 @@ end;
 
 procedure TController.TreeNodeSelected;
 var
-  Group: TJobGroup;
-  Link: TJobLink;
+  GroupIndex: Integer;
+  LinkIndex: Integer;
+  RecordIndex: Integer;
+  LinkCount, RecordCount: Integer;
   Entity: TEntityAbstract;
-  i: Integer;
+  Level: TJobLevel;
 begin
+  GroupIndex := 0;
+  LinkIndex := 0;
+  RecordIndex := 0;
+  Level := (FObjData.Items['Level'] as TJobLevel);
+
   with ViewRules do
     begin
-      i := tvTree.Selected.Level;
-
       case tvTree.Selected.Level of
-        0: begin
-             Entity := (FObjData.Items['Level'] as TJobLevel).Groups.Items[tvTree.Selected.Index];
-             FObjData.AddOrSetValue('Group', Entity as TJobGroup);
-           end;
-        1: Entity :=
-      end;
+        0:
+          begin
+            GroupIndex := tvTree.Selected.Index;
+            Entity := Level.Groups.Items[GroupIndex];
+          end;
+        1:
+          begin
+            GroupIndex := tvTree.Selected.Parent.Index;
 
-      //Group := (FObjData.Items['Level'] as TJobLevel).Groups.Items[tvTree.Selected.Index];
+            LinkCount := Level.Groups.Items[GroupIndex].Links.Count;
+            RecordCount := Level.Groups.Items[GroupIndex].Records.Count;
+
+            if tvTree.Selected.Index <= LinkCount - 1 then
+              begin
+                LinkIndex := tvTree.Selected.Index;
+                Entity := Level.Groups.Items[GroupIndex].Links.Items[LinkIndex];
+              end
+            else
+              begin
+                RecordIndex := tvTree.Selected.Index - LinkCount;
+                Entity := Level.Groups.Items[GroupIndex].Records.Items[RecordIndex];
+              end;
+          end;
+      end;
 
       pnlEntityFields.ClearControls;
       pnlEntityFields.BuildControls(Entity);

@@ -30,16 +30,23 @@ type
     tvTree: TTreeView;
     btnAG: TBitBtn;
     ilIcons: TImageList;
-    btnAR: TBitBtn;
+    btnAL: TBitBtn;
     btnApply: TButton;
     btnCancel: TButton;
     btnDG: TBitBtn;
+    btnDL: TBitBtn;
+    btnAR: TBitBtn;
+    btnDR: TBitBtn;
     procedure btnAGClick(Sender: TObject);
     procedure btnCancelClick(Sender: TObject);
     procedure btnApplyClick(Sender: TObject);
     procedure FormCreate(Sender: TObject);
     procedure tvTreeChange(Sender: TObject; Node: TTreeNode);
     procedure btnDGClick(Sender: TObject);
+    procedure btnALClick(Sender: TObject);
+    procedure btnDLClick(Sender: TObject);
+    procedure btnARClick(Sender: TObject);
+    procedure btnDRClick(Sender: TObject);
   private
     { Private declarations }
   protected
@@ -79,7 +86,8 @@ procedure TViewRules.SetControlTree(aJobGroupList: TGroupList);
 var
   Group: TJobGroup;
   Link: TJobLink;
-  GroupNode, LinkNode: TTreeNode;
+  JobRecord: TJobRecord;
+  GroupNode, LinkNode, RecordNode: TTreeNode;
 begin
   ViewRules.tvTree.Items.Clear;
 
@@ -87,15 +95,26 @@ begin
     begin
       GroupNode := tvTree.Items.Add(nil, Group.Notes);
       GroupNode.ImageIndex := 0;
+      GroupNode.SelectedIndex := 0;
 
       for Link in Group.Links do
         begin
           LinkNode := tvTree.Items.AddChild(GroupNode, Link.Level.ToString);
           LinkNode.ImageIndex := 1;
+          LinkNode.SelectedIndex := 1;
+        end;
+
+      for JobRecord in Group.Records do
+        begin
+          RecordNode := tvTree.Items.AddChild(GroupNode, JobRecord.Key);
+          RecordNode.ImageIndex := 2;
+          RecordNode.SelectedIndex := 2;
         end;
 
       //FBindData.AddBind('GroupNodes', TreeNodes.Count - 1, Group.ID);
     end;
+
+  ViewRules.tvTree.FullExpand;
 end;
 
 procedure TViewRules.SetLevels(aLevelList: TLevelList);
@@ -126,6 +145,16 @@ begin
   SendMessage('StoreJobRules');
 end;
 
+procedure TViewRules.btnARClick(Sender: TObject);
+begin
+  SendMessage('CreateRecord');
+end;
+
+procedure TViewRules.btnALClick(Sender: TObject);
+begin
+  SendMessage('CreateLink');
+end;
+
 procedure TViewRules.btnCancelClick(Sender: TObject);
 begin
   Close;
@@ -135,6 +164,16 @@ procedure TViewRules.btnDGClick(Sender: TObject);
 begin
   if MessageDlg('Are you sure?', mtConfirmation, [mbYes, mbCancel], 0) = mrYes then
     SendMessage('DeleteGroup');
+end;
+
+procedure TViewRules.btnDLClick(Sender: TObject);
+begin
+  SendMessage('DeleteLink');
+end;
+
+procedure TViewRules.btnDRClick(Sender: TObject);
+begin
+  SendMessage('DeleteRecord');
 end;
 
 procedure TViewRules.FormCreate(Sender: TObject);

@@ -1,6 +1,6 @@
-﻿# Host: localhost  (Version 5.5.29)
-# Date: 2017-05-29 07:41:42
-# Generator: MySQL-Front 6.0  (Build 2.10)
+﻿# Host: 127.0.0.1  (Version 5.5.23)
+# Date: 2017-05-29 17:56:50
+# Generator: MySQL-Front 6.0  (Build 2.13)
 
 
 #
@@ -40,7 +40,7 @@ CREATE TABLE `job_groups` (
 # Data for table "job_groups"
 #
 
-REPLACE INTO `job_groups` VALUES (2,1,'New Group 1');
+REPLACE INTO `job_groups` VALUES (2,1,'Группа 1'),(3,1,'Группа 2');
 
 #
 # Structure for table "job_rules"
@@ -55,13 +55,32 @@ CREATE TABLE `job_rules` (
   PRIMARY KEY (`Id`),
   KEY `group_id` (`group_id`),
   CONSTRAINT `job_rules_ibfk_1` FOREIGN KEY (`group_id`) REFERENCES `job_groups` (`Id`) ON DELETE CASCADE ON UPDATE CASCADE
-) ENGINE=InnoDB AUTO_INCREMENT=2 DEFAULT CHARSET=utf8;
+) ENGINE=InnoDB AUTO_INCREMENT=7 DEFAULT CHARSET=utf8;
 
 #
 # Data for table "job_rules"
 #
 
-REPLACE INTO `job_rules` VALUES (1,2,'jhh',NULL,NULL);
+REPLACE INTO `job_rules` VALUES (1,2,'ssddff',0,0),(10,3,'g2',0,0),(11,2,'g1',0,0),(13,3,'g2',0,0);
+
+#
+# Structure for table "job_rule_records"
+#
+
+CREATE TABLE `job_rule_records` (
+  `Id` int(11) NOT NULL AUTO_INCREMENT,
+  `job_rule_id` int(11) NOT NULL DEFAULT '0',
+  `key` varchar(255) NOT NULL DEFAULT '',
+  PRIMARY KEY (`Id`),
+  KEY `job_rule_id` (`job_rule_id`),
+  CONSTRAINT `job_rule_records_ibfk_1` FOREIGN KEY (`job_rule_id`) REFERENCES `job_rules` (`Id`) ON DELETE CASCADE ON UPDATE CASCADE
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+
+#
+# Data for table "job_rule_records"
+#
+
+REPLACE INTO `job_rule_records` VALUES (2,11,'reet'),(4,13,'wer');
 
 #
 # Structure for table "job_rule_links"
@@ -80,7 +99,7 @@ CREATE TABLE `job_rule_links` (
 # Data for table "job_rule_links"
 #
 
-REPLACE INTO `job_rule_links` VALUES (1,1,2);
+REPLACE INTO `job_rule_links` VALUES (1,1,1),(10,10,1);
 
 #
 # Structure for table "users"
@@ -120,3 +139,15 @@ CREATE TABLE `jobs` (
 #
 
 REPLACE INTO `jobs` VALUES (1,1,'Wikipedia Актёры','https://ru.wikipedia.org/wiki/%D0%9A%D0%B0%D1%82%D0%B5%D0%B3%D0%BE%D1%80%D0%B8%D1%8F:%D0%90%D0%BA%D1%82%D1%91%D1%80%D1%8B_%D0%BF%D0%BE_%D0%B0%D0%BB%D1%84%D0%B0%D0%B2%D0%B8%D1%82%D1%83');
+
+#
+# Trigger "DeleteLinkRule"
+#
+
+pia-dev
+
+#
+# Trigger "DeleteRecRule"
+#
+
+pia-dev
