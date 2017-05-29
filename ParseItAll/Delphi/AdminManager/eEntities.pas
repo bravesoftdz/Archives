@@ -31,44 +31,63 @@ type
     property CriticalType: Integer read GetCriticalType write SetCriticalType;
   end;
 
+  TJobRecord = class(TEntityAbstract)
+  // overrides
+  public
+    class function GetEntityStruct: TEntityStruct; override;
+  ////////////////////
+  private
+  // Getters Setters
+    function GetKey: string;
+    procedure SetKey(aValue: string);
+    function GetRule: TJobRule;
+  //////////////////
+  public
+    property Key: string read GetKey write SetKey;
+    property Rule: TJobRule read GetRule;
+  end;
+
+  TRecordList = TEntityList<TJobRecord>;
+
   TJobLink = class(TEntityAbstract)
   // overrides
   public
     class function GetEntityStruct: TEntityStruct; override;
   ////////////////////
+  private
   // Getters Setters
-    function GetRuleID: integer;
-    procedure SetRuleID(aValue: integer);
     function GetLevel: integer;
     procedure SetLevel(aValue: integer);
+    function GetRule: TJobRule;
   //////////////////
-  private
-    FRule: TJobRule;
   public
-    property RuleID: Integer read GetRuleID write SetRuleID;
     property Level: Integer read GetLevel write SetLevel;
-    property Rule: TJobRule read FRule write FRule;
+    property Rule: TJobRule read GetRule;
   end;
 
   TLinkList = TEntityList<TJobLink>;
 
   TJobGroup = class(TEntityAbstract)
-  protected
+  private
     // Getters Setters
     function GetLevelID: Integer;
     procedure SetLevelID(aValue: integer);
     function GetNotes: string;
     procedure SetNotes(aValue: string);
     function GetLinkList: TLinkList;
+    function GetRecordList: TRecordList;
     //////////////////
+  protected
     procedure SaveLists; override;
   private
     FLinks: TLinkList;
+    FRecords: TRecordList;
   public
     class function GetEntityStruct: TEntityStruct; override;
     property LevelID: Integer read GetLevelID write SetLevelID;
     property Notes: string read GetNotes write SetNotes;
     property Links: TLinkList read GetLinkList;
+    property Records: TRecordList read GetRecordList;
     destructor Destroy; override;
   end;
 
@@ -123,9 +142,46 @@ implementation
 uses
   System.SysUtils;
 
+function TJobRecord.GetRule: TJobRule;
+begin
+  Result := FRelations.Items['JOB_RULES'] as TJobRule;
+end;
+
+function TJobLink.GetRule: TJobRule;
+begin
+  Result := FRelations.Items['JOB_RULES'] as TJobRule;
+end;
+
+function TJobGroup.GetRecordList: TRecordList;
+begin
+  if not Assigned(FRecords) then
+    FRecords := TRecordList.Create(Self, 'GROUP_ID', ID);
+
+  Result := FRecords;
+end;
+
+procedure TJobRecord.SetKey(aValue: string);
+begin
+  FData.AddOrSetValue('KEY', aValue);
+end;
+
+function TJobRecord.GetKey: string;
+begin
+  Result := FData.Items['KEY'];
+end;
+
+class function TJobRecord.GetEntityStruct: TEntityStruct;
+begin
+  Result.TableName := 'JOB_RULE_RECORDS';
+  AddField(Result.FieldList, 'JOB_RULE_ID', ftInteger);
+  AddField(Result.FieldList, 'KEY', ftString);
+  AddRelation(Result.RelatedList, 'ID', 'JOB_RULE_ID', TJobRule);
+end;
+
 procedure TJobGroup.SaveLists;
 begin
-    if Assigned(FLinks) then FLinks.SaveList(ID);
+  if Assigned(FLinks) then FLinks.SaveList(ID);
+  if Assigned(FRecords) then FRecords.SaveList(ID);
 end;
 
 function TJobGroup.GetLinkList: TLinkList;
@@ -134,16 +190,6 @@ begin
     FLinks := TLinkList.Create(Self, 'GROUP_ID', ID);
 
   Result := FLinks;
-end;
-
-function TJobLink.GetRuleID: integer;
-begin
-  Result := FData.Items['JOB_RULE_ID'];
-end;
-
-procedure TJobLink.SetRuleID(aValue: integer);
-begin
-  FData.AddOrSetValue('JOB_RULE_ID', aValue);
 end;
 
 function TJobLink.GetLevel: integer;
