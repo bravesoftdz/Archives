@@ -5,12 +5,29 @@ interface
 uses
   API_MVC,
   API_MVC_DB,
-  API_DB_MySQL;
+  API_DB_MySQL,
+  cefvcl,
+  cefLib,
+  eEntities;
 
 type
-  {$M+}
+  TJSExtension = class
+    class procedure databack(const data: string);
+  end;
+
+  TCustomRenderProcessHandler = class(TCefRenderProcessHandlerOwn)
+  protected
+    procedure OnWebKitInitialized; override;
+  end;
 
   TController = class(TControllerDB)
+  private
+    procedure crmProcessMessageReceived(Sender: TObject;
+            const browser: ICefBrowser; sourceProcess: TCefProcessId;
+            const message: ICefProcessMessage; out Result: Boolean);
+    function GetSelectedLevel: TJobLevel;
+    function GetSelectedGroup: TJobGroup;
+    function GetSelectedRule: TJobRule;
   protected
     procedure InitDB; override;
     procedure PerfomViewMessage(aMsg: string); override;
@@ -31,6 +48,10 @@ type
 
     procedure CreateRecord;
     procedure DeleteRecord;
+
+    procedure SelectHTMLNode;
+
+    procedure CreateNodes(aNodesData: string);
   end;
 
   // FObjData Item Keys
@@ -41,7 +62,10 @@ type
 implementation
 
 uses
+  Vcl.Dialogs,
   System.SysUtils,
+  System.JSON,
+  API_Files,
   API_ORM,
   API_MVC_Bind,
   vMain,
@@ -50,8 +74,57 @@ uses
   vRules,
   mLogin,
   mJobs,
-  mRules,
-  eEntities;
+  mRules;
+
+function TController.GetSelectedLevel: TJobLevel;
+begin
+  Result := FObjData.Items['Level'] as TJobLevel;
+end;
+
+function TController.GetSelectedGroup: TJobGroup;
+begin
+  Result := GetSelectedLevel.Groups.Items[ViewRules.GroupIndex];
+end;
+
+function TController.GetSelectedRule: TJobRule;
+begin
+  if ViewRules.RuleIndex <= GetSelectedGroup.Links.Count then
+    Result := GetSelectedGroup.Links.Items[ViewRules.RuleIndex].Rule
+  else
+    Result := GetSelectedGroup.Records.Items[ViewRules.RuleIndex - GetSelectedGroup.Links.Count].Rule;
+end;
+
+procedure TController.CreateNodes(aNodesData: string);
+var
+  jsnNodes: TJSONArray;
+  jsnValue: TJSONValue;
+  jsnNode: TJSONObject;
+
+  Rule: TJobRule;
+begin
+  jsnNodes:=TJSONObject.ParseJSONValue(aNodesData) as TJSONArray;
+  Rule := GetSelectedRule;
+
+  for jsnValue in jsnNodes do
+    begin
+      jsnNode:=jsnValue as TJSONObject;
+    end;
+end;
+
+procedure TController.crmProcessMessageReceived(Sender: TObject;
+        const browser: ICefBrowser; sourceProcess: TCefProcessId;
+        const message: ICefProcessMessage; out Result: Boolean);
+begin
+  if message.Name = 'databack' then CreateNodes(message.ArgumentList.GetString(0));
+end;
+
+procedure TController.SelectHTMLNode;
+var
+  InjectJS: string;
+begin
+  InjectJS := TFilesEngine.GetTextFromFile(GetCurrentDir + '\JS\DOMSelector.js');
+  ViewRules.chrmBrowser.Browser.MainFrame.ExecuteJavaScript(InjectJS, 'about:blank', 0);
+end;
 
 procedure TController.CreateRecord;
 var
@@ -134,14 +207,15 @@ end;
 
 procedure TController.TreeNodeSelected;
 var
-  GroupIndex: Integer;
+  mGroupIndex: Integer;
   LinkIndex: Integer;
   RecordIndex: Integer;
   LinkCount, RecordCount: Integer;
   Entity: TEntityAbstract;
   Level: TJobLevel;
 begin
-  GroupIndex := 0;
+  ViewRules.pnlXPath.Visible := False;
+  mGroupIndex := 0;
   LinkIndex := 0;
   RecordIndex := 0;
   Level := (FObjData.Items['Level'] as TJobLevel);
@@ -151,12 +225,12 @@ begin
       case tvTree.Selected.Level of
         0:
           begin
-            GroupIndex := tvTree.Selected.Index;
+            mGroupIndex := tvTree.Selected.Index;
             Entity := Level.Groups.Items[GroupIndex];
           end;
         1:
           begin
-            GroupIndex := tvTree.Selected.Parent.Index;
+            mGroupIndex := tvTree.Selected.Parent.Index;
 
             LinkCount := Level.Groups.Items[GroupIndex].Links.Count;
             RecordCount := Level.Groups.Items[GroupIndex].Records.Count;
@@ -171,6 +245,8 @@ begin
                 RecordIndex := tvTree.Selected.Index - LinkCount;
                 Entity := Level.Groups.Items[GroupIndex].Records.Items[RecordIndex];
               end;
+
+            ViewRules.pnlXPath.Visible := True;
           end;
       end;
 
@@ -201,6 +277,7 @@ begin
   CallView(TViewRules);
   ViewRules.SetLevels(Levels);
   ViewRules.SetControlTree(Levels[0].Groups);
+  ViewRules.chrmBrowser.OnProcessMessageReceived := crmProcessMessageReceived;
 end;
 
 procedure TController.StoreJobRules;
@@ -290,5 +367,24 @@ begin
   FConnectParams := Self.GetConnectParams('Settings\MySQL.ini');
   FDBEngineClass := TMySQLEngine;
 end;
+
+{ TCustomRenderProcessHandler }
+procedure TCustomRenderProcessHandler.OnWebKitInitialized;
+begin
+  TCefRTTIExtension.Register('app', TJSExtension);
+end;
+
+{ TTestExtension }
+class procedure TJSExtension.databack(const data: string);
+var
+  msg: ICefProcessMessage;
+begin
+  msg := TCefProcessMessageRef.New('databack');
+  msg.ArgumentList.SetString(0, data);
+  TCefv8ContextRef.Current.Browser.SendProcessMessage(PID_BROWSER, msg);
+end;
+
+initialization
+  CefRenderProcessHandler := TCustomRenderProcessHandler.Create;
 
 end.

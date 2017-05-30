@@ -8,12 +8,22 @@ uses
   API_ORM;
 
 type
+  TJobNode = class(TEntityAbstract)
+  // overrides
+  public
+    class function GetEntityStruct: TEntityStruct; override;
+  ////////////////////
+  end;
+
+  TNodeList = TEntityList<TJobNode>;
+
   TJobRule = class(TEntityAbstract)
   // overrides
   public
     class function GetEntityStruct: TEntityStruct; override;
   ////////////////////
   private
+    FNodes: TNodeList;
   // Getters Setters
     function GetGroupID: Integer;
     procedure SetGroupID(aValue: integer);
@@ -23,12 +33,14 @@ type
     procedure SetContainerOffset(aValue: integer);
     function GetCriticalType: integer;
     procedure SetCriticalType(aValue: integer);
+    function GetNodeList: TNodeList;
   //////////////////
   public
     property GroupID: Integer read GetGroupID write SetGroupID;
     property Description: string read GetDescription write SetDescription;
     property ContainerOffset: Integer read GetContainerOffset write SetContainerOffset;
     property CriticalType: Integer read GetCriticalType write SetCriticalType;
+    property Nodes: TNodeList read GetNodeList;
   end;
 
   TJobRecord = class(TEntityAbstract)
@@ -141,6 +153,25 @@ implementation
 
 uses
   System.SysUtils;
+
+function TJobRule.GetNodeList: TNodeList;
+begin
+  if not Assigned(FNodes) then
+    FNodes := TNodeList.Create(Self, 'JOB_RULE_ID', ID);
+
+  Result := FNodes;
+end;
+
+class function TJobNode.GetEntityStruct: TEntityStruct;
+begin
+  Result.TableName := 'JOB_NODES';
+  AddField(Result.FieldList, 'JOB_RULE_ID', ftInteger);
+  AddField(Result.FieldList, 'TAG', ftString);
+  AddField(Result.FieldList, 'INDEX', ftInteger);
+  AddField(Result.FieldList, 'TAG_ID', ftString);
+  AddField(Result.FieldList, 'CLASS', ftString);
+  AddField(Result.FieldList, 'NAME', ftString);
+end;
 
 function TJobRecord.GetRule: TJobRule;
 begin

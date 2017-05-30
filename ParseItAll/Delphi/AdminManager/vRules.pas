@@ -37,6 +37,8 @@ type
     btnDL: TBitBtn;
     btnAR: TBitBtn;
     btnDR: TBitBtn;
+    pnlXPath: TPanel;
+    btnSelectHTML: TBitBtn;
     procedure btnAGClick(Sender: TObject);
     procedure btnCancelClick(Sender: TObject);
     procedure btnApplyClick(Sender: TObject);
@@ -47,8 +49,12 @@ type
     procedure btnDLClick(Sender: TObject);
     procedure btnARClick(Sender: TObject);
     procedure btnDRClick(Sender: TObject);
+    procedure btnSelectHTMLClick(Sender: TObject);
   private
     { Private declarations }
+    function GetUpperNode(aLevelBreak: Integer): TTreeNode;
+    function GetGroupIndex: integer;
+    function GetRuleIndex: Integer;
   protected
     procedure InitView; override;
   public
@@ -56,6 +62,8 @@ type
     pnlEntityFields: TEntityPanel;
     procedure SetLevels(aLevelList: TLevelList);
     procedure SetControlTree(aJobGroupList: TGroupList);
+    property GroupIndex: Integer read GetGroupIndex;
+    property RuleIndex: Integer read GetRuleIndex;
   end;
 
   // FBindData Item Keys
@@ -71,6 +79,27 @@ implementation
 uses
   System.UITypes,
   API_MVC_Bind;
+
+function TViewRules.GetUpperNode(aLevelBreak: Integer): TTreeNode;
+var
+  i: Integer;
+begin
+  Result:= tvTree.Selected;
+  for i := tvTree.Selected.Level downto aLevelBreak do
+    begin
+      Result := Result.Parent;
+    end;
+end;
+
+function TViewRules.GetRuleIndex: Integer;
+begin
+  Result := GetUpperNode(1).Index;
+end;
+
+function TViewRules.GetGroupIndex: integer;
+begin
+  Result := GetUpperNode(0).Index;
+end;
 
 procedure TEntityPanel.AfterEditChange(aEdit: TEdit);
 begin
@@ -174,6 +203,11 @@ end;
 procedure TViewRules.btnDRClick(Sender: TObject);
 begin
   SendMessage('DeleteRecord');
+end;
+
+procedure TViewRules.btnSelectHTMLClick(Sender: TObject);
+begin
+  SendMessage('SelectHTMLNode');
 end;
 
 procedure TViewRules.FormCreate(Sender: TObject);

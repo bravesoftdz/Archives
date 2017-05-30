@@ -1,5 +1,5 @@
 ﻿# Host: 127.0.0.1  (Version 5.5.23)
-# Date: 2017-05-29 17:56:50
+# Date: 2017-05-30 17:54:26
 # Generator: MySQL-Front 6.0  (Build 2.13)
 
 
@@ -34,13 +34,13 @@ CREATE TABLE `job_groups` (
   PRIMARY KEY (`Id`),
   KEY `level_id` (`level_id`),
   CONSTRAINT `job_groups_ibfk_1` FOREIGN KEY (`level_id`) REFERENCES `job_levels` (`Id`) ON DELETE CASCADE ON UPDATE CASCADE
-) ENGINE=InnoDB AUTO_INCREMENT=3 DEFAULT CHARSET=utf8;
+) ENGINE=InnoDB AUTO_INCREMENT=4 DEFAULT CHARSET=utf8;
 
 #
 # Data for table "job_groups"
 #
 
-REPLACE INTO `job_groups` VALUES (2,1,'Группа 1'),(3,1,'Группа 2');
+REPLACE INTO `job_groups` VALUES (2,1,'Next Page');
 
 #
 # Structure for table "job_rules"
@@ -55,13 +55,13 @@ CREATE TABLE `job_rules` (
   PRIMARY KEY (`Id`),
   KEY `group_id` (`group_id`),
   CONSTRAINT `job_rules_ibfk_1` FOREIGN KEY (`group_id`) REFERENCES `job_groups` (`Id`) ON DELETE CASCADE ON UPDATE CASCADE
-) ENGINE=InnoDB AUTO_INCREMENT=7 DEFAULT CHARSET=utf8;
+) ENGINE=InnoDB AUTO_INCREMENT=15 DEFAULT CHARSET=utf8;
 
 #
 # Data for table "job_rules"
 #
 
-REPLACE INTO `job_rules` VALUES (1,2,'ssddff',0,0),(10,3,'g2',0,0),(11,2,'g1',0,0),(13,3,'g2',0,0);
+REPLACE INTO `job_rules` VALUES (14,2,'Next Page',0,0);
 
 #
 # Structure for table "job_rule_records"
@@ -74,13 +74,12 @@ CREATE TABLE `job_rule_records` (
   PRIMARY KEY (`Id`),
   KEY `job_rule_id` (`job_rule_id`),
   CONSTRAINT `job_rule_records_ibfk_1` FOREIGN KEY (`job_rule_id`) REFERENCES `job_rules` (`Id`) ON DELETE CASCADE ON UPDATE CASCADE
-) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+) ENGINE=InnoDB AUTO_INCREMENT=5 DEFAULT CHARSET=utf8;
 
 #
 # Data for table "job_rule_records"
 #
 
-REPLACE INTO `job_rule_records` VALUES (2,11,'reet'),(4,13,'wer');
 
 #
 # Structure for table "job_rule_links"
@@ -93,13 +92,35 @@ CREATE TABLE `job_rule_links` (
   PRIMARY KEY (`Id`),
   KEY `job_rule_id` (`job_rule_id`),
   CONSTRAINT `job_rule_links_ibfk_1` FOREIGN KEY (`job_rule_id`) REFERENCES `job_rules` (`Id`) ON DELETE CASCADE ON UPDATE CASCADE
-) ENGINE=InnoDB AUTO_INCREMENT=2 DEFAULT CHARSET=utf8;
+) ENGINE=InnoDB AUTO_INCREMENT=12 DEFAULT CHARSET=utf8;
 
 #
 # Data for table "job_rule_links"
 #
 
-REPLACE INTO `job_rule_links` VALUES (1,1,1),(10,10,1);
+REPLACE INTO `job_rule_links` VALUES (11,14,1);
+
+#
+# Structure for table "job_nodes"
+#
+
+CREATE TABLE `job_nodes` (
+  `Id` int(11) NOT NULL AUTO_INCREMENT,
+  `job_rule_id` int(11) NOT NULL DEFAULT '0',
+  `tag` varchar(255) NOT NULL DEFAULT '',
+  `index` int(11) NOT NULL DEFAULT '0',
+  `tag_id` varchar(255) DEFAULT NULL,
+  `class` varchar(255) DEFAULT NULL,
+  `name` varchar(255) DEFAULT NULL,
+  PRIMARY KEY (`Id`),
+  KEY `job_rule_id` (`job_rule_id`),
+  CONSTRAINT `job_nodes_ibfk_1` FOREIGN KEY (`job_rule_id`) REFERENCES `job_rules` (`Id`) ON DELETE CASCADE ON UPDATE CASCADE
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+
+#
+# Data for table "job_nodes"
+#
+
 
 #
 # Structure for table "users"

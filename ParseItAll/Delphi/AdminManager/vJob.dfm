@@ -23,15 +23,6 @@ object ViewJob: TViewJob
     Align = alLeft
     Anchors = [akLeft, akTop, akRight, akBottom]
     TabOrder = 0
-    object chrmBrowser: TChromium
-      Left = 1
-      Top = 1
-      Width = 375
-      Height = 255
-      Align = alClient
-      DefaultUrl = 'about:blank'
-      TabOrder = 0
-    end
   end
   object pnlURL: TPanel
     Left = 0

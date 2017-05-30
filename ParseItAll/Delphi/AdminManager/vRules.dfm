@@ -152,11 +152,10 @@ object ViewRules: TViewRules
     end
     object pnlFields: TPanel
       Left = 1
-      Top = 201
+      Top = 289
       Width = 248
-      Height = 160
-      Align = alTop
-      Anchors = [akLeft, akTop, akRight, akBottom]
+      Height = 115
+      Align = alClient
       TabOrder = 2
     end
     object btnApply: TButton
@@ -179,13 +178,32 @@ object ViewRules: TViewRules
       TabOrder = 4
       OnClick = btnCancelClick
     end
+    object pnlXPath: TPanel
+      Left = 1
+      Top = 201
+      Width = 248
+      Height = 88
+      Align = alTop
+      Caption = 'pnlXPath'
+      TabOrder = 5
+      Visible = False
+      object btnSelectHTML: TBitBtn
+        Left = 8
+        Top = 32
+        Width = 75
+        Height = 25
+        Caption = 'btnSelectHTML'
+        TabOrder = 0
+        OnClick = btnSelectHTMLClick
+      end
+    end
   end
   object ilIcons: TImageList
     ColorDepth = cd32Bit
     Left = 32
     Top = 32
     Bitmap = {
-      494C010103005C00880010001000FFFFFFFF2110FFFFFFFFFFFFFFFF424D3600
+      494C010103005C00900010001000FFFFFFFF2110FFFFFFFFFFFFFFFF424D3600
       0000000000003600000028000000400000001000000001002000000000000010
       0000000000000000000000000000000000000000000000000000000000000000
       0000000000000000000000000000000000000000000000000000000000000000
