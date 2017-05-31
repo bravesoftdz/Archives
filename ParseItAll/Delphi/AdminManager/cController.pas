@@ -207,47 +207,22 @@ end;
 
 procedure TController.TreeNodeSelected;
 var
-  mGroupIndex: Integer;
-  LinkIndex: Integer;
-  RecordIndex: Integer;
-  LinkCount, RecordCount: Integer;
   Entity: TEntityAbstract;
-  Level: TJobLevel;
 begin
   ViewRules.pnlXPath.Visible := False;
-  mGroupIndex := 0;
-  LinkIndex := 0;
-  RecordIndex := 0;
-  Level := (FObjData.Items['Level'] as TJobLevel);
 
   with ViewRules do
     begin
       case tvTree.Selected.Level of
-        0:
-          begin
-            mGroupIndex := tvTree.Selected.Index;
-            Entity := Level.Groups.Items[GroupIndex];
-          end;
-        1:
-          begin
-            mGroupIndex := tvTree.Selected.Parent.Index;
+        0:  Entity := GetSelectedGroup;
+        1:  begin
+              if GetSelectedLink <> -1 then
+                Entity := GetSelectedLink
+              else
+                Entity := GetSelectedRecord;
 
-            LinkCount := Level.Groups.Items[GroupIndex].Links.Count;
-            RecordCount := Level.Groups.Items[GroupIndex].Records.Count;
-
-            if tvTree.Selected.Index <= LinkCount - 1 then
-              begin
-                LinkIndex := tvTree.Selected.Index;
-                Entity := Level.Groups.Items[GroupIndex].Links.Items[LinkIndex];
-              end
-            else
-              begin
-                RecordIndex := tvTree.Selected.Index - LinkCount;
-                Entity := Level.Groups.Items[GroupIndex].Records.Items[RecordIndex];
-              end;
-
-            ViewRules.pnlXPath.Visible := True;
-          end;
+              ViewRules.pnlXPath.Visible := True;
+            end;
       end;
 
       pnlEntityFields.ClearControls;

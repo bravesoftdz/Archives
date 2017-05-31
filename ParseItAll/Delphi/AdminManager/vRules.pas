@@ -85,7 +85,7 @@ var
   i: Integer;
 begin
   Result:= tvTree.Selected;
-  for i := tvTree.Selected.Level downto aLevelBreak do
+  for i := tvTree.Selected.Level downto aLevelBreak + 1 do
     begin
       Result := Result.Parent;
     end;
