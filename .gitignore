@@ -53,3 +53,4 @@ __history
 *.~ddp
 *.~dfm
 *.~pas
+/LithVisaRegister/Delphi/Debug
