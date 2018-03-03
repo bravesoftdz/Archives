@@ -18,6 +18,7 @@ type
     procedure InitDB(var aDBEngineClass: TDBEngineClass; out aConnectParams: TConnectParams;
       out aConnectOnCreate: Boolean); override;
   published
+    procedure AddClient;
     procedure LoadRegister;
     procedure Test;
   end;
@@ -29,12 +30,37 @@ implementation
 
 uses
   API_DB_SQLite,
-  eClient;
+  eClient,
+  eContact,
+  System.SysUtils,
+  vClientList,
+  vMain;
+
+procedure TController.AddClient;
+var
+  ClientList: TClientList;
+begin
+  ClientList := TClientList.Create(['*'], ['FIRST_NAME']);
+
+  ViewClientList := FMX.CreateView<TViewClientList>;
+  ViewClientList.RenderClientList(ClientList);
+
+  ViewClientList.Show;
+end;
 
 procedure TController.BeforeDestroy;
 begin
   if Assigned(FCurrRegister) then
     begin
+      if (FCurrRegister.Contact <> nil) and
+          FCurrRegister.Contact.Email.IsEmpty and
+          FCurrRegister.Contact.Phone.IsEmpty
+      then
+        begin
+          FCurrRegister.Contact.Free;
+          FCurrRegister.Contact := nil;
+        end;
+
       FCurrRegister.StoreAll;
       FCurrRegister.Free;
     end;
@@ -56,11 +82,15 @@ begin
   finally
     RegisterList.Free;
   end;
+
+  if Result.Contact = nil then
+    Result.Contact := TContact.Create;
 end;
 
 procedure TController.LoadRegister;
 begin
   FCurrRegister := GetCurrentRegister;
+  ViewMain.Bind.BindEntity(FCurrRegister.Contact);
 end;
 
 procedure TController.Test;

@@ -145,6 +145,12 @@
         <DCCReference Include="eClient.pas"/>
         <DCCReference Include="eRegister.pas"/>
         <DCCReference Include="eContact.pas"/>
+        <DCCReference Include="..\..\..\..\Libs\Delphi\API_ORM_Bind.pas"/>
+        <DCCReference Include="..\..\..\..\Libs\Delphi\API_ORM_BindFMX.pas"/>
+        <DCCReference Include="vClientList.pas">
+            <Form>ViewClientList</Form>
+            <FormType>fmx</FormType>
+        </DCCReference>
         <BuildConfiguration Include="Release">
             <Key>Cfg_2</Key>
             <CfgParent>Base</CfgParent>

@@ -15,7 +15,10 @@ uses
   API_DB_SQLite in '..\..\..\..\Libs\Delphi\API_DB_SQLite.pas',
   eClient in 'eClient.pas',
   eRegister in 'eRegister.pas',
-  eContact in 'eContact.pas';
+  eContact in 'eContact.pas',
+  API_ORM_Bind in '..\..\..\..\Libs\Delphi\API_ORM_Bind.pas',
+  API_ORM_BindFMX in '..\..\..\..\Libs\Delphi\API_ORM_BindFMX.pas',
+  vClientList in 'vClientList.pas' {ViewClientList};
 
 {$R *.res}
 
