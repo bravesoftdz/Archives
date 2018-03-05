@@ -50,11 +50,14 @@ object ViewMain: TViewMain
     TabOrder = 3
     Text = 'Start'
   end
-  object btnAddClient: TButton
+  object btnSelectClient: TButton
     Position.X = 88.000000000000000000
     Position.Y = 104.000000000000000000
+    Size.Width = 97.000000000000000000
+    Size.Height = 22.000000000000000000
+    Size.PlatformDefault = False
     TabOrder = 5
-    Text = 'btnAddClient'
-    OnClick = btnAddClientClick
+    Text = 'btnSelectClient'
+    OnClick = btnSelectClientClick
   end
 end

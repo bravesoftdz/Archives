@@ -8,7 +8,8 @@ uses
   FMX.Controls.Presentation, FMX.StdCtrls, FMX.Layouts, FMX.ListBox, FMX.Edit,
   API_MVC,
   API_MVC_FMX,
-  API_ORM_BindFMX;
+  API_ORM_BindFMX,
+  eClient;
 
 type
   TViewMain = class(TViewFMXBase)
@@ -16,11 +17,11 @@ type
     bcPhone: TEdit;
     lstClients: TListBox;
     btnStart: TButton;
-    btnAddClient: TButton;
+    btnSelectClient: TButton;
     procedure btn1Click(Sender: TObject);
     procedure FormCreate(Sender: TObject);
     procedure FormDestroy(Sender: TObject);
-    procedure btnAddClientClick(Sender: TObject);
+    procedure btnSelectClientClick(Sender: TObject);
   private
     { Private declarations }
     FBind: TORMBindFMX;
@@ -28,6 +29,7 @@ type
     procedure InitMVC(var aControllerClass: TControllerClass); override;
   public
     { Public declarations }
+    procedure RenderRegisterClients(aClientRelList: TClientRelList);
     property Bind: TORMBindFMX read FBind;
   end;
 
@@ -41,6 +43,19 @@ implementation
 uses
   cController;
 
+procedure TViewMain.RenderRegisterClients(aClientRelList: TClientRelList);
+var
+  ClientRel: TClientRel;
+  ClientText: string;
+begin
+  for ClientRel in aClientRelList do
+    begin
+      ClientText := Format('%s (%s)', [ClientRel.Client.FullName, ClientRel.Client.PassportNumber]);
+
+      lstClients.Items.AddObject(ClientText, ClientRel);
+    end;
+end;
+
 procedure TViewMain.btn1Click(Sender: TObject);
 begin
   inherited;
@@ -48,11 +63,11 @@ begin
   SendMessage('Test');
 end;
 
-procedure TViewMain.btnAddClientClick(Sender: TObject);
+procedure TViewMain.btnSelectClientClick(Sender: TObject);
 begin
   inherited;
 
-  SendMessage('AddClient');
+  SendMessage('SelectClient');
 end;
 
 procedure TViewMain.FormCreate(Sender: TObject);

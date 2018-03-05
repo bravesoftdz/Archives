@@ -15,6 +15,7 @@ object ViewClientList: TViewClientList
     Size.Height = 425.000000000000000000
     Size.PlatformDefault = False
     TabOrder = 0
+    OnDblClick = lstClientsDblClick
     DisableFocusEffect = True
     DefaultItemStyles.ItemStyle = ''
     DefaultItemStyles.GroupHeaderStyle = ''
@@ -27,11 +28,20 @@ object ViewClientList: TViewClientList
     Position.Y = 16.000000000000000000
     TabOrder = 1
     Text = 'btnBack'
+    OnClick = btnBackClick
   end
   object btnAddNew: TButton
     Position.X = 112.000000000000000000
     Position.Y = 16.000000000000000000
     TabOrder = 2
     Text = 'btnAddNew'
+    OnClick = btnAddNewClick
+  end
+  object btnEdit: TButton
+    Position.X = 216.000000000000000000
+    Position.Y = 16.000000000000000000
+    TabOrder = 3
+    Text = 'btnEdit'
+    OnClick = btnEditClick
   end
 end

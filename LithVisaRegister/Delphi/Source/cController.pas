@@ -5,12 +5,15 @@ interface
 uses
   API_DB,
   API_MVC_FMXDB,
+  eClient,
   eRegister;
 
 type
   TController = class(TControllerFMXDB)
   private
+    FClientList: TClientList;
     FCurrRegister: TRegister;
+    function FillClient(aClient: TClient): Boolean;
     function GetCurrentRegister: TRegister;
   protected
     procedure AfterCreate; override;
@@ -19,8 +22,13 @@ type
       out aConnectOnCreate: Boolean); override;
   published
     procedure AddClient;
+    procedure ClientSelected;
+    procedure EditClient;
     procedure LoadRegister;
+    procedure RemoveClient;
+    procedure SelectClient;
     procedure Test;
+    procedure ViewClientListClosed;
   end;
 
 var
@@ -30,20 +38,102 @@ implementation
 
 uses
   API_DB_SQLite,
-  eClient,
   eContact,
   System.SysUtils,
+  System.UITypes,
+  vClient,
   vClientList,
   vMain;
 
+procedure TController.ClientSelected;
+var
+  AlreadyInList: Boolean;
+  Client: TClient;
+  ClientRel: TClientRel;
+begin
+  Client := ViewClientList.SelectedClient;
+  ViewClientList.Close;
+
+  AlreadyInList := False;
+  for ClientRel in FCurrRegister.ClRelList do
+    if ClientRel.ClientID = Client.ID then
+      AlreadyInList := True;
+
+  if not AlreadyInList then
+    begin
+      ClientRel := TClientRel.Create;
+      ClientRel.ClientID := Client.ID;
+      ClientRel.Num := FCurrRegister.ClRelList.Count + 1;
+
+      FCurrRegister.ClRelList.Add(ClientRel);
+      FCurrRegister.StoreAll;
+    end;
+end;
+
+procedure TController.RemoveClient;
+var
+  Client: TClient;
+begin
+  Client := ViewClientList.SelectedClient;
+
+  Client.Delete;
+  FClientList.Remove(Client);
+  ViewClientList.RemoveClient(Client);
+end;
+
+function TController.FillClient(aClient: TClient): Boolean;
+begin
+  ViewClent := FMX.CreateView<TViewClent>(False);
+  ViewClent.Bind.BindEntity(aClient);
+
+  if ViewClent.ShowModal = mrOK then
+    Result := True
+  else
+    Result := False;
+end;
+
+procedure TController.EditClient;
+var
+  Client: TClient;
+begin
+  Client := ViewClientList.SelectedClient;
+
+  if FillClient(Client) then
+    begin
+      Client.Store;
+      ViewClientList.RenderClient(Client);
+    end
+  else
+    Client.Revert;
+end;
+
+procedure TController.ViewClientListClosed;
+begin
+  FClientList.Free;
+end;
+
 procedure TController.AddClient;
 var
-  ClientList: TClientList;
+  Client: TClient;
 begin
-  ClientList := TClientList.Create(['*'], ['FIRST_NAME']);
+  Client := TClient.Create;
+
+  if FillClient(Client) then
+    begin
+      FClientList.Add(Client);
+      Client.Store;
+      ViewClientList.RenderClient(Client);
+    end
+  else
+    Client.Free;
+end;
+
+procedure TController.SelectClient;
+begin
+  FClientList := TClientList.Create(['*'], ['FIRST_NAME']);
 
   ViewClientList := FMX.CreateView<TViewClientList>;
-  ViewClientList.RenderClientList(ClientList);
+  ViewClientList.RenderClientList(FClientList);
 
   ViewClientList.Show;
 end;
@@ -91,6 +181,7 @@ procedure TController.LoadRegister;
 begin
   FCurrRegister := GetCurrentRegister;
   ViewMain.Bind.BindEntity(FCurrRegister.Contact);
+  ViewMain.RenderRegisterClients(FCurrRegister.ClRelList);
 end;
 
 procedure TController.Test;
