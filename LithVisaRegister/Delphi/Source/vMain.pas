@@ -18,19 +18,24 @@ type
     lstClients: TListBox;
     btnStart: TButton;
     btnSelectClient: TButton;
+    btnUnselectClient: TButton;
     procedure btn1Click(Sender: TObject);
     procedure FormCreate(Sender: TObject);
     procedure FormDestroy(Sender: TObject);
     procedure btnSelectClientClick(Sender: TObject);
+    procedure btnUnselectClientClick(Sender: TObject);
+    procedure btnStartClick(Sender: TObject);
   private
     { Private declarations }
     FBind: TORMBindFMX;
+    function GetSelectedClientRel: TClientRel;
   protected
     procedure InitMVC(var aControllerClass: TControllerClass); override;
   public
     { Public declarations }
     procedure RenderRegisterClients(aClientRelList: TClientRelList);
     property Bind: TORMBindFMX read FBind;
+    property SelectedClientRel: TClientRel read GetSelectedClientRel;
   end;
 
 var
@@ -43,11 +48,18 @@ implementation
 uses
   cController;
 
+function TViewMain.GetSelectedClientRel: TClientRel;
+begin
+  Result := lstClients.Selected.Data as TClientRel;
+end;
+
 procedure TViewMain.RenderRegisterClients(aClientRelList: TClientRelList);
 var
   ClientRel: TClientRel;
   ClientText: string;
 begin
+  lstClients.Items.Clear;
+
   for ClientRel in aClientRelList do
     begin
       ClientText := Format('%s (%s)', [ClientRel.Client.FullName, ClientRel.Client.PassportNumber]);
@@ -68,6 +80,20 @@ begin
   inherited;
 
   SendMessage('SelectClient');
+end;
+
+procedure TViewMain.btnStartClick(Sender: TObject);
+begin
+  inherited;
+
+  SendMessage('StartRegister');
+end;
+
+procedure TViewMain.btnUnselectClientClick(Sender: TObject);
+begin
+  inherited;
+
+  SendMessage('UnselectClient');
 end;
 
 procedure TViewMain.FormCreate(Sender: TObject);

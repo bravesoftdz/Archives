@@ -1,0 +1,11 @@
+inherited ViewRegister: TViewRegister
+  Caption = 'ViewRegister'
+  DesignerMasterStyle = 0
+  object wbBrowser: TWebBrowser
+    Align = Top
+    Anchors = [akLeft, akTop, akRight, akBottom]
+    Size.Width = 640.000000000000000000
+    Size.Height = 401.000000000000000000
+    Size.PlatformDefault = False
+  end
+end

@@ -19,7 +19,9 @@ uses
   API_ORM_Bind in '..\..\..\..\Libs\Delphi\API_ORM_Bind.pas',
   API_ORM_BindFMX in '..\..\..\..\Libs\Delphi\API_ORM_BindFMX.pas',
   vClientList in 'vClientList.pas' {ViewClientList},
-  vClient in 'vClient.pas' {ViewClent};
+  vClient in 'vClient.pas' {ViewClent},
+  mRegister in 'mRegister.pas',
+  vRegister in 'vRegister.pas' {ViewRegister};
 
 {$R *.res}
 

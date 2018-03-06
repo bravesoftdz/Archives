@@ -6,7 +6,8 @@ uses
   API_DB,
   API_MVC_FMXDB,
   eClient,
-  eRegister;
+  eRegister,
+  mRegister;
 
 type
   TController = class(TControllerFMXDB)
@@ -25,9 +26,12 @@ type
     procedure ClientSelected;
     procedure EditClient;
     procedure LoadRegister;
+    procedure OnModelRegisterInit(aModel: TModelRegister);
     procedure RemoveClient;
     procedure SelectClient;
+    procedure StartRegister;
     procedure Test;
+    procedure UnselectClient;
     procedure ViewClientListClosed;
   end;
 
@@ -43,7 +47,33 @@ uses
   System.UITypes,
   vClient,
   vClientList,
-  vMain;
+  vMain,
+  vRegister;
+
+procedure TController.OnModelRegisterInit(aModel: TModelRegister);
+begin
+  aModel.inBrowser := ViewRegister.wbBrowser;
+end;
+
+procedure TController.StartRegister;
+begin
+  ViewRegister := FMX.CreateView<TViewRegister>;
+
+  CallModelAsync<TModelRegister>;
+  ViewRegister.ShowModal;
+end;
+
+procedure TController.UnselectClient;
+var
+  ClientRel: TClientRel;
+begin
+  ClientRel := ViewMain.SelectedClientRel;
+
+  FCurrRegister.ClRelList.Remove(ClientRel);
+  FCurrRegister.ClRelList.Store;
+
+  ViewMain.RenderRegisterClients(FCurrRegister.ClRelList);
+end;
 
 procedure TController.ClientSelected;
 var
@@ -52,7 +82,6 @@ var
   ClientRel: TClientRel;
 begin
   Client := ViewClientList.SelectedClient;
-  ViewClientList.Close;
 
   AlreadyInList := False;
   for ClientRel in FCurrRegister.ClRelList do
@@ -68,6 +97,8 @@ begin
       FCurrRegister.ClRelList.Add(ClientRel);
       FCurrRegister.StoreAll;
     end;
+
+  ViewClientList.Close;
 end;
 
 procedure TController.RemoveClient;
@@ -110,6 +141,9 @@ end;
 procedure TController.ViewClientListClosed;
 begin
   FClientList.Free;
+
+  FCurrRegister.ClRelList.Refresh;
+  ViewMain.RenderRegisterClients(FCurrRegister.ClRelList);
 end;
 
 procedure TController.AddClient;
