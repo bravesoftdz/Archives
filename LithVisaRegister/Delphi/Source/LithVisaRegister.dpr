@@ -21,7 +21,8 @@ uses
   vClientList in 'vClientList.pas' {ViewClientList},
   vClient in 'vClient.pas' {ViewClent},
   mRegister in 'mRegister.pas',
-  vRegister in 'vRegister.pas' {ViewRegister};
+  vRegister in 'vRegister.pas' {ViewRegister},
+  API_Files in '..\..\..\..\Libs\Delphi\API_Files.pas';
 
 {$R *.res}
 

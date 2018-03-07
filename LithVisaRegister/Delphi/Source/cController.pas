@@ -35,6 +35,9 @@ type
     procedure ViewClientListClosed;
   end;
 
+const
+  cReadyListenerFile = 'D:\Git\Archives\LithVisaRegister\JS\ReadyListener.js';
+
 var
   DBEngine: TDBEngine;
 
@@ -53,6 +56,7 @@ uses
 procedure TController.OnModelRegisterInit(aModel: TModelRegister);
 begin
   aModel.inBrowser := ViewRegister.wbBrowser;
+  aModel.inReadyListenerFile := cReadyListenerFile;
 end;
 
 procedure TController.StartRegister;
