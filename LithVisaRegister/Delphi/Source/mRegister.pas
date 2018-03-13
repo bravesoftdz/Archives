@@ -4,68 +4,62 @@ interface
 
 uses
   API_MVC_DB,
-  FMX.Types,
   FMX.WebBrowser;
 
 type
-  TModelRegister = class(TModelDB)
+  TModelLoadPage = class(TModelDB)
   private
-    FTimer: TTimer;
-    FURL: string;
-    function GetJSCode(const aFile: string): string;
     procedure OnLoadEnd(ASender: TObject);
-    procedure OnShouldStartLoadWithRequest(ASender: TObject; const URL: string);
-    procedure OnTimer(ASender: TObject);
   public
     inBrowser: TWebBrowser;
-    inReadyListenerFile: string;
+    procedure Start; override;
+  end;
+
+  TModelFillForm = class(TModelDB)
+  private
+    function GetJSCode(const aFile: string): string;
+  public
+    inBrowser: TWebBrowser;
+    inJSFile: string;
     procedure Start; override;
   end;
 
 const
-  urlStartPage = 'https://evas2.urm.lt/ru/';
-  urlVisitPage = 'https://evas2.urm.lt/ru/visit/';
+  cStartPageURL = 'https://evas2.urm.lt/ru/';
 
 implementation
 
 uses
-  API_Files;
+  API_Files,
+  System.SysUtils;
 
-procedure TModelRegister.OnShouldStartLoadWithRequest(ASender: TObject; const URL: string);
+procedure TModelFillForm.Start;
+var
+  JSCode: string;
 begin
+  JSCode := GetJSCode(inJSFile);
 
+  inBrowser.EvaluateJavaScript(JSCode);
 end;
 
-procedure TModelRegister.OnTimer(ASender: TObject);
-begin
-  if FURL = urlStartPage then
-    begin
-      inBrowser.EvaluateJavaScript(GetJSCode(inReadyListenerFile));
-    end;
-end;
-
-function TModelRegister.GetJSCode(const aFile: string): string;
+function TModelFillForm.GetJSCode(const aFile: string): string;
 begin
   Result := TFilesEngine.GetTextFromFile(aFile);
 end;
 
-procedure TModelRegister.OnLoadEnd(ASender: TObject);
+procedure TModelLoadPage.OnLoadEnd(ASender: TObject);
 begin
-  FTimer.Enabled := True;
+  if inBrowser.URL.Contains('visit/rct77') then
+    begin
+      inBrowser.OnDidFinishLoad := nil;
+      SendMessage(EndMessage);
+    end;
 end;
 
-procedure TModelRegister.Start;
+procedure TModelLoadPage.Start;
 begin
   inBrowser.OnDidFinishLoad := OnLoadEnd;
-  inBrowser.OnShouldStartLoadWithRequest := OnShouldStartLoadWithRequest;
-
-  FTimer := TTimer.Create(nil);
-  FTimer.Interval := 1000;
-  FTimer.Enabled := False;
-  FTimer.OnTimer := OnTimer;
-
-  FURL := urlStartPage;
-  inBrowser.Navigate(FURL);
+  inBrowser.Navigate(cStartPageURL);
 end;
 
 end.

@@ -2,10 +2,20 @@ inherited ViewRegister: TViewRegister
   Caption = 'ViewRegister'
   DesignerMasterStyle = 0
   object wbBrowser: TWebBrowser
+    EnableCaching = False
     Align = Top
     Anchors = [akLeft, akTop, akRight, akBottom]
     Size.Width = 640.000000000000000000
-    Size.Height = 401.000000000000000000
+    Size.Height = 409.000000000000000000
     Size.PlatformDefault = False
+  end
+  object btnFill: TButton
+    Anchors = [akLeft, akBottom]
+    Enabled = False
+    Position.X = 280.000000000000000000
+    Position.Y = 429.000000000000000000
+    TabOrder = 0
+    Text = 'btnFill'
+    OnClick = btnFillClick
   end
 end

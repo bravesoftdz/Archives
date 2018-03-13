@@ -25,18 +25,22 @@ type
     procedure AddClient;
     procedure ClientSelected;
     procedure EditClient;
+    procedure FillForm;
     procedure LoadRegister;
-    procedure OnModelRegisterInit(aModel: TModelRegister);
+    procedure OnModelFillFormInit(aModel: TModelFillForm);
+    procedure OnModelLoadPageEnd(aModel: TModelLoadPage);
+    procedure OnModelLoadPageInit(aModel: TModelLoadPage);
     procedure RemoveClient;
     procedure SelectClient;
     procedure StartRegister;
     procedure Test;
     procedure UnselectClient;
     procedure ViewClientListClosed;
+    procedure ViewRegisterClosed;
   end;
 
 const
-  cReadyListenerFile = 'D:\Git\Archives\LithVisaRegister\JS\ReadyListener.js';
+  cJSFile = 'D:\Git\Archives\LithVisaRegister\JS\JSCode.js';
 
 var
   DBEngine: TDBEngine;
@@ -53,17 +57,38 @@ uses
   vMain,
   vRegister;
 
-procedure TController.OnModelRegisterInit(aModel: TModelRegister);
+procedure TController.OnModelFillFormInit(aModel: TModelFillForm);
 begin
   aModel.inBrowser := ViewRegister.wbBrowser;
-  aModel.inReadyListenerFile := cReadyListenerFile;
+  aModel.inJSFile := cJSFile;
+end;
+
+procedure TController.FillForm;
+begin
+  CallModel<TModelFillForm>;
+end;
+
+procedure TController.ViewRegisterClosed;
+begin
+  StopModel<TModelLoadPage>;
+end;
+
+procedure TController.OnModelLoadPageEnd(aModel: TModelLoadPage);
+begin
+  ViewRegister.btnFill.Enabled := True;
+  aModel.Free;
+end;
+
+procedure TController.OnModelLoadPageInit(aModel: TModelLoadPage);
+begin
+  aModel.inBrowser := ViewRegister.wbBrowser;
 end;
 
 procedure TController.StartRegister;
 begin
   ViewRegister := FMX.CreateView<TViewRegister>;
 
-  CallModelAsync<TModelRegister>;
+  CallModelAsync<TModelLoadPage>;
   ViewRegister.ShowModal;
 end;
 
